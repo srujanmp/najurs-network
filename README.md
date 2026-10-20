@@ -3,7 +3,7 @@
 A ready-to-run Minecraft **26.3** (Paper) network for a group of friends: a sky-island hub, survival worlds with
 crazy modes (Random Drops, Mob Morph, Goose Chase), co-op Skyblock and OneBlock, BedWars (4 maps), Hide & Seek,
 round-based and team PvP on 10 maps, the **Nightfall** horror party games, parkour and creative. Vanilla clients,
-no mods. Older and newer Minecraft versions can join through ViaVersion.
+no mods. Any Java Minecraft version from 1.7.10 to the newest can join (ViaVersion + ViaBackwards + ViaRewind).
 
 This repo contains **no world or player data**. The first start downloads the pinned server and plugins, regrows
 every world from its seed and rebuilds every map from the scripts in `tools/build/`.

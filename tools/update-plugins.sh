@@ -1,7 +1,7 @@
 #!/bin/bash
 # Re-download Paper and every plugin at their newest builds for a Minecraft version. Run with the server stopped.
 # Usage: update-plugins.sh [minecraft-version]   e.g. update-plugins.sh 26.4   (default: the version below)
-# ViaVersion/ViaBackwards let newer and older clients join, so players don't have to match the server exactly.
+# ViaVersion/ViaBackwards/ViaRewind let newer and older clients (down to 1.7) join, so players don't have to match the server exactly.
 # Afterwards: test, then `tools/najurs.py publish` pins the new versions in tools/plugins.lock for everyone.
 set -euo pipefail
 MC=${1:-26.3}
@@ -10,7 +10,7 @@ mkdir -p plugins
 MODRINTH=(luckperms vaultunlocked multiverse-core multiverse-portals multiverse-inventories multiverse-netherportals worldedit worldguard
   bentobox placeholderapi deluxemenus screamingbedwars kenshins-hide-and-seek tab-was-taken chunky fancynpcs packetevents
   duels-optimised infection-minigame
-  authmereloaded skinsrestorer viaversion viabackwards)
+  authmereloaded skinsrestorer viaversion viabackwards viarewind)
 ESSX=(EssentialsX EssentialsXSpawn EssentialsXChat)
 BENTO=(BSkyBlock AOneBlock Level Challenges Warps)
 
