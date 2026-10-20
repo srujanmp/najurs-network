@@ -101,6 +101,7 @@ final class Nightfall implements Listener {
     private final Map<UUID, Long> stealReady = new HashMap<>();
     private int relicsIn;
     private Warden warden;
+    private String reveal = "";   // who the impostor/hunter was, kept even if they leave
 
     Nightfall(NajursCore plugin) { this.plugin = plugin; this.key = new NamespacedKey(plugin, "nf"); this.rnd = plugin.random; }
 
@@ -212,7 +213,11 @@ final class Nightfall implements Listener {
                 if (timer <= 5 && timer > 0) lob.forEach(p -> p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1f, 0.5f));
                 if (--timer < 0) begin(lob);
             }
-            case PLAYING -> { play(); ambience(); }
+            case PLAYING -> {
+                play(); ambience();
+                for (Player p : lobbyPlayers()) p.sendActionBar(game.colour + game.title + ChatColor.GRAY + " is in progress - you play the next round");
+                for (Player p : online(players)) if (!alive.contains(p.getUniqueId())) p.sendActionBar(ChatColor.GRAY + "☠ You're a ghost - watch the " + alive.size() + " still alive " + ChatColor.DARK_GRAY + "(/hub to leave)");
+            }
             case MEETING -> meetingTick();
             case ENDING -> { if (--timer <= 0) finish(); }
         }
@@ -244,7 +249,7 @@ final class Nightfall implements Listener {
         Collections.shuffle(ps, rnd);
         players.clear(); alive.clear(); role.clear(); score.clear(); hits.clear(); escaped.clear(); tasks.clear(); votes.clear();
         killReady.clear(); sabotageReady.clear(); calledMeeting.clear(); genWork.clear(); gensDone.clear(); stealReady.clear();
-        tasksDone = 0; tasksTotal = 0; relicsIn = 0; gatesOpen = false; lightsOutUntil = 0;
+        reveal = ""; tasksDone = 0; tasksTotal = 0; relicsIn = 0; gatesOpen = false; lightsOutUntil = 0;
         resetMap();
         bar.setTitle(game.colour + "" + ChatColor.BOLD + game.title); bar.setProgress(1); bar.setColor(BarColor.RED);
         List<Location> sp = spawns();
@@ -275,6 +280,7 @@ final class Nightfall implements Listener {
         if (state == State.ENDING) return;
         state = State.ENDING; timer = 8;
         working.clear();
+        bar.setTitle(game.colour + "" + ChatColor.BOLD + game.title + ChatColor.GRAY + "  " + headline); bar.setProgress(1);
         for (UUID u : winners == null ? List.<UUID>of() : winners) {
             String path = "nightfall.wins." + u;
             plugin.data.set(path, plugin.data.getInt(path) + 1);
@@ -288,10 +294,7 @@ final class Nightfall implements Listener {
             p.setGameMode(GameMode.SPECTATOR);
             p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 10, 0, false, false));
         }
-        if (game == Game.IMPOSTOR || game == Game.ESCAPE) {
-            String hunters = String.join(", ", online(players).stream().filter(p -> role.get(p.getUniqueId()) != null && !role.get(p.getUniqueId()).equals("crew") && !role.get(p.getUniqueId()).equals("survivor")).map(Player::getName).toList());
-            if (!hunters.isEmpty()) all(ChatColor.GRAY + (game == Game.IMPOSTOR ? "The impostor was: " : "The hunter was: ") + ChatColor.RED + hunters);
-        }
+        if (!reveal.isEmpty()) all(ChatColor.GRAY + (game == Game.IMPOSTOR ? "The impostor was: " : "The hunter was: ") + ChatColor.RED + reveal);
         all(ChatColor.DARK_RED + "☠ " + game.colour + ChatColor.BOLD + game.title + ChatColor.GRAY + " is over: " + ChatColor.WHITE + headline);
         if (game == Game.CANDLES && !score.isEmpty())
             all(ChatColor.AQUA + "Candles: " + String.join(ChatColor.DARK_GRAY + " | ", score.entrySet().stream().sorted(Map.Entry.<UUID, Integer>comparingByValue().reversed())
@@ -432,6 +435,7 @@ final class Nightfall implements Listener {
 
     void startImpostor(List<Player> ps) {
         int imps = ps.size() >= 7 ? 2 : 1;
+        reveal = String.join(", ", ps.subList(0, imps).stream().map(Player::getName).toList());
         List<Map<?, ?>> st = new ArrayList<>(list("stations"));
         for (int i = 0; i < ps.size(); i++) {
             Player p = ps.get(i);
@@ -454,6 +458,7 @@ final class Nightfall implements Listener {
             }
             p.sendMessage(ChatColor.GRAY + "Your tasks: " + ChatColor.WHITE + String.join(ChatColor.GRAY + ", " + ChatColor.WHITE,
                     tasks.get(p.getUniqueId()).stream().map(s -> s.get("task") + " (" + s.get("room") + ")").toList()));
+            if (!imp) p.sendMessage(ChatColor.GRAY + "To do a task: " + ChatColor.WHITE + "right-click its station and stand still" + ChatColor.GRAY + " until the bar fills. The compass points at your nearest task.");
             p.sendMessage(ChatColor.GRAY + "Found a body? Right-click it to report. Suspicious? Ring the " + ChatColor.GOLD + "bell" + ChatColor.GRAY + " in the Great Hall.");
         }
     }
@@ -609,7 +614,9 @@ final class Nightfall implements Listener {
 
     void startEscape(List<Player> ps) {
         int hunters = ps.size() >= 7 ? 2 : 1;
+        reveal = String.join(", ", ps.subList(0, hunters).stream().map(Player::getName).toList());
         List<Location> far = spots().stream().filter(l -> l.distanceSquared(hall()) > 900).toList();
+        if (far.isEmpty()) far = List.of(spots().isEmpty() ? hall() : spots().get(0)); // sparse layout: never throw
         for (int i = 0; i < ps.size(); i++) {
             Player p = ps.get(i);
             if (i < hunters) {
@@ -618,7 +625,9 @@ final class Nightfall implements Listener {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 900, 0, false, false));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 900, 0, false, false));
                 p.teleport(far.get(rnd.nextInt(far.size())));
-                p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "HUNTER", ChatColor.GRAY + "You see in the dark. They can't see you.", 10, 80, 10);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 200, 0, false, false));   // head start for the survivors
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 200, 6, false, false));
+                p.sendTitle(ChatColor.DARK_RED + "" + ChatColor.BOLD + "HUNTER", ChatColor.GRAY + "Released in 10s. Two cleaver hits kill. Stop the generators!", 10, 80, 10);
             } else {
                 role.put(p.getUniqueId(), "survivor");
                 torch(p);
@@ -775,15 +784,16 @@ final class Nightfall implements Listener {
             it.setVelocity(new org.bukkit.util.Vector()); it.setUnlimitedLifetime(true); it.setPersistent(false); it.addScoreboardTag("nf_temp");
             spawned.add(it);
         }
-        Location far = s.get(s.size() - 1);
+        Location far = s.isEmpty() ? hall() : s.get(s.size() - 1);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (state != State.PLAYING || game != Game.RELICS) return;
-            warden = world.spawn(far, Warden.class, w -> {
+            Location spot = spots().stream().max(Comparator.comparingDouble(l -> online(alive).stream().mapToDouble(q -> q.getLocation().distanceSquared(l)).min().orElse(0))).orElse(far);
+            warden = world.spawn(spot, Warden.class, w -> {
                 w.setPersistent(false); w.addScoreboardTag("nf_temp"); w.setRemoveWhenFarAway(false);
                 w.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(9);   // 4.5 hearts: brutal, but you get a chance
             });
             for (Player p : online(players)) p.playSound(p.getLocation(), Sound.ENTITY_WARDEN_EMERGE, 1.2f, 0.8f);
-            all(ChatColor.DARK_AQUA + "Something has woken up in the " + roomAt(far) + "...");
+            all(ChatColor.DARK_AQUA + "Something has woken up in the " + roomAt(spot) + "...");
         }, 200L);
     }
 
@@ -833,6 +843,21 @@ final class Nightfall implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) { if (inWorld(e.getPlayer())) { leave(e.getPlayer()); reset(e.getPlayer()); } }
 
+    /** Logging in inside the manor (no world change event): back to the lobby with its items. */
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> { if (p.isOnline() && enabled() && inWorld(p) && !players.contains(p.getUniqueId()) && p.getGameMode() != GameMode.CREATIVE) toLobby(p); }, 10L);
+    }
+
+    /** Ghosts can't leak who is the impostor: while a round runs, they only talk to other ghosts. */
+    @EventHandler
+    public void onChat(io.papermc.paper.event.player.AsyncChatEvent e) {
+        Player p = e.getPlayer();
+        if (!inWorld(p) || (state != State.PLAYING && state != State.MEETING) || !players.contains(p.getUniqueId()) || alive.contains(p.getUniqueId())) return;
+        e.viewers().removeIf(v -> v instanceof Player q && alive.contains(q.getUniqueId()));
+    }
+
     void leave(Player p) {
         working.remove(p.getUniqueId());
         Block b = lightAt.remove(p.getUniqueId());
@@ -840,7 +865,7 @@ final class Nightfall implements Listener {
         if (players.remove(p.getUniqueId())) {
             if (alive.remove(p.getUniqueId()) && "crew".equals(role.get(p.getUniqueId()))) tasksTotal -= tasks.getOrDefault(p.getUniqueId(), List.of()).size();
             p.setWalkSpeed(0.2f); p.setGlowing(false);
-            p.getInventory().clear();
+            if (inWorld(p)) p.getInventory().clear();   // on a world change MV-Inventories may already have swapped
             for (PotionEffect x : p.getActivePotionEffects()) p.removePotionEffect(x.getType());
         }
         bar.removePlayer(p);
@@ -954,7 +979,7 @@ final class Nightfall implements Listener {
             score.merge(p.getUniqueId(), 1, Integer::sum);
             p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1f, 1.4f);
             List<Location> s = spots();
-            Bukkit.getScheduler().runTaskLater(plugin, () -> { if (state == State.PLAYING && game == Game.CANDLES) dropCandle(s.get(rnd.nextInt(s.size()))); }, 200L);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> { if (state == State.PLAYING && game == Game.CANDLES) { if (!s.isEmpty()) dropCandle(s.get(rnd.nextInt(s.size()))); }; }, 200L);
         } else if (act.equals("relic")) {
             p.playSound(p.getLocation(), Sound.BLOCK_SCULK_CATALYST_BLOOM, 1f, 1f);
             p.sendActionBar(ChatColor.AQUA + "You found a relic! Take it to the Great Hall table.");

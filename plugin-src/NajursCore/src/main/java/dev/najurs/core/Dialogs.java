@@ -122,13 +122,25 @@ final class Dialogs {
             b.add(button("&6&l⚡ Goose Chase", "&7Chaos every " + plugin.getConfig().getInt("chaos-wave-seconds", 25) + " seconds.\n" + online(plugin.dims("sw_goose_chase").stream().mapToInt(this::players).sum()), 150, x -> plugin.go(x, "sw_goose_chase")));
         b.add(button("&f&l➹ Parkour", "&76 themed zones with checkpoints.\n&7Your best: &f" + (best == 0 ? "-" : String.format("%.2fs", best / 1000.0)), 150, x -> cmd(x, "go parkour")));
         b.add(button("&e&l✎ Creative", "&7Flat free-build world.\n" + online(players("creative")), 150, x -> cmd(x, "go creative")));
+        int friends = plugin.social.others(p).size();
+        b.add(button("&a&l☺ Join a Friend", friends == 0 ? "&7No friends online right now." : "&7Jump into what a friend is playing.\n&a" + friends + " online", 150, plugin.social::friends));
         b.add(button("&b&l★ My Stats", "&7Your numbers in every game", 150, this::stats));
         if (p.hasPermission("najurs.admin")) b.add(button("&4&l⚙ Dashboard", "&7Owner tools: players, worlds,\n&7send everyone anywhere", 150, this::dashboard));
         b.add(button("&b⌂ Hub", "&7Back to the hub spawn", 150, x -> cmd(x, "hub")));
-        List<DialogBody> body = List.of(
+        List<DialogBody> body = new ArrayList<>(List.of(
                 line("&7Welcome, &f" + p.getName() + "&7!   &a" + Bukkit.getOnlinePlayers().size() + "&7/" + Bukkit.getMaxPlayers() + " online"),
-                line("&6⚔ " + kills + " kills   &e★ " + wins + " wins   &f➹ " + (best == 0 ? "no parkour time" : String.format("%.2fs parkour", best / 1000.0))));
+                line("&6⚔ " + kills + " kills   &e★ " + wins + " wins   &f➹ " + (best == 0 ? "no parkour time" : String.format("%.2fs parkour", best / 1000.0)))));
+        for (String l : plugin.social.who()) body.add(line(l));
         p.showDialog(screen("&2&lNAJURS &a&lNETWORK", body, List.of(), b, 2, close()));
+    }
+
+    void friends(Player p) {
+        List<ActionButton> b = new ArrayList<>();
+        for (Player t : plugin.social.others(p)) {
+            Social.Act act = plugin.social.activity(t);
+            b.add(button("&f&l" + t.getName() + " &7- " + act.label(), act.join() == null ? "&7Can't be joined directly" : "&eClick to join " + t.getName(), 300, x -> plugin.social.join(x, new String[]{t.getName()})));
+        }
+        p.showDialog(screen("&a&l☺ Join a Friend", List.of(line(b.isEmpty() ? "&7No friends online right now." : "&7Pick a friend to jump into what they're playing.")), List.of(), b, 1, back(this::main)));
     }
 
     void stats(Player p) {

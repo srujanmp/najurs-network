@@ -27,7 +27,7 @@ final class Parkour implements Listener {
         Location loc(World w) { return new Location(w, x, y, z, 180, 0); }
         boolean near(Location l, double r) { return Math.abs(l.getX() - x) < r && Math.abs(l.getY() - y) < 1.6 && Math.abs(l.getZ() - z) < r; }
     }
-    static final class Run { long start; int cp = -1; Run(long s) { start = s; } }
+    static final class Run { long start, warn; int cp = -1; final List<Long> splits = new ArrayList<>(); Run(long s) { start = s; } }
 
     private final NajursCore plugin;
     private final Map<UUID, Run> runs = new HashMap<>();
@@ -117,20 +117,32 @@ final class Parkour implements Listener {
         }
         for (int i = r.cp + 1; i < cps.size(); i++) {
             if (cps.get(i).near(to, 1.6)) {
-                if (i > r.cp + 1) { p.sendMessage(ChatColor.RED + "You skipped a checkpoint!"); break; }
+                if (i > r.cp + 1) { warn(p, r, ChatColor.RED + "You skipped a checkpoint! Go back for #" + (r.cp + 2)); break; }
                 r.cp = i;
                 long t = System.currentTimeMillis() - r.start;
-                p.sendTitle(ChatColor.GOLD + "✔ " + cps.get(i).name(), ChatColor.GRAY + "Checkpoint " + (i + 1) + "/" + cps.size() + "  •  " + fmt(t), 0, 35, 10);
+                r.splits.add(t);
+                List<Long> pb = plugin.data.getLongList("parkour.splits." + p.getUniqueId());
+                String diff = i < pb.size() ? "  " + (t <= pb.get(i) ? ChatColor.GREEN + "-" : ChatColor.RED + "+") + String.format("%.2fs", Math.abs(t - pb.get(i)) / 1000.0) + ChatColor.GRAY + " vs best" : "";
+                p.sendTitle(ChatColor.GOLD + "✔ " + cps.get(i).name(), ChatColor.GRAY + "Checkpoint " + (i + 1) + "/" + cps.size() + "  •  " + fmt(t) + diff, 0, 35, 10);
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.6f);
                 p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, p.getLocation().add(0, 1, 0), 25, 0.5, 0.8, 0.5);
                 break;
             }
         }
-        if (finish.near(to, 2.5) && r.cp == cps.size() - 1) { complete(p, r); return; }
+        if (finish.near(to, 2.5)) {
+            if (r.cp == cps.size() - 1) { complete(p, r); return; }
+            warn(p, r, ChatColor.RED + "Finish needs every checkpoint - you have " + (r.cp + 1) + "/" + cps.size() + ".");
+        }
 
         // fell: back to the last checkpoint (the run keeps going)
         double floor = (r.cp >= 0 ? cps.get(r.cp).y() : start.y()) - 12;
         if (to.getY() < Math.min(floor, 40) || (inLane(to) && to.getY() < floor)) back(p);
+    }
+
+    private void warn(Player p, Run r, String msg) {
+        if (System.currentTimeMillis() - r.warn < 3000) return;
+        r.warn = System.currentTimeMillis();
+        p.sendMessage(msg);
     }
 
     void back(Player p) {
@@ -141,11 +153,13 @@ final class Parkour implements Listener {
         p.setVelocity(new Vector());
         p.teleport(new Location(lobby(), at.x(), at.y(), at.z() + (r.cp >= 0 ? 0 : -1.5), 180, 0));
         p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.6f, 1.4f);
+        p.sendTitle("", ChatColor.RED + "Fell - back to " + (r.cp >= 0 ? "checkpoint " + (r.cp + 1) : "the start"), 0, 20, 5);
     }
 
     void restart(Player p) {
-        runs.remove(p.getUniqueId());
+        boolean was = runs.remove(p.getUniqueId()) != null;
         p.teleport(new Location(lobby(), start.x(), start.y(), start.z() + 1.5, 180, 0));
+        p.sendMessage(ChatColor.GRAY + (was ? "Run cancelled. " : "") + "Step on the " + ChatColor.AQUA + "start plate" + ChatColor.GRAY + " to start the timer.");
     }
 
     void quit(Player p) {
@@ -160,8 +174,12 @@ final class Parkour implements Listener {
         boolean pb = t < best;
         ConfigurationSection all = plugin.data.getConfigurationSection("parkour.best");
         boolean record = pb && (all == null || all.getKeys(false).stream().allMatch(k -> t < all.getLong(k) || k.equals(p.getUniqueId().toString())));
-        if (pb) { plugin.data.set(path, t); plugin.data.set("parkour.names." + p.getUniqueId(), p.getName()); }
-        p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + fmt(t) + (pb ? ChatColor.GOLD + "  NEW BEST!" : ChatColor.GRAY + "  best " + fmt(best)), 5, 70, 15);
+        if (pb) { plugin.data.set(path, t); plugin.data.set("parkour.names." + p.getUniqueId(), p.getName()); plugin.data.set("parkour.splits." + p.getUniqueId(), r.splits); }
+        ConfigurationSection now = plugin.data.getConfigurationSection("parkour.best");
+        long myBest = Math.min(t, best);
+        int rank = 1 + (int) now.getKeys(false).stream().filter(k -> !k.equals(p.getUniqueId().toString()) && now.getLong(k) < myBest).count();
+        String place = ChatColor.YELLOW + "  #" + rank + " of " + now.getKeys(false).size();
+        p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + fmt(t) + (pb ? ChatColor.GOLD + "  NEW BEST!" : ChatColor.GRAY + "  best " + fmt(best)) + place, 5, 70, 15);
         Bukkit.broadcastMessage(ChatColor.GOLD + "✦ " + ChatColor.WHITE + p.getName() + ChatColor.YELLOW + " finished the Hub Parkour in "
                 + ChatColor.AQUA + fmt(t) + (pb ? ChatColor.GOLD + " (personal best!)" : ""));
         if (record) Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "★ NEW SERVER RECORD ★ " + ChatColor.WHITE + p.getName() + ChatColor.YELLOW + " set the fastest Hub Parkour time: " + ChatColor.AQUA + fmt(t));

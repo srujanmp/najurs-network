@@ -63,32 +63,60 @@ final class Morph implements Listener {
     private final NajursCore plugin;
     private final Map<UUID, Form> current = new HashMap<>();
 
-    Morph(NajursCore plugin) { this.plugin = plugin; }
+    static final int EVERY = 60;   // seconds between morphs
+    private final Map<UUID, Long> due = new HashMap<>();
 
-    void tick() {
+    /** Own 1s timer (per-player countdown + actionbar), so joiners aren't re-morphed by a global minute tick. */
+    Morph(NajursCore plugin) {
+        this.plugin = plugin;
+        Bukkit.getScheduler().runTaskTimer(plugin, this::second, 200L, 20L);
+    }
+
+
+    private void second() {
         if (Bukkit.getPluginManager().getPlugin("LibsDisguises") == null) return;
-        for (Player p : Bukkit.getOnlinePlayers()) if (plugin.hasFlag(p.getWorld(), "mobmorph")) apply(p);
+        long now = System.currentTimeMillis();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            Form f = current.get(p.getUniqueId());
+            if (f == null || !plugin.hasFlag(p.getWorld(), "mobmorph")) continue;
+            long left = (due.getOrDefault(p.getUniqueId(), 0L) - now + 999) / 1000;
+            if (left <= 0) apply(p);
+            else if (!plugin.hasFlag(p.getWorld(), "chaos")) p.sendActionBar(ChatColor.GREEN + f.mob().replace('_', ' ').toUpperCase(Locale.ROOT) + ChatColor.GRAY + "  " + f.power() + "  \u2022  next morph in " + ChatColor.WHITE + left + "s");
+        }
+    }
+
+    /** Big forms need headroom, or you'd be stuck in the ceiling. */
+    private boolean fits(Player p, Form f) {
+        for (int k = 2; k < Math.ceil(1.8 * f.scale()); k++) if (!p.getLocation().getBlock().getRelative(0, k, 0).isPassable()) return false;
+        return true;
     }
 
     void apply(Player p) {
         Form old = current.get(p.getUniqueId());
         Form f;
-        do { f = FORMS.get(plugin.random.nextInt(FORMS.size())); } while (old != null && f == old);
+        do { f = FORMS.get(plugin.random.nextInt(FORMS.size())); } while ((old != null && f == old) || !fits(p, f));
         clearEffects(p, old);
         current.put(p.getUniqueId(), f);
+        due.put(p.getUniqueId(), System.currentTimeMillis() + 1000L * EVERY);
         // big mobs would fill your own first-person view, so only small/medium forms are shown to yourself
         plugin.console("disguiseplayer " + p.getName() + " " + f.mob() + " setSelfDisguiseVisible " + (f.scale() <= 1.1));
         setScale(p, f.scale());
-        int ticks = 20 * 65;
-        p.addPotionEffect(new PotionEffect(f.effect(), ticks, f.amp(), false, false, true));
-        if (f.power().contains("Speed") && f.effect() != PotionEffectType.SPEED) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, ticks, 0, false, false, true));
-        if (f.power().contains("slow")) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 0, false, false, true));
+        powers(p, f, 20 * (EVERY + 5));
         String name = f.mob().replace('_', ' ').toUpperCase(Locale.ROOT);
         p.sendTitle(ChatColor.GREEN + "You are a " + ChatColor.YELLOW + ChatColor.BOLD + name, ChatColor.GRAY + "Power: " + ChatColor.WHITE + f.power(), 5, 50, 10);
         p.playSound(p.getLocation(), Sound.ENTITY_ILLUSIONER_MIRROR_MOVE, 1f, 1f);
         for (Player o : p.getWorld().getPlayers())
             if (o != p) o.sendMessage(ChatColor.DARK_GREEN + "✦ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " turned into a " + ChatColor.YELLOW + name.toLowerCase(Locale.ROOT));
     }
+
+    void powers(Player p, Form f, int ticks) {
+        p.addPotionEffect(new PotionEffect(f.effect(), ticks, f.amp(), false, false, true));
+        if (f.power().contains("Speed") && f.effect() != PotionEffectType.SPEED) p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, ticks, 0, false, false, true));
+        if (f.power().contains("slow")) p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 0, false, false, true));
+        if (WET.contains(f.mob())) p.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, ticks, 0, false, false, true));   // sea mobs can't drown
+    }
+
+    static final Set<String> WET = Set.of("squid", "dolphin");
 
     static void setScale(Player p, double scale) {
         AttributeInstance a = p.getAttribute(Attribute.SCALE);
@@ -100,10 +128,12 @@ final class Morph implements Listener {
         p.removePotionEffect(f.effect());
         if (f.power().contains("Speed")) p.removePotionEffect(PotionEffectType.SPEED);
         if (f.power().contains("slow")) p.removePotionEffect(PotionEffectType.SLOWNESS);
+        if (WET.contains(f.mob())) p.removePotionEffect(PotionEffectType.WATER_BREATHING);
     }
 
     /** Back to a normal player (leaving the world, quitting, or the mode being switched off). */
     void clear(Player p) {
+        due.remove(p.getUniqueId());
         clearEffects(p, current.remove(p.getUniqueId()));
         setScale(p, 1.0);
         if (Bukkit.getPluginManager().getPlugin("LibsDisguises") != null) plugin.console("undisguiseplayer " + p.getName());
@@ -111,6 +141,18 @@ final class Morph implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) { if (current.containsKey(e.getPlayer().getUniqueId())) clear(e.getPlayer()); }
+
+    /** Dying resets size and potions but keeps the disguise: put the form's size and power back. */
+    @EventHandler
+    public void onRespawn(org.bukkit.event.player.PlayerRespawnEvent e) {
+        Player p = e.getPlayer();
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Form f = current.get(p.getUniqueId());
+            if (f == null || !p.isOnline() || !plugin.hasFlag(p.getWorld(), "mobmorph")) return;
+            setScale(p, f.scale());
+            powers(p, f, 20 * (int) Math.max(5, (due.getOrDefault(p.getUniqueId(), 0L) - System.currentTimeMillis()) / 1000 + 3));
+        }, 5L);
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {

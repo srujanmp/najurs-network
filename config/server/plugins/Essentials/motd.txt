@@ -1,4 +1,5 @@
-&6Welcome, {PLAYER}&6!
-&6Type &c/help&6 for a list of commands.
-&6Type &c/list&6 to see who else is online.
-&6Players online:&c {ONLINE} &6- World time:&c {WORLDTIME12}
+&8&m                                        
+&a&lNAJURS NETWORK &8» &7Welcome back, &e{PLAYER}&7!
+&7Type &e/menu &7to pick a game, &e/help &7for commands.
+&7Online: &e{ONLINE} &8• &7Hub: &e/hub &8• &7Rules: &e/rules
+&8&m                                        

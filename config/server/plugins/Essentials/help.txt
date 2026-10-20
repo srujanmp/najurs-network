@@ -1,0 +1,11 @@
+&8&m                                        
+&a&lNAJURS NETWORK &8» &7Quick help
+&e/menu &7- pick a game or world (also &e/play&7)
+&e/hub &7or &e/spawn &7- back to the lobby
+&e/go <world> &7- jump to a world; &e/island &7- your skyblock; &e/ob &7- OneBlock
+&e/bw join &7- BedWars (2 per team) &8| &e/hsmenu &7- Hide & Seek &8| &e/pvp &7- arenas
+&e/sethome &7 &e/home &7 &e/back &7- survival homes
+&e/tpa <player> &7- ask to teleport to a friend &8| &e/msg <player> <text>
+&e/kit &7- free kits &8| &e/warp &7- warps &8| &e/bal &7 &e/pay &7- money
+&e/afk &7 &e/list &7 &e/rules &7 &e/helpop <text> &7(ask staff)
+&8&m                                        

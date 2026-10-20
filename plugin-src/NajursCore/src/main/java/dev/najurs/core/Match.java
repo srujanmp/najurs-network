@@ -86,6 +86,8 @@ final class Match implements Listener {
     private final Map<String, Arena> arenas = new LinkedHashMap<>();
     private final Map<UUID, String> kit = new HashMap<>();
     private final Map<String, Integer> winStreak = new HashMap<>();   // "<arena>:<uuid>" -> consecutive round wins
+    private final Map<UUID, Long> lastMove = new HashMap<>();   // AFK detection for queued players
+    private final Map<UUID, Integer> specIdx = new HashMap<>();
     private final NamespacedKey key;
 
     Match(NajursCore plugin) { this.plugin = plugin; this.key = new NamespacedKey(plugin, "match_item"); }
@@ -169,6 +171,7 @@ final class Match implements Listener {
         Arena old = arenaOf(p);
         if (old != null && old != a) leave(p, false);
         a.queue.add(p.getUniqueId());
+        lastMove.put(p.getUniqueId(), System.currentTimeMillis());
         if (a.teams && !a.team.containsKey(p.getUniqueId())) a.team.put(p.getUniqueId(), smallerTeam(a));
         p.teleport(a.wait);
         resetPlayer(p);
@@ -191,8 +194,8 @@ final class Match implements Listener {
         }
         a.players.remove(p.getUniqueId());
         a.team.remove(p.getUniqueId());
-        p.removePotionEffect(PotionEffectType.GLOWING);
-        p.removePotionEffect(PotionEffectType.WITHER);
+        for (PotionEffect e : p.getActivePotionEffects()) p.removePotionEffect(e.getType()); // kit speed/slowness must not follow them out
+        p.setFireTicks(0); p.setAllowFlight(false);
         if (toHub) p.performCommand("hub");
     }
 
@@ -201,6 +204,7 @@ final class Match implements Listener {
         p.setGameMode(GameMode.ADVENTURE);
         p.setHealth(p.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH).getValue());
         p.setFoodLevel(20); p.setSaturation(20); p.setFireTicks(0); p.setFallDistance(0);
+        p.setAllowFlight(false); p.setFlying(false);
         for (PotionEffect e : p.getActivePotionEffects()) p.removePotionEffect(e.getType());
     }
 
@@ -255,6 +259,8 @@ final class Match implements Listener {
             int t = a.team.getOrDefault(p.getUniqueId(), 0);
             inv.setItem(2, tagged(t == 0 ? Material.RED_BANNER : Material.BLUE_BANNER, "status", (t == 0 ? "&c&lYou're on RED" : "&9&lYou're on BLUE"), "&7Teams are balanced every round."));
         }
+        if (a.state == State.FIGHT && a.map != null && !a.alive.contains(p.getUniqueId()))
+            inv.setItem(1, tagged(Material.COMPASS, "spec", "&b&lWatch a player &7(right-click)", "&7Hops to the next fighter."));
         inv.setItem(4, tagged(Material.CLOCK, "status", "&e&l" + a.title + " &7(right-click for status)"));
         inv.setItem(8, tagged(Material.RED_BED, "leave", "&c&lLeave &7(right-click)"));
     }
@@ -265,6 +271,11 @@ final class Match implements Listener {
         for (Arena a : arenas.values()) {
             a.queue.removeIf(id -> { Player p = Bukkit.getPlayer(id); return p == null || !p.getWorld().getName().equals(PvP.WORLD); });
             a.watchers.removeIf(id -> { Player p = Bukkit.getPlayer(id); return p == null || !p.getWorld().getName().equals(PvP.WORLD); });
+            if (a.state == State.WAITING || a.state == State.COUNTDOWN) for (Player p : online(a.queue))
+                if (System.currentTimeMillis() - lastMove.getOrDefault(p.getUniqueId(), System.currentTimeMillis()) > 180_000) {
+                    p.sendMessage(ChatColor.YELLOW + "Removed from " + a.title + " for being idle 3 minutes. Use /pvp to come back.");
+                    leave(p, true);
+                }
             switch (a.state) {
                 case WAITING -> {
                     if (a.queue.size() >= 2) { a.state = State.COUNTDOWN; a.timer = a.round > 0 ? 8 : 15; }
@@ -277,7 +288,7 @@ final class Match implements Listener {
                     if (--a.timer < 0) begin(a);
                 }
                 case FIGHT -> {
-                    long secs = (System.currentTimeMillis() - a.fightStart) / 1000;
+                    long secs = Math.max(0, (System.currentTimeMillis() - a.fightStart) / 1000);
                     for (Player p : online(a.players)) p.sendActionBar(a.colour + "" + ChatColor.BOLD + a.title + ChatColor.GRAY + "  Round " + a.round + "  |  "
                             + ChatColor.GREEN + a.alive.size() + " alive" + ChatColor.GRAY + "  |  " + ChatColor.WHITE + secs / 60 + ":" + String.format("%02d", secs % 60));
                     if (secs >= 120 && !a.suddenDone) { a.suddenDone = true; suddenDeath(a); }
@@ -292,6 +303,7 @@ final class Match implements Listener {
     private void begin(Arena a) {
         a.state = State.FIGHT;
         a.round++;
+        clearShots(a);
         a.players.clear(); a.alive.clear(); a.rematch.clear(); a.suddenDone = false; a.kills.clear(); a.shrink = 0;
         rebuildFloor(a);
         List<Player> ps = online(a.queue);
@@ -323,8 +335,16 @@ final class Match implements Listener {
                 p.sendMessage(ChatColor.GRAY + "You are " + teamName(t) + ChatColor.GRAY + ". Friendly fire is off.");
             }
             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 6, false, false));
+            plugin.pvp.protect(p, 6000); // 3s countdown + 3s of grace: no spawn-kills, no fall damage, nothing dealt
             p.sendTitle(a.teams ? teamName(a.team.getOrDefault(p.getUniqueId(), 0)) + ChatColor.WHITE + " ROUND " + a.round : a.colour + "" + ChatColor.BOLD + "ROUND " + a.round, a.map == null ? ChatColor.GRAY + "Last one standing wins"
                     : a.map.colour() + a.map.name() + ChatColor.DARK_GRAY + "  •  " + a.theme.colour() + a.theme.name(), 0, 50, 10);
+        }
+        if (a.teams) { // 2v1 and the like: the smaller side gets extra hearts
+            long red = ps.stream().filter(p -> a.team.getOrDefault(p.getUniqueId(), 0) == 0).count(), blue = ps.size() - red;
+            if (red != blue) for (Player p : ps) if (a.team.getOrDefault(p.getUniqueId(), 0) == (red < blue ? 0 : 1)) {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 600, 1, false, false));
+                p.sendMessage(ChatColor.GOLD + "Your team is outnumbered - bonus hearts!");
+            }
         }
         for (int s = 3; s >= 1; s--) {
             int n = s;
@@ -424,12 +444,33 @@ final class Match implements Listener {
     void eliminate(Player p, Player killer, String how) {
         Arena a = arenaOf(p);
         if (a == null || a.state != State.FIGHT || !a.alive.remove(p.getUniqueId())) return;
-        if (killer != null && a.alive.contains(killer.getUniqueId())) { plugin.pvp.recordKill(a.id, killer, p, how); a.kills.merge(killer.getUniqueId(), 1, Integer::sum); }
+        if (killer != null && a.alive.contains(killer.getUniqueId())) {
+            plugin.pvp.recordKill(a.id, killer, p, how);
+            killReward(a, killer, a.kills.merge(killer.getUniqueId(), 1, Integer::sum));
+        }
         else { plugin.pvp.recordDeath(a.id, p); broadcast(a, a.colour + "☠ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " is out"); }
         p.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Spectating until the round ends", 5, 40, 10);
+        if (!a.teams && a.alive.size() == 2 && a.players.size() > 2) for (Player f : online(a.alive))
+            f.sendTitle(ChatColor.GOLD + "" + ChatColor.BOLD + "FINAL 2", ChatColor.GRAY + "Last one standing wins", 0, 30, 10);
         Location watch = a.map != null ? a.map.spectate() : a.wait;
         Bukkit.getScheduler().runTaskLater(plugin, () -> { if (p.isOnline()) { resetPlayer(p); p.teleport(watch); giveWaitingItems(p, a); } }, 2L);
         checkEnd(a);
+    }
+
+    /** In-round streak rewards (arena rounds / team battle only). */
+    private void killReward(Arena a, Player k, int n) {
+        if (!a.deathOut || (n != 2 && n != 3)) return;
+        if (n == 2) k.getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE));
+        else k.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 20, 1, false, false));
+        k.playSound(k.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.8f);
+        broadcast(a, ChatColor.GOLD + "✹ " + ChatColor.WHITE + k.getName() + ChatColor.YELLOW + " has " + n + " kills: " + (n == 2 ? "golden apple!" : "speed boost!"));
+    }
+
+    /** Arrows, pearls, tridents and potions from a finished round must not hit anyone in the next one. */
+    private void clearShots(Arena a) {
+        World w = Bukkit.getWorld(PvP.WORLD);
+        if (w != null) for (org.bukkit.entity.Projectile pr : w.getEntitiesByClass(org.bukkit.entity.Projectile.class))
+            if (pr.getShooter() instanceof Player s && (a.players.contains(s.getUniqueId()) || a.queue.contains(s.getUniqueId()))) pr.remove();
     }
 
     void checkEnd(Arena a) {
@@ -541,6 +582,7 @@ final class Match implements Listener {
     private void afterRound(Arena a) {
         // winner gets a moment to celebrate, then everyone votes
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            clearShots(a);
             for (Player p : online(a.players)) { resetPlayer(p); p.teleport(a.wait); giveWaitingItems(p, a); } // everyone back to the stands
             a.alive.clear(); rebuildFloor(a);
             for (Player p : online(a.players)) openVote(p, a);
@@ -649,6 +691,15 @@ final class Match implements Listener {
         switch (act) {
             case "kit" -> openKits(p);
             case "leave" -> { leave(p, true); }
+            case "spec" -> {
+                if (a == null || a.state != State.FIGHT || a.alive.contains(p.getUniqueId())) return;
+                List<Player> live = online(a.alive);
+                if (live.isEmpty()) return;
+                Player t = live.get(specIdx.merge(p.getUniqueId(), 1, Integer::sum) % live.size());
+                p.setAllowFlight(true); p.setFlying(true);
+                p.teleport(t.getLocation().add(0, 4, 0));
+                p.sendActionBar(ChatColor.AQUA + "Watching " + ChatColor.WHITE + t.getName() + ChatColor.GRAY + " - click again for the next player");
+            }
             case "status" -> {
                 Arena at = a != null ? a : null;
                 if (at == null) return;
@@ -670,7 +721,9 @@ final class Match implements Listener {
         Arena a = arenaOf(p);
         if (a == null || !a.deathOut || !a.alive.contains(p.getUniqueId())) return;
         e.getDrops().clear();
+        e.setDroppedExp(0);
         e.setDeathMessage(null);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> { if (p.isDead()) p.spigot().respawn(); }, 1L); // skip the death screen
         Player k = p.getKiller() != null ? p.getKiller() : plugin.pvp.recentHitter(p);
         eliminate(p, k, "slayed");
     }
@@ -680,6 +733,10 @@ final class Match implements Listener {
     public void onDamage(org.bukkit.event.entity.EntityDamageEvent e) {
         if (!(e.getEntity() instanceof Player p) || arenaOf(p) == null) return;
         if (!fighting(p)) { e.setCancelled(true); return; }
+        Arena pa = arenaOf(p);
+        if (!pa.deathOut) { // sumo/spleef: you're out by falling, never by dying; hits still knock back
+            if (e instanceof org.bukkit.event.entity.EntityDamageByEntityEvent) e.setDamage(0); else e.setCancelled(true);
+        }
         if (e instanceof org.bukkit.event.entity.EntityDamageByEntityEvent ed) {
             Player d = ed.getDamager() instanceof Player x ? x : ed.getDamager() instanceof org.bukkit.entity.Projectile pr && pr.getShooter() instanceof Player x ? x : null;
             if (d != null && !fighting(d)) e.setCancelled(true);
@@ -696,9 +753,15 @@ final class Match implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if (e.getTo() == null || e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
+        if (e.getTo() == null) return;
+        if (e.getFrom().getBlockX() != e.getTo().getBlockX() || e.getFrom().getBlockZ() != e.getTo().getBlockZ()) lastMove.put(p.getUniqueId(), System.currentTimeMillis());
+        if (e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
         Arena a = arenaOf(p);
-        if (a == null || !a.alive.contains(p.getUniqueId())) return;
+        if (a == null) return;
+        if (!a.alive.contains(p.getUniqueId())) { // spectators can't take damage, so a fall into the void would never end: bring them back
+            if (e.getTo().getY() < 40 && p.getWorld().getName().equals(PvP.WORLD)) { p.setFallDistance(0); p.setVelocity(new org.bukkit.util.Vector()); p.teleport(a.map != null && a.players.contains(p.getUniqueId()) ? a.map.spectate() : a.wait); }
+            return;
+        }
         double fall = a.map != null ? a.map.fallY() : a.fallY;
         if (e.getTo().getY() >= fall) return;
         eliminate(p, plugin.pvp.recentHitter(p), switch (a.id) { case "sumo" -> "pushed"; case "spleef" -> "spleefed"; default -> "knocked off"; });

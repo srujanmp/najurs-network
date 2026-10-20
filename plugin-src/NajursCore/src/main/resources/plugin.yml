@@ -2,16 +2,19 @@ name: NajursCore
 version: 1.0.0
 main: dev.najurs.core.NajursCore
 api-version: '26.3'
-description: Survival world manager, Random Drops, Mob Morph, Horror mode and admin send tools for the NAJURS NETWORK.
-softdepend: [ViaVersion, Multiverse-Core, Multiverse-Inventories, LibsDisguises, PlaceholderAPI, BedWars]
+description: Hub, menus, worlds, friends and admin tools for the NAJURS NETWORK.
+softdepend: [AuthMe, ViaVersion, Multiverse-Core, Multiverse-Inventories, LibsDisguises, PlaceholderAPI, BedWars]
 commands:
   worlds:
     description: Open the survival worlds menu, or manage worlds.
     usage: /worlds [create|reset|sendall|delete|rename|flag|list|join] ...
     aliases: [sw, smp]
   go:
-    description: Go to a survival or creative world (your last spot there).
-    usage: /go <world>
+    description: Go to a world or game (your last spot there).
+    usage: /go <world|game>
+  join:
+    description: Join a friend in whatever they are playing.
+    usage: /join [player]
   dashboard:
     description: Owner dashboard.
     aliases: [dash]

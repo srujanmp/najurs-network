@@ -10,13 +10,13 @@ locale: "en_US"
 
 # Specify prefixes for plugin chat messages.
 prefix:
-  default: "&9Hide and Seek > &f"
-  warning: "&eWarning > &f"
-  error: "&cError > &f"
+  default: "&d&lHIDE &8» &7"
+  warning: "&e&lHIDE &8» &e"
+  error: "&c&lHIDE &8» &c"
   abort: "&cAbort > &f"
   taunt: "&eTaunt > &f"
   border: "&cWorld Border > &f"
-  gameOver: "&aGame Over > &f"
+  gameOver: "&a&lGAME OVER &8» &f"
 
 #   ┌────────────────────┐
 #───┘ Placeholder errors └───────────────────────────────────────────────────────────────────────────────

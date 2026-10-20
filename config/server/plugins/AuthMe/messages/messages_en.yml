@@ -5,35 +5,36 @@
 
 # Registration
 registration:
-  register_request: '&3Please, register to the server with the command: /register <password> <ConfirmPassword>'
-  command_usage: '&cUsage: /register <password> <ConfirmPassword>'
+  register_request: '&a&lNAJURS &8» &7New here! Create an account with &e/register <password> <password again>'
+  command_usage: '&a&lNAJURS &8» &cUse: &e/register <password> <password again>'
   reg_only: '&4Only registered users can join the server! Please visit http://example.com to register yourself!'
   kicked_admin_registered: 'An admin just registered you; please log in again.'
-  success: '&2Successfully registered!'
+  success: '&a&lNAJURS &8» &aAccount created - welcome! Next time use &e/login <password>&a.'
   disabled: '&cIn-game registration is disabled!'
   name_taken: '&cYou already have registered this username!'
 
 # Password errors on registration
 password:
-  match_error: '&cPasswords didn''t match, check them again!'
+  match_error: '&a&lNAJURS &8» &cThe two passwords do not match. Try again.'
   name_in_password: '&cYou can''t use your name as password, please choose another one...'
-  unsafe_password: '&cThe chosen password isn''t safe, please choose another one...'
+  unsafe_password: '&a&lNAJURS &8» &cThat password is too easy to guess. Pick another one.'
   forbidden_characters: '&4Your password contains illegal characters. Allowed chars: %valid_chars'
-  wrong_length: '&cYour password is too short or too long! Please try with another one!'
+  wrong_length: '&a&lNAJURS &8» &cPassword must be at least 8 characters.'
 
 # Login
 login:
-  command_usage: '&cUsage: /login <password>'
-  wrong_password: '&cWrong password!'
-  success: '&2Successful login!'
-  login_request: '&cPlease, login with the command: /login <password>'
-  timeout_error: '&4Login timeout exceeded, you have been kicked from the server, please try again!'
+  command_usage: '&a&lNAJURS &8» &cUse: &e/login <password>'
+  wrong_password: '&a&lNAJURS &8» &cWrong password. Try again. Forgot it? Ask najurs to reset it.'
+  success: '&a&lNAJURS &8» &aLogged in. Have fun! Type &e/menu&a to play.'
+  login_request: '&a&lNAJURS &8» &7Welcome back! Log in with &e/login <password>'
+  timeout_error: '&cYou took too long to log in.
+&7Rejoin and type &e/login <password>&7 (or &e/register&7 if new).'
 
 # Errors
 error:
   unregistered_user: '&cThis user isn''t registered!'
-  denied_command: '&cIn order to use this command you must be authenticated!'
-  denied_chat: '&cIn order to chat you must be authenticated!'
+  denied_command: '&a&lNAJURS &8» &cLog in first: &e/login <password>'
+  denied_chat: '&a&lNAJURS &8» &cLog in first to chat: &e/login <password>'
   not_logged_in: '&cYou''re not logged in!'
   tempban_max_logins: '&cYou have been temporarily banned for failing to log in too many times.'
   max_registration: '&cYou have exceeded the maximum number of registrations (%reg_count/%max_acc %reg_names) for your connection!'
@@ -58,8 +59,8 @@ misc:
   accounts_owned_self: 'You own %count accounts:'
   accounts_owned_other: 'The player %name has %count accounts:'
   account_not_activated: '&cYour account isn''t activated yet, please check your emails!'
-  password_changed: '&2Password changed successfully!'
-  logout: '&2Logged out successfully!'
+  password_changed: '&a&lNAJURS &8» &aPassword changed.'
+  logout: '&a&lNAJURS &8» &7Logged out.'
   reload: '&2Configuration and database have been reloaded correctly!'
   usage_change_password: '&cUsage: /changepassword <oldPassword> <newPassword>'
 
@@ -152,7 +153,7 @@ two_factor:
 # Dialog UI
 dialog:
   login:
-    title: '&6Login'
+    title: '&a&lNAJURS NETWORK &8- &fLogin'
     body: '&7Please enter your password to continue.'
     password: '&fPassword'
     recovery_email: '&fRecovery Email (optional)'
@@ -160,8 +161,8 @@ dialog:
     button: '&aLogin'
     canceled: '&cYou have canceled the login.'
   register:
-    title: '&6Register'
-    body: '&7Create an account to start playing on this server.'
+    title: '&a&lNAJURS NETWORK &8- &fRegister'
+    body: '&7Pick a password (8+ characters) and remember it.'
     password: '&fPassword'
     confirm_password: '&fConfirm Password'
     email: '&fEmail'

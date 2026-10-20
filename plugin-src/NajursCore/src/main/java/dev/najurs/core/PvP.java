@@ -28,6 +28,7 @@ final class PvP implements Listener {
     private final Map<UUID, Long> lastHitAt = new HashMap<>();
     private final Map<String, Integer> streak = new HashMap<>();   // "<mode>:<uuid>" -> current streak
     private final Set<String> dirtyBoards = new HashSet<>();
+    private final Map<UUID, Long> shielded = new HashMap<>();   // spawn protection: uuid -> expiry millis
 
     PvP(NajursCore plugin) { this.plugin = plugin; }
 
@@ -88,6 +89,8 @@ final class PvP implements Listener {
         feed(m.colour() + "⚔ " + ChatColor.WHITE + killer.getName() + ChatColor.GRAY + " " + how + " " + ChatColor.WHITE + victim.getName()
                 + ChatColor.DARK_GRAY + " [" + m.title() + "]" + (s > 1 ? ChatColor.GOLD + " " + s + " streak" : ""));
         killer.playSound(killer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1.2f);
+        killer.sendActionBar(ChatColor.GREEN + "+1 kill " + ChatColor.GRAY + "(" + victim.getName() + ")" + (s > 1 ? ChatColor.GOLD + "  streak " + s : ""));
+        victim.sendMessage(ChatColor.GRAY + killer.getName() + " had " + ChatColor.RED + String.format("%.1f", killer.getHealth() / 2) + "❤" + ChatColor.GRAY + " left.");
         if (s == 3 || s == 5 || s == 10 || s % 15 == 0)
             Bukkit.broadcastMessage(ChatColor.GOLD + "✹ " + ChatColor.WHITE + killer.getName() + ChatColor.YELLOW + " is on a "
                     + ChatColor.RED + ChatColor.BOLD + s + " kill streak" + ChatColor.YELLOW + " in " + m.title() + "!");
@@ -106,7 +109,21 @@ final class PvP implements Listener {
     /** Totals across every PvP mode, for the hub sidebar and leaderboard wall. */
     int total(UUID id, String stat) { int t = 0; for (Mode m : modes) t += stat(m, id, stat); return t; }
 
+    /** Spawn protection: no damage taken or dealt for `ms` (void still counts). */
+    void protect(Player p, long ms) { shielded.put(p.getUniqueId(), System.currentTimeMillis() + ms); }
+    boolean shielded(Player p) { return shielded.getOrDefault(p.getUniqueId(), 0L) > System.currentTimeMillis(); }
+
     // ---------- events ----------
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onProtect(org.bukkit.event.entity.EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player v && v.getWorld().getName().equals(WORLD) && e.getCause() != org.bukkit.event.entity.EntityDamageEvent.DamageCause.VOID) {
+            if (shielded(v)) { e.setCancelled(true); return; }
+            Entity d = e instanceof EntityDamageByEntityEvent ed ? ed.getDamager() : null;
+            Player a = d instanceof Player x ? x : d instanceof Projectile pr && pr.getShooter() instanceof Player x ? x : null;
+            if (a != null && shielded(a)) { e.setCancelled(true); a.sendActionBar(ChatColor.YELLOW + "Spawn protection - you can't hit yet"); }
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHit(EntityDamageByEntityEvent e) {
@@ -138,8 +155,10 @@ final class PvP implements Listener {
                feed(m.colour() + "☠ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " fell off" + ChatColor.DARK_GRAY + " [" + m.title() + "]"); }
         lastHitter.remove(p.getUniqueId());
         p.setFallDistance(0);
+        p.setFireTicks(0);
         p.setVelocity(new org.bukkit.util.Vector());
         p.teleport(m.spawn());
+        protect(p, 3000);
     }
 
     private void spleefFall(Mode m, Player p, Player k) {
@@ -173,7 +192,7 @@ final class PvP implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) { lastHitter.remove(e.getPlayer().getUniqueId()); }
+    public void onQuit(PlayerQuitEvent e) { lastHitter.remove(e.getPlayer().getUniqueId()); shielded.remove(e.getPlayer().getUniqueId()); }
 
     // ---------- display ----------
 

@@ -19,8 +19,8 @@ commands:
     name: duels
     aliases: [ds]
   kit:
-    name: kit
-    aliases: [dkit]
+    name: dkit
+    aliases: [dkits]
   customkits:
     name: customkits
     aliases: [customkit, ckit, ckits]

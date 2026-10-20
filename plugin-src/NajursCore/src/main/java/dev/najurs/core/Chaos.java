@@ -4,6 +4,8 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -79,12 +81,15 @@ final class Chaos implements org.bukkit.event.Listener {
 
     static final Set<String> GOOD = Set.of("OP GIFT", "FEAST", "SPEED PARTY", "XP SHOWER", "MOON JUMP", "SHEEP DISCO", "ITEM STORM");
     private final Map<String, Integer> waves = new HashMap<>();
+    private final Map<String, org.bukkit.boss.BossBar> bars = new HashMap<>();   // wave countdown per world
+    private final Set<UUID> beatRecord = new HashSet<>();                        // already told this run
 
     @org.bukkit.event.EventHandler
     public void onDeath(org.bukkit.event.entity.PlayerDeathEvent e) {
         Player p = e.getEntity();
         if (!plugin.hasFlag(p.getWorld(), "chaos")) return;
         int n = waves.getOrDefault(p.getWorld().getName(), 0);
+        beatRecord.remove(p.getUniqueId());
         for (Player o : p.getWorld().getPlayers()) o.sendMessage(ChatColor.DARK_RED + "☠ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " was taken by the goose on wave " + ChatColor.YELLOW + n
                 + ChatColor.GRAY + " (record " + plugin.data.getInt("goose.best." + p.getUniqueId()) + ")");
     }
@@ -95,9 +100,9 @@ final class Chaos implements org.bukkit.event.Listener {
     private void tick() {
         long now = System.currentTimeMillis();
         for (World w : Bukkit.getWorlds()) {
-            if (!plugin.hasFlag(w, "chaos")) continue;
+            if (!plugin.hasFlag(w, "chaos")) { dropBar(w.getName()); continue; }
             List<Player> players = w.getPlayers().stream().filter(p -> p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE).toList();
-            if (players.isEmpty() && w.getPlayers().stream().noneMatch(p -> watching.containsKey(p.getUniqueId()))) { nextAt.remove(w.getName()); waves.remove(w.getName()); continue; }   // empty world: next run starts at wave 1
+            if (players.isEmpty() && w.getPlayers().stream().noneMatch(p -> watching.containsKey(p.getUniqueId()))) { nextAt.remove(w.getName()); waves.remove(w.getName()); dropBar(w.getName()); continue; }   // empty world: next run starts at wave 1
             for (Player p : players) {
                 // you can survive a lot, but not forever: everything is designed to wear you down slowly
                 p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 1, false, false, true));
@@ -105,13 +110,19 @@ final class Chaos implements org.bukkit.event.Listener {
             }
             long due = nextAt.computeIfAbsent(w.getName(), k -> now + 30_000);
             long left = (due - now + 999) / 1000;
+            int every = Math.max(10, plugin.getConfig().getInt("chaos-wave-seconds", 25));
+            org.bukkit.boss.BossBar bar = bars.computeIfAbsent(w.getName(), k -> Bukkit.createBossBar("", BarColor.RED, BarStyle.SOLID));
+            bar.setTitle(ChatColor.RED + "" + ChatColor.BOLD + "GOOSE CHASE" + ChatColor.GRAY + "  wave " + ChatColor.WHITE + (waves.getOrDefault(w.getName(), 0) + 1) + ChatColor.GRAY + " in " + ChatColor.WHITE + left + "s");
+            bar.setProgress(Math.max(0, Math.min(1, (due - now) / (every * 1000.0))));
+            for (Player p : new ArrayList<>(bar.getPlayers())) if (p.getWorld() != w) bar.removePlayer(p);   // moved to the nether/end: that dimension has its own bar
+            for (Player p : w.getPlayers()) bar.addPlayer(p);
             if (left <= 5 && left >= 1)
                 for (Player p : players) {
                     p.sendActionBar(ChatColor.RED + "" + ChatColor.BOLD + "⚠ CHAOS WAVE IN " + left + " ⚠");
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, 1f, 0.5f + (5 - left) * 0.2f);
                 }
             if (now < due) continue;
-            nextAt.put(w.getName(), now + 1000L * Math.max(10, plugin.getConfig().getInt("chaos-wave-seconds", 25)));
+            nextAt.put(w.getName(), now + 1000L * every);
             wave(w, players);
         }
     }
@@ -121,7 +132,9 @@ final class Chaos implements org.bukkit.event.Listener {
         int n = waves.merge(w.getName(), 1, Integer::sum);
         for (Player p : players) { // best wave reached, for the Hall of Fame
             String path = "goose.best." + p.getUniqueId();
-            if (n > plugin.data.getInt(path)) { plugin.data.set(path, n); plugin.data.set("names." + p.getUniqueId(), p.getName()); }
+            int old = plugin.data.getInt(path);
+            if (old > 0 && n > old && beatRecord.add(p.getUniqueId())) p.sendMessage(ChatColor.GOLD + "★ New personal best! " + ChatColor.GRAY + "You passed your record of wave " + old + ".");
+            if (n > old) { plugin.data.set(path, n); plugin.data.set("names." + p.getUniqueId(), p.getName()); }
         }
         int count = Math.min(3 + (n - 1) / 5, 6);
         List<Event> bad = new ArrayList<>(events.stream().filter(e -> !GOOD.contains(e.name())).toList());
@@ -165,18 +178,43 @@ final class Chaos implements org.bukkit.event.Listener {
         later(secs * 20, () -> endVision(p));
     }
 
-    void endVision(Player p) {
+    void endVision(Player p) { endVision(p, true); }
+
+    void endVision(Player p, boolean back) {
         Object[] v = watching.remove(p.getUniqueId());
         if (v == null) return;
         ((Entity) v[2]).remove();
         if (!p.isOnline()) return;
         p.setSpectatorTarget(null);
-        p.teleport((Location) v[0]);
+        if (back) p.teleport((Location) v[0]);
         p.setGameMode((GameMode) v[1]);
     }
 
     @org.bukkit.event.EventHandler
-    public void onQuit(org.bukkit.event.player.PlayerQuitEvent e) { endVision(e.getPlayer()); e.getPlayer().setWorldBorder(null); }
+    public void onQuit(org.bukkit.event.player.PlayerQuitEvent e) {
+        endVision(e.getPlayer()); e.getPlayer().setWorldBorder(null); beatRecord.remove(e.getPlayer().getUniqueId());
+        bars.values().forEach(b -> b.removePlayer(e.getPlayer()));
+    }
+
+    /** Leaving Goose Chase: no lingering screen effects, potions, size or bossbar; arriving: how to play. */
+    @org.bukkit.event.EventHandler
+    public void onWorld(org.bukkit.event.player.PlayerChangedWorldEvent e) {
+        Player p = e.getPlayer();
+        boolean was = plugin.hasFlag(e.getFrom(), "chaos"), now = plugin.hasFlag(p.getWorld(), "chaos");
+        if (was && !now) {
+            endVision(p, false);
+            p.setWorldBorder(null); p.setVisualFire(false); p.setFreezeTicks(0);
+            p.getActivePotionEffects().forEach(x -> p.removePotionEffect(x.getType()));
+            if (!plugin.hasFlag(p.getWorld(), "mobmorph")) Morph.setScale(p, 1.0);
+            bars.values().forEach(b -> b.removePlayer(p));
+            beatRecord.remove(p.getUniqueId());
+        } else if (now && !was) {
+            p.sendMessage(ChatColor.GOLD + "⚡ Goose Chase: " + ChatColor.GRAY + "a wave of chaos hits every " + Math.max(10, plugin.getConfig().getInt("chaos-wave-seconds", 25))
+                    + "s and gets bigger. Survive as long as you can - your record is wave " + ChatColor.WHITE + plugin.data.getInt("goose.best." + p.getUniqueId()) + ChatColor.GRAY + ".");
+        }
+    }
+
+    private void dropBar(String world) { org.bukkit.boss.BossBar b = bars.remove(world); if (b != null) b.removeAll(); }
 
     /** Spectators can't leave the mob early (sneaking would). */
     @org.bukkit.event.EventHandler

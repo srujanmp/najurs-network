@@ -68,6 +68,7 @@ public final class NajursCore extends JavaPlugin implements Listener {
     Morph morph;
     Dashboard dashboard;
     Hub hub;
+    Social social;
     Parkour parkour;
     PvP pvp;
     Match match;
@@ -103,6 +104,8 @@ public final class NajursCore extends JavaPlugin implements Listener {
         dialogs = new Dialogs(this);
         getServer().getPluginManager().registerEvents(this, this);
         hub = new Hub(this);
+        social = new Social(this);
+        getServer().getPluginManager().registerEvents(social, this);
         parkour = new Parkour(this);
         getServer().getPluginManager().registerEvents(hub, this);
         getServer().getPluginManager().registerEvents(parkour, this);
@@ -128,7 +131,6 @@ public final class NajursCore extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(morph, this);
         getServer().getPluginManager().registerEvents(dashboard, this);
         Chaos chaos = new Chaos(this); chaos.start(); getServer().getPluginManager().registerEvents(chaos, this);
-        getServer().getScheduler().runTaskTimer(this, morph::tick, 20L * 10, 20L * 60);
         getServer().getScheduler().runTaskTimer(this, this::saveData, 20L * 300, 20L * 300);
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) new Expansion(this).register();
     }
@@ -282,6 +284,7 @@ public final class NajursCore extends JavaPlugin implements Listener {
             if (s instanceof Player p && p.hasPermission("najurs.admin")) dialogs.dashboard(p);
             return true;
         }
+        if (cmd.getName().equals("join")) { if (s instanceof Player p) social.join(p, a); return true; }
         if (cmd.getName().equals("play")) { if (s instanceof Player p) dialogs.main(p); return true; }
         if (cmd.getName().equals("nightfall")) {
             if (s instanceof Player p) { if (a.length > 0 && p.hasPermission("najurs.admin")) nightfall.admin(p, a[0].toLowerCase(Locale.ROOT)); else nightfall.join(p); }
@@ -300,8 +303,9 @@ public final class NajursCore extends JavaPlugin implements Listener {
         }
         if (cmd.getName().equals("go")) {
             if (!(s instanceof Player p)) return true;
-            if (a.length != 1) { p.sendMessage(ChatColor.RED + "/go <world>"); return true; }
+            if (a.length != 1) { dialogs.main(p); p.sendMessage(ChatColor.GRAY + "Usage: /go <world|game>  (tab shows the options)"); return true; }
             String dest = a[0].toLowerCase(Locale.ROOT);
+            if (dest.equals("hub") || dest.equals("lobby")) { p.performCommand("hub"); return true; } // leaves games properly
             if (dest.equals("arena") || dest.equals("colosseum")) { match.join(p, "colosseum"); return true; }
             if (dest.equals("sumo") || dest.equals("spleef") || dest.equals("teams")) { match.join(p, dest); return true; }
             if (dest.equals("nightfall") || dest.equals("horror")) { nightfall.join(p); return true; }
@@ -313,8 +317,8 @@ public final class NajursCore extends JavaPlugin implements Listener {
                 p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1.2f);
                 return true;
             }
-            if (!worlds().isConfigurationSection(a[0]) && !REMEMBERED.contains(a[0])) { p.sendMessage(ChatColor.RED + "Unknown world " + a[0]); return true; }
-            go(p, a[0]);
+            if (!worlds().isConfigurationSection(dest) && !REMEMBERED.contains(dest)) { p.sendMessage(ChatColor.RED + "Unknown world " + a[0] + ChatColor.GRAY + ". Try " + ChatColor.AQUA + "/play" + ChatColor.GRAY + " or press Tab after /go."); return true; }
+            go(p, dest);
             return true;
         }
         if (a.length == 0) {
@@ -323,8 +327,8 @@ public final class NajursCore extends JavaPlugin implements Listener {
         }
         String sub = a[0].toLowerCase(Locale.ROOT);
         if (sub.equals("list")) { list(s); return true; }
-        if (sub.equals("join") && a.length >= 2 && s instanceof Player p) { join(p, a[1]); return true; }
-        if (!s.hasPermission("najurs.admin")) { s.sendMessage(ChatColor.RED + "Only the owner can manage worlds."); return true; }
+        if (sub.equals("join") && s instanceof Player p) { if (a.length >= 2) join(p, a[1]); else p.performCommand("worlds"); return true; }
+        if (!s.hasPermission("najurs.admin")) { s.sendMessage(ChatColor.RED + "Only the owner can manage worlds. " + ChatColor.GRAY + "Use /worlds to pick one, or /worlds join <id>."); return true; }
         switch (sub) {
             case "create" -> create(s, a);
             case "reload" -> { reloadConfig(); s.sendMessage(ChatColor.GREEN + "NajursCore config reloaded."); }
@@ -392,8 +396,11 @@ public final class NajursCore extends JavaPlugin implements Listener {
 
     @Override
     public List<String> onTabComplete(CommandSender s, Command cmd, String label, String[] a) {
+        if (cmd.getName().equals("join")) return a.length == 1 && s instanceof Player p ? social.others(p).stream().map(Player::getName).toList() : List.of();
+        if (!cmd.getName().equals("worlds") && !cmd.getName().equals("send") && !cmd.getName().equals("go")) return List.of();
         if (cmd.getName().equals("send")) return a.length == 1 ? Stream.concat(Stream.of("all"), Bukkit.getOnlinePlayers().stream().map(Player::getName)).toList() : List.of();
         if (cmd.getName().equals("go")) return a.length == 1 ? Stream.of(worlds().getKeys(false).stream(), REMEMBERED.stream(), SPOTS.keySet().stream(), Stream.of("teams", "nightfall")).flatMap(x -> x).toList() : List.of();
+        if (!s.hasPermission("najurs.admin")) return a.length == 1 ? List.of("list", "join") : a.length == 2 && a[0].equals("join") ? new ArrayList<>(worlds().getKeys(false)) : List.of();
         if (a.length == 1) return List.of("create", "manage", "delete", "reset", "sendall", "rename", "flag", "list", "join");
         if (a[0].equals("reset") && a.length >= 3) return List.of("newseed", "confirm");
         if (a.length == 2 && !a[0].equals("create")) return new ArrayList<>(worlds().getKeys(false));
@@ -411,7 +418,8 @@ public final class NajursCore extends JavaPlugin implements Listener {
     }
 
     void join(Player p, String id) {
-        if (!worlds().isConfigurationSection(id)) { p.sendMessage(ChatColor.RED + "No world " + id); return; }
+        id = id.toLowerCase(Locale.ROOT);
+        if (!worlds().isConfigurationSection(id)) { p.sendMessage(ChatColor.RED + "No world " + id + ChatColor.GRAY + ". See /worlds list."); return; }
         go(p, id);
     }
 
@@ -599,7 +607,7 @@ public final class NajursCore extends JavaPlugin implements Listener {
         inv.setItem(11, icon(Material.NAME_TAG, "&eRename", "&7Type: &f/worlds rename " + id + " <new name>"));
         inv.setItem(12, icon(Material.CHEST, "&6Random Drops: " + (flags.contains("randomdrops") ? "&aON" : "&cOFF"), "&7Click to toggle"));
         inv.setItem(13, icon(Material.CREEPER_HEAD, "&2Mob Morph: " + (flags.contains("mobmorph") ? "&aON" : "&cOFF"), "&7Click to toggle"));
-        inv.setItem(15, icon(Material.TNT, "&cGoose Chase: " + (flags.contains("chaos") ? "&aON" : "&cOFF"), "&7Random events every minute", "&7Click to toggle"));
+        inv.setItem(15, icon(Material.TNT, "&cGoose Chase: " + (flags.contains("chaos") ? "&aON" : "&cOFF"), "&7Random events every wave", "&7Click to toggle"));
         inv.setItem(16, icon(Material.LAVA_BUCKET, "&c&lDelete world", "&7Permanently deletes the world,", "&7its nether, end and inventories.", "&cClick, then confirm"));
         inv.setItem(20, icon(Material.LIGHTNING_ROD, "&e&lPull everyone here", "&7Sends every online player", "&7into this world now."));
         inv.setItem(22, icon(Material.RECOVERY_COMPASS, "&6&lReset (same seed)", "&7Fresh copy of the same map.", "&7Wipes blocks, inventories, homes.", "&cClick, then confirm"));

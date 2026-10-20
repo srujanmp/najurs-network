@@ -26,7 +26,31 @@ final class Hub implements Listener {
     Hub(NajursCore plugin) {
         this.plugin = plugin;
         this.key = new NamespacedKey(plugin, "hub_item");
+        Bukkit.getScheduler().runTaskTimer(plugin, this::trails, 20L, 3L);
     }
+
+    private final Map<UUID, Location> lastTrail = new HashMap<>();
+
+    boolean trailOn(Player p) { return plugin.data.getBoolean("trail." + p.getUniqueId()); }
+
+    ItemStack trailItem(Player p) {
+        return item(trailOn(p) ? Material.BLAZE_POWDER : Material.GUNPOWDER, "trail", trailOn(p) ? "&dParticle trail: &aOn" : "&dParticle trail: &cOff", "&7Right-click to toggle (hub only).");
+    }
+
+    /** Sparkles behind moving players who switched the trail on; only runs for the hub world. */
+    void trails() {
+        World w = Bukkit.getWorld(LOBBY);
+        if (w == null) return;
+        for (Player p : w.getPlayers()) {
+            if (!trailOn(p)) continue;
+            Location l = p.getLocation(), prev = lastTrail.put(p.getUniqueId(), l.clone());
+            if (prev != null && prev.getWorld() == w && prev.distanceSquared(l) > 0.01 && p.getGameMode() != GameMode.SPECTATOR)
+                w.spawnParticle(Particle.END_ROD, l.add(0, 0.1, 0), 2, 0.15, 0.05, 0.15, 0.01);
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) { hidingPlayers.remove(e.getPlayer().getUniqueId()); lastTrail.remove(e.getPlayer().getUniqueId()); }
 
     static boolean inHub(Player p) { return p.getWorld().getName().equals(LOBBY); }
 
@@ -51,8 +75,10 @@ final class Hub implements Listener {
         var inv = p.getInventory();
         inv.clear();
         inv.setItem(0, item(Material.COMPASS, "menu", "&a&lGame Menu &7(right-click)", "&7Every game on the server."));
-        inv.setItem(2, item(Material.GRASS_BLOCK, "worlds", "&2&lSurvival Worlds &7(right-click)", "&7Vanilla, Random Drops, Mob Morph,", "&7Stalker Nights, Goose Chase..."));
-        inv.setItem(4, item(Material.TNT, "goose", "&6&lGoose Chase &7(right-click)", "&7Survival where random chaos", "&7happens every minute."));
+        inv.setItem(1, item(Material.SPYGLASS, "friends", "&b&lJoin a Friend &7(right-click)", "&7Jump into what a friend is playing."));
+        inv.setItem(5, trailItem(p));
+        inv.setItem(2, item(Material.GRASS_BLOCK, "worlds", "&2&lSurvival Worlds &7(right-click)", "&7Vanilla, Random Drops, Mob Morph,", "&7co-op worlds and more."));
+        inv.setItem(4, item(Material.TNT, "goose", "&6&lGoose Chase &7(right-click)", "&7Survival where random chaos", "&7strikes every few seconds."));
         inv.setItem(6, item(Material.FEATHER, "parkour", "&f&lHub Parkour &7(right-click)", "&7Sky course with checkpoints."));
         inv.setItem(8, item(hidingPlayers.contains(p.getUniqueId()) ? Material.GRAY_DYE : Material.LIME_DYE, "visibility",
                 hidingPlayers.contains(p.getUniqueId()) ? "&7Players: &cHidden" : "&7Players: &aVisible", "&7Right-click to toggle."));
@@ -77,17 +103,10 @@ final class Hub implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        boolean first = !p.hasPlayedBefore();
         later(5, () -> {
             if (!p.isOnline()) return;
             giveHotbar(p);
             for (UUID id : hidingPlayers) { Player h = Bukkit.getPlayer(id); if (h != null) h.hidePlayer(plugin, p); }
-            p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "NAJURS " + ChatColor.AQUA + ChatColor.BOLD + "NETWORK",
-                    ChatColor.GRAY + "Right-click the compass to play", 10, 60, 15);
-            p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.8f, 1.2f);
-            p.playSound(p.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1f, 0.8f);
-            if (first) Bukkit.broadcastMessage(ChatColor.GOLD + "✦ " + ChatColor.YELLOW + "Welcome " + ChatColor.WHITE + p.getName()
-                    + ChatColor.YELLOW + " to NAJURS NETWORK for the first time!");
         });
     }
 
@@ -121,12 +140,18 @@ final class Hub implements Listener {
         Player p = e.getPlayer();
         p.playSound(p.getLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1.3f);
         switch (a) {
-            case "menu" -> p.chat("/menu"); // DeluxeMenus open commands only fire from real chat
+            case "menu" -> p.performCommand("play");
             case "pkcp" -> plugin.parkour.back(p);
             case "pkrestart" -> plugin.parkour.restart(p);
             case "pkquit" -> { plugin.parkour.quit(p); giveHotbar(p); p.teleport(p.getWorld().getSpawnLocation().add(0.5, 0, 0.5)); }
             case "dashboard" -> { if (p.hasPermission("najurs.admin")) plugin.dialogs.dashboard(p); }
             case "worlds" -> p.performCommand("worlds");
+            case "friends" -> p.performCommand("join");
+            case "trail" -> {
+                plugin.data.set("trail." + p.getUniqueId(), !trailOn(p));
+                p.getInventory().setItem(5, trailItem(p));
+                p.sendActionBar(trailOn(p) ? ChatColor.LIGHT_PURPLE + "Particle trail on" : ChatColor.GRAY + "Particle trail off");
+            }
             case "goose" -> p.performCommand("go sw_goose_chase");
             case "parkour" -> p.performCommand("go parkour");
             case "visibility" -> {

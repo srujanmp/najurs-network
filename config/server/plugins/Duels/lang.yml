@@ -28,7 +28,7 @@ GENERAL:
 
 
 ERROR:
-  no-permission: '{PREFIX} &cNope! You are lacking the following permission: ''%permission%'''
+  no-permission: '{PREFIX} &cNot available yet. For 1v1s use &e/pvp&c or &e/menu&c.'
   data:
     load-failure: '{PREFIX} &cCould not load your duel stats. Please try re-logging.'
     not-loaded: '{PREFIX} &cUsers are still under load, please try again later.'

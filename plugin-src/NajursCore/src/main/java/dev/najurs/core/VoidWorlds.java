@@ -49,7 +49,47 @@ final class VoidWorlds implements Listener {
     static EntityType[] e(String... n) { return Arrays.stream(n).map(EntityType::valueOf).toArray(EntityType[]::new); }
 
     private final NajursCore plugin;
+    private final Map<String, org.bukkit.boss.BossBar> bars = new HashMap<>();   // OneBlock phase bar per world
     VoidWorlds(NajursCore plugin) { this.plugin = plugin; }
+
+    /** Phase name + progress to the next phase / treasure chest. */
+    void updateBar(String id, World w) {
+        int n = plugin.worlds().getInt(id + ".count");
+        Phase p = phase(n);
+        boolean last = n / PER_PHASE >= PHASES.size() - 1;
+        org.bukkit.boss.BossBar b = bars.computeIfAbsent(id, k -> Bukkit.createBossBar("", org.bukkit.boss.BarColor.GREEN, org.bukkit.boss.BarStyle.SEGMENTED_10));
+        b.setTitle(p.colour() + "" + ChatColor.BOLD + p.name() + ChatColor.GRAY + "  block " + ChatColor.WHITE + (last ? n : n % PER_PHASE + "/" + PER_PHASE) + ChatColor.GRAY + "  treasure in " + ChatColor.WHITE + (25 - n % 25));
+        b.setProgress(last ? 1 : (n % PER_PHASE) / (double) PER_PHASE);
+        for (Player x : w.getPlayers()) b.addPlayer(x);
+    }
+
+    @EventHandler
+    public void onWorld(org.bukkit.event.player.PlayerChangedWorldEvent e) {
+        Player p = e.getPlayer();
+        bars.values().forEach(b -> b.removePlayer(p));
+        String id = plugin.managedId(p.getWorld());
+        if (id == null || !isVoid(id) || !p.getWorld().getName().equals(id)) return;
+        boolean one = type(id).equals("oneblock");
+        if (one) updateBar(id, p.getWorld());
+        String seen = "coop.seen." + p.getUniqueId() + "." + id;
+        if (plugin.data.getBoolean(seen)) return;
+        plugin.data.set(seen, true);
+        p.sendMessage(ChatColor.GOLD + "✦ Co-op island: " + ChatColor.GRAY + "everyone shares this one island, so work together. "
+                + (one ? "Break the " + ChatColor.WHITE + "magic block" + ChatColor.GRAY + " in the middle again and again: it turns into the next block, a new phase starts every " + PER_PHASE + " blocks, and every 25th is a treasure chest. Drops go straight to you."
+                       : "Use the chest, grow a tree, build out. Falling off sends you back to the island. Don't lose the lava bucket!"));
+        p.sendTitle(ChatColor.GOLD + "" + ChatColor.BOLD + (one ? "ONEBLOCK" : "SKYBLOCK"), ChatColor.GRAY + (one ? "Break the block in the middle" : "Build up from your island"), 10, 60, 10);
+    }
+
+    @EventHandler
+    public void onQuit(org.bukkit.event.player.PlayerQuitEvent e) { bars.values().forEach(b -> b.removePlayer(e.getPlayer())); }
+
+    /** Falling into the void respawns you on the island, not in the hub (unless you have a bed). */
+    @EventHandler
+    public void onRespawn(org.bukkit.event.player.PlayerRespawnEvent e) {
+        World w = e.getPlayer().getWorld();
+        String id = plugin.managedId(w);
+        if (id != null && isVoid(id) && w.getName().equals(id) && !e.isBedSpawn() && !e.isAnchorSpawn()) e.setRespawnLocation(w.getSpawnLocation());
+    }
 
     String type(String id) { return plugin.worlds().getString(id + ".type", "normal"); }
     boolean isVoid(String id) { return TYPES.contains(type(id)); }
@@ -131,7 +171,7 @@ final class VoidWorlds implements Listener {
                 x.sendTitle(p.colour() + "" + ChatColor.BOLD + p.name(), ChatColor.GRAY + "New OneBlock phase!", 5, 50, 10);
                 x.playSound(x.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1f);
             }
-            for (Player x : b.getWorld().getPlayers()) x.sendActionBar(p.colour() + p.name() + ChatColor.GRAY + "  block " + n + "  •  next phase in " + (PER_PHASE - n % PER_PHASE));
+            updateBar(id, b.getWorld());
         });
     }
 }
