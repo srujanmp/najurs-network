@@ -1,0 +1,260 @@
+
+#   ┌─────────┐
+#───┘ General └──────────────────────────────────────────────────────────────────────────────────────────
+
+# Notify plugin admins of new updates (requires hs.debug permission)
+checkForUpdates: true
+# Allow players to drop their items mid-game
+dropItems: false
+# Where the plugin will state the length of time in seconds left to hide.
+# Below you can set CHAT, ACTIONBAR, or TITLE. Any invalid option will revert to CHAT.
+countdownDisplay: CHAT
+# Allow Hiders to see everyone's nametags. Seeker can never see nametags.
+nametagsVisible: false
+# Require players to have permissions to run commands
+permissionsRequired: true
+# Amount of initial seekers when the game starts, minimum of 1
+startingSeekerCount: 1
+# If enabled, a HIDER will join the SPECTATOR team on death instead of the SEEKER team.
+respawnAsSpectator: false
+# Along with a chat message, display a title describing the game over
+gameOverTitle: true
+# Configure items given to spectators
+spectatorItems:
+  flight:
+    name: "&bToggle Flight"
+    material: "FEATHER"
+    lore: ["Turns flying on and off"]
+    enchantments: {}
+    slot: 6
+  teleport:
+    name: "&bTeleport to Others"
+    material: "COMPASS"
+    lore: ["Allows you to teleport to all other players in game"]
+    enchantments: {}
+    slot: 3
+# Configure the sounds that plays when a seeker is near
+seekerPing:
+  enabled: true
+  # The distances for the volume to change
+  distances:
+    level1: 30
+    level2: 20
+    level3: 10
+  # The sounds that players will hear
+  sounds:
+    # The noise for the heartbeat
+    heartbeatNoise: "BLOCK_NOTE_BLOCK_BASEDRUM"
+    # The noise for the ringing
+    ringingNoise: "BLOCK_NOTE_BLOCK_PLING"
+    leadingVolume: 0.5
+    volume: 0.3
+    pitch: 1.0
+# If to notify a seeker if they revealed a player in block hunt
+blockHuntNotify: true
+# For developers
+debug: false
+
+#   ┌────────┐
+#───┘ Timing └───────────────────────────────────────────────────────────────────────────────────────────
+
+# How long in seconds will the game last, set to 0 to make game length infinite
+gameLength: 1200
+# How long in seconds will the initial hiding period last, minimum is 10 seconds
+hidingLength: 30
+# The amount of seconds the game will wait until the players are teleported to the lobby after a game over
+endGameDelay: 5
+# When enabled, seekers will have to wait [delay] seconds until they respawn in after death.
+delayedRespawn:
+  enabled: true
+  # How long do players have to wait in seconds before respawning
+  delay: 5
+
+#   ┌──────────┐
+#───┘ Database └─────────────────────────────────────────────────────────────────────────────────────────
+
+database:
+  # The type of database to store user data in
+  # SQLITE - local file in plugin directory, fine for most small servers
+  # MYSQL - remote sql server running mysql
+  # POSTGRES - remote sql server running postgresql
+  type: SQLITE
+  # The following options are only required for mysql or postgres
+  host: "localhost"
+  port: null
+  username: "postgres"
+  password: "postgres"
+  database: "postgres"
+
+#   ┌───────────┐
+#───┘ Game Mode └────────────────────────────────────────────────────────────────────────────────────────
+
+# Choose the game mode that the plugin will operate under.
+# HIDE_AND_SEEK - Hiders become Seekers when found. See `scoringMode` for win condition.
+# TAG - Seeker swaps with a Hider when they tag someone. Hiders win once the timer runs out.
+gameMode: HIDE_AND_SEEK
+# The scoring mode decides the hider win condition for the HIDE_AND_SEEK game mode.
+# ALL_HIDERS_FOUND - Any hiders left win once the timer runs out wins.
+# LAST_HIDER_WINS - The last hider left wins immediately, or the remaining hiders win when
+#                   the timer runs out.
+scoringMode: ALL_HIDERS_FOUND
+# Trigger a win type of NONE if a player leaving the game triggers a win condition.
+# This can be used as a way to prevent players from quitting to get someone else points.
+dontRewardQuit: true
+
+#   ┌─────┐
+#───┘ PVP └──────────────────────────────────────────────────────────────────────────────────────────────
+
+# If enabled, a seeker must sucessfully kill a hider in pvp to 'find' that hider.
+# If disabled, a single tap by a seeker will mark the hider as found. 
+# Items for pvp may be configured in the items.yml file
+pvp: true
+# Allow players to regen health
+regenHealth: false
+# If pvp is disabled, Hiders and Seekers can no longer take damage from natural causes
+# unless this option is enabled. Such natural causes could be fall damage or projectiles.
+allowNaturalCauses: false
+
+#   ┌───────┐
+#───┘ Lobby └────────────────────────────────────────────────────────────────────────────────────────────
+
+# Players that join the server will automatically be added into a game lobby
+autoJoin: false
+# When players join the world containing the lobby, teleport them to
+# the designated exit position so that they dont spawn in the loby while
+# not in the queue. This setting is ignored when autoJoin is set to true.
+teleportStraysToExit: false
+# How to handle players leaving a game lobby.
+# EXIT - Teleport the player to the designated exit location
+# PROXY - Teleport the player to another server in a bungeecord/velocity network
+leaveType: EXIT
+# The server to teleport to when leaveType is set to PROXY
+leaveServer: "lobby"
+# If to leave the game lobby after a game ends
+leaveOnEnd: false
+# Configure the "waiting for players" per map lobby
+lobby:
+  # Time in seconds the lobby waits until the game starts. Set to 0 to disable
+  countdown: 30
+  # Player threshold to speed up the countdown to 10 seconds. Set to 0 to disable
+  changeCountdown: 5
+  # Minimum amount of players required to start the countdown
+  min: 2
+  # Maximum amount of players allowed in a lobby
+  max: 10
+  # Item to leave the lobby
+  leaveItem:
+    name: "&c Leave Lobby"
+    material: "BED"
+    lore: ["Go back to server hub"]
+    enchantments: {}
+    slot: 0
+  # Admin item to force start the game
+  startItem:
+    name: "&bStart Game"
+    material: "CLOCK"
+    lore: []
+    enchantments: {}
+    slot: 8
+# Restore the players previously cleared inventory after leaving the game lobby
+saveInventory: false
+# Restore the players previously active score board after leaving the game lobby
+saveScoreBoard: true
+
+#   ┌────────┐
+#───┘ Events └───────────────────────────────────────────────────────────────────────────────────────────
+
+# Taunt event
+taunt:
+  enabled: true
+  # The delay in seconds between taunts, minimum is 60 seconds
+  delay: 360
+  # If enabled, taunts will be disabled if there is only a single hider left
+  disableForLastHider: false
+  # Allow seekers to see the time till next taunt, not just hiders
+  showCountdown: true
+
+#   ┌───────────┐
+#───┘ Power-ups └────────────────────────────────────────────────────────────────────────────────────────
+
+# Glow power-up
+glow:
+  enabled: true
+  # The length in seconds that the power-up lasts
+  time: 30
+  # Allows multiple uses of the power-up to stack the duration
+  stackable: true
+  # The config for the power-up item
+  item:
+    name: "Glow Power-up"
+    material: "SNOWBALL"
+    lore:
+      - "Throw to make all seekers glow"
+      - "Last 30s, all hiders can see it"
+      - "Time stacks on multi use"
+    enchantments: {}
+    slot: null
+# Instead of having a glow power-up, always make seekers' position's known to hiders at all times.
+alwaysGlow: false
+
+#   ┌─────────────┐
+#───┘ Protections └──────────────────────────────────────────────────────────────────────────────────────
+
+# When enabled, the plugin will duplicate the hide and seek map to protect the
+# original from changes during a game. It is highly recommended that you keep this
+# to true unless you have other means of protecting your hide-and-seek map.
+mapSaveEnabled: true
+# Block these commands for players in a game. Good for blocking communication
+blockedCommands:
+  - "msg"
+  - "reply"
+  - "me"
+  - "kill"
+  - "back"
+  - "tpa"
+  - "tpahere"
+  - "tpaccept"
+  - "home"
+  - "sethome"
+  - "spawn"
+  - "warp"
+  - "go"
+  - "worlds"
+  - "island"
+  - "ob"
+  - "kit"
+  - "bw"
+  - "infection"
+# Don't allow players to interact with these blocks
+blockedInteracts:
+  - "FURNACE"
+  - "CRAFTING_TABLE"
+  - "ANVIL"
+  - "CHEST"
+  - "BARREL"
+
+#   ┌───────────────┐
+#───┘ Command Hooks └────────────────────────────────────────────────────────────────────────────────────
+
+# Trigger custom commands after game events
+commandHooks:
+  # When enabled, the plugin will execute the commands for each player when the game starts and when it ends
+  enable: false
+  # Commands to execute when the game starts for every player. Use {name} for player name and {uuid} for their UUID
+  onGameStart: [""]
+  # Commands to execute when the game ends for every player on the winning team. Use {name} for player name and {uuid} for their UUID
+  onGameEndWin: [""]
+  # Commands to execute when the game ends for every player on the losing team. Use {name} for player name and {uuid} for their UUID
+  onGameEndLose: [""]
+
+#   ┌────────────────┐
+#───┘ Auto Generated └───────────────────────────────────────────────────────────────────────────────────
+
+# Location where players are teleported to when they run (/hs leave).
+exit:
+  x: 0.5
+  y: 65.0
+  z: 8.5
+  worldName: "world"
+  yaw: 180.0
+  pitch: 0.0

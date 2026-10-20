@@ -1,0 +1,36 @@
+name: NajursCore
+version: 1.0.0
+main: dev.najurs.core.NajursCore
+api-version: '26.3'
+description: Survival world manager, Random Drops, Mob Morph, Horror mode and admin send tools for the NAJURS NETWORK.
+softdepend: [ViaVersion, Multiverse-Core, Multiverse-Inventories, LibsDisguises, PlaceholderAPI, BedWars]
+commands:
+  worlds:
+    description: Open the survival worlds menu, or manage worlds.
+    usage: /worlds [create|reset|sendall|delete|rename|flag|list|join] ...
+    aliases: [sw, smp]
+  go:
+    description: Go to a survival or creative world (your last spot there).
+    usage: /go <world>
+  dashboard:
+    description: Owner dashboard.
+    aliases: [dash]
+    permission: najurs.admin
+  play:
+    description: Open the game menu.
+    aliases: [menu]
+  nightfall:
+    description: Join Nightfall horror games (owner - start|stop|impostor|escape|candles|relics).
+  pvp:
+    description: Open the PvP modes menu.
+  hub:
+    description: Leave the current game or world and return to the hub.
+    aliases: [leave, lobby, exit]
+  send:
+    description: Make players run a command (e.g. join a game).
+    usage: /send <all|player> <command...>
+    permission: najurs.admin
+permissions:
+  najurs.admin:
+    description: Manage worlds and send players.
+    default: op

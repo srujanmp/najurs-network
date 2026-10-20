@@ -1,0 +1,201 @@
+npcs:
+  c2b08636-ab59-44b9-b14d-d75f3a161bb7:
+    name: hub_oneblock
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <yellow><bold>ONEBLOCK</bold></yellow>
+    type: IRON_GOLEM
+    location:
+      world: lobby
+      x: 17.5
+      y: 66.0
+      z: 10.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: yellow
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 0.6
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: false
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: ob
+  c05c82a4-d746-4d82-bc6a-36bc21fc318c:
+    name: hub_arena
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <gold><bold>PVP ARENA</bold></gold>
+    type: PLAYER
+    location:
+      world: lobby
+      x: -16.5
+      y: 66.0
+      z: -9.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: gold
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    equipment:
+      CHEST:
+        ==: org.bukkit.inventory.ItemStack
+        DataVersion: 5023
+        id: minecraft:iron_chestplate
+        count: 1
+        schema_version: 1
+      MAINHAND:
+        ==: org.bukkit.inventory.ItemStack
+        DataVersion: 5023
+        id: minecraft:diamond_sword
+        count: 1
+        schema_version: 1
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: pvp
+  6acdcb0d-99f1-4605-9c55-3ccc2efaeab3:
+    name: hub_skyblock
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <aqua><bold>SKYBLOCK</bold></aqua>
+    type: WANDERING_TRADER
+    location:
+      world: lobby
+      x: 17.5
+      y: 66.0
+      z: -9.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: aqua
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: false
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: island
+  2be4db65-6976-448e-bf00-6085a489ae41:
+    name: hub_survival
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <green><bold>SURVIVAL</bold></green>
+    type: VILLAGER
+    location:
+      world: lobby
+      x: 0.5
+      y: 66.0
+      z: -19.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: green
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: false
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: worlds
+  6c95654c-3909-4e91-b6ab-5b0e2cf0fc5a:
+    name: hub_bedwars
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <red><bold>BEDWARS</bold></red>
+    type: PLAYER
+    location:
+      world: lobby
+      x: 0.5
+      y: 66.0
+      z: 20.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: red
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 1.0
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: true
+    equipment:
+      MAINHAND:
+        ==: org.bukkit.inventory.ItemStack
+        DataVersion: 5023
+        id: minecraft:red_bed
+        count: 1
+        schema_version: 1
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: bwmenu
+  e8a5c150-808c-40d9-80f5-2b87ff1a6625:
+    name: hub_hideseek
+    creator: 00000000-0000-0000-0000-000000000000
+    displayName: <light_purple><bold>HIDE & SEEK</bold></light_purple>
+    type: FOX
+    location:
+      world: lobby
+      x: -16.5
+      y: 66.0
+      z: 10.5
+      yaw: 0.0
+      pitch: 0.0
+    showInTab: false
+    spawnEntity: true
+    collidable: false
+    glowing: true
+    glowingColor: light_purple
+    turnToPlayer: true
+    turnToPlayerDistance: -1
+    interactionCooldown: 2.0
+    scale: 1.8
+    visibility_distance: -1
+    visibility: ALL
+    skin:
+      mirrorSkin: false
+    actions:
+      ANY_CLICK:
+        '1':
+          action: player_command
+          value: hsmenu

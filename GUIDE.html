@@ -1,0 +1,243 @@
+<title>NAJURS Network Handbook</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column like a server wiki; sticky chips jump between sections; each game is a card with its flow as numbered steps. */
+:root {
+  --bg: #f3f6ee; --panel: #ffffff; --ink: #1d2418; --muted: #5c6754; --line: #d6dfcc;
+  --grass: #3f8f2a; --dirt: #8a5a33; --gold: #b7791f; --redstone: #c0392b; --code-bg: #e8eee0;
+  --display: "Pixelify Sans", "Courier New", monospace;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12160f; --panel: #1a2016; --ink: #e6eddc; --muted: #9fac93; --line: #2d3727;
+  --grass: #74c95a; --dirt: #c48a5a; --gold: #e3b04b; --redstone: #ff7a6b; --code-bg: #222b1d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12160f; --panel: #1a2016; --ink: #e6eddc; --muted: #9fac93; --line: #2d3727;
+  --grass: #74c95a; --dirt: #c48a5a; --gold: #e3b04b; --redstone: #ff7a6b; --code-bg: #222b1d; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+.wrap { max-width: 900px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+header.hero { padding-block: 40px 24px; display: grid; gap: 14px; }
+.block { width: 44px; height: 44px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; text-wrap: balance; line-height: 1.15; margin: 0 }
+h1 { font-size: clamp(2rem, 6vw, 3.1rem); letter-spacing: .02em } h1 span { color: var(--grass) }
+h2 { font-size: 1.6rem; margin-top: 8px } h3 { font-size: 1.2rem; font-weight: 500 }
+p { margin: 0; max-width: 70ch } .lede { color: var(--muted); font-size: 1.02rem }
+.addr { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.addr code { font-size: 1.15rem; padding: 8px 12px; background: var(--panel); border: 2px solid var(--grass); border-radius: 4px; }
+button.copy { font: 600 .85rem var(--body); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer }
+button.copy:hover { border-color: var(--grass) }
+button.copy:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px }
+nav.chips { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: flex; gap: 6px; overflow-x: auto; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg) }
+nav.chips a { flex: none; font: 500 .85rem var(--body); color: var(--ink); text-decoration: none; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel) }
+nav.chips a:hover { border-color: var(--grass) }
+section { padding-block: 32px 8px; display: grid; gap: 14px; scroll-margin-top: 64px }
+code { font-family: var(--mono); font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere }
+.games { display: grid; gap: 12px }
+.game { background: var(--panel); border: 1px solid var(--line); border-left: 5px solid var(--c, var(--grass)); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; min-width: 0 }
+.game header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px }
+.game .join { font: 500 .82rem var(--mono); color: var(--muted) }
+.flow { margin: 0; padding-left: 1.3em; display: grid; gap: 3px } .flow li::marker { color: var(--c, var(--grass)); font-weight: 700 }
+.tags { display: flex; flex-wrap: wrap; gap: 6px } .tag { font: 600 .72rem var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px }
+.table { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel) }
+table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: .95rem }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font: 600 .74rem var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted) }
+tr:last-child td { border-bottom: 0 } td:first-child { font-weight: 600; white-space: nowrap }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px; display: grid; gap: 6px; align-content: start; min-width: 0 }
+.card .label { font: 600 .7rem var(--body); text-transform: uppercase; letter-spacing: .1em; color: var(--muted) }
+.note { border-left: 4px solid var(--gold); background: var(--panel); padding: 12px 14px; border-radius: 0 6px 6px 0; display: grid; gap: 6px }
+.map { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px }
+.map svg { display: block; margin: 0 auto; max-width: 100%; height: auto }
+footer { color: var(--muted); font-size: .85rem; padding-top: 32px }
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <svg class="block" viewBox="0 0 8 8" aria-hidden="true"><rect width="8" height="8" fill="var(--dirt)"/><rect width="8" height="3" fill="var(--grass)"/><rect x="1" y="3" width="1" height="1" fill="var(--grass)"/><rect x="5" y="3" width="2" height="1" fill="var(--grass)"/></svg>
+  <h1>NAJURS <span>NETWORK</span></h1>
+  <p class="lede">A private Minecraft 26.3 network for najurs and friends: a sky-island hub, survival worlds with crazy modes, co-op Skyblock and OneBlock, BedWars, Hide &amp; Seek, round-based and team PvP on 10 maps, the Nightfall horror party games, parkour and creative. No mods needed. Newer and older clients can join too.</p>
+  <div class="addr"><code id="addr">103.171.194.249</code><button class="copy" id="copyAddr" type="button">Copy address</button><span class="lede" id="copyMsg" role="status"></span></div>
+</header>
+
+<nav class="chips" aria-label="Sections">
+  <a href="#join">Join</a><a href="#new">What's new</a><a href="#hub">Hub</a><a href="#games">Every game</a><a href="#boards">Leaderboards</a><a href="#owner">Owner tools</a><a href="#commands">Commands</a><a href="#updates">Updates</a><a href="#files">Files</a>
+</nav>
+
+<section id="join">
+  <h2>Join</h2>
+  <ol class="flow">
+    <li>Add server <code>103.171.194.249</code> (any Java launcher, premium or not; 26.3 is best, other versions work through ViaVersion). Up to 10 players.</li>
+    <li>First time: <code>/register password password</code>. After that: <code>/login password</code>.</li>
+    <li>Optional: set your skin with <code>/skin Name</code>.</li>
+    <li>You land in the hub with a title, a sound, and your hotbar. Right-click the compass to play.</li>
+  </ol>
+</section>
+
+<section id="new">
+  <h2>What's new</h2>
+  <div class="grid2">
+    <div class="card"><span class="label">Menus</span><h3>Pop-up windows</h3><p>The compass, <code>/play</code>, <code>/pvp</code>, <code>/worlds</code> and the dashboard open Minecraft's own dialog windows, with live player counts on every button. Older clients get the chest menus instead.</p></div>
+    <div class="card"><span class="label">Horror</span><h3>Nightfall</h3><p>One lobby, a random game every round: The Impostor, Blackout Escape, Soul Candles, Silent Relics. Pitch-black manor, torch light only.</p></div>
+    <div class="card"><span class="label">PvP</span><h3>10 maps + Team Battle</h3><p>A random map and a shared random kit every round. Red vs Blue with automatic team balancing.</p></div>
+    <div class="card"><span class="label">Islands</span><h3>Co-op Skyblock &amp; OneBlock</h3><p>A shared world for everyone, plus your own island with a reset button. Teams up to 10.</p></div>
+    <div class="card"><span class="label">Worlds</span><h3>Create-world form</h3><p>The owner names a world, picks a type, modes and seed in one form. Any number of worlds run side by side.</p></div>
+    <div class="card"><span class="label">Chaos</span><h3>Screen-warping Goose Chase</h3><p>Inverted colours, a red screen, Warden darkness, nausea, freezing, spinning, potion roulette and more.</p></div>
+  </div>
+</section>
+
+<section id="hub">
+  <h2>The hub</h2>
+  <p>A floating sky island with a quartz fountain, cherry trees and a lantern wall. Six glowing NPCs stand on coloured pads around the fountain. Each has a title, a one-line description and its own <strong>Top 3 board</strong>. The <strong>Hall of Fame</strong> stands beside spawn and the Hub Parkour leaves through the north wall.</p>
+  <div class="map">
+    <svg viewBox="-150 -160 300 310" width="430" role="img" aria-label="Top view of the hub with six stations around the fountain">
+      <circle r="120" fill="var(--grass)" opacity=".18" stroke="var(--grass)" stroke-width="2"/>
+      <circle r="44" fill="var(--line)"/><circle r="16" fill="var(--panel)" stroke="var(--muted)"/>
+      <text y="4" text-anchor="middle" font-size="10" fill="var(--ink)" font-family="var(--body)">fountain</text>
+      <rect x="-12" y="-160" width="24" height="42" fill="var(--gold)" opacity=".5"/><text y="-132" text-anchor="middle" font-size="10" fill="var(--ink)" font-family="var(--body)">Parkour ↑</text>
+      <g font-family="var(--body)" font-size="11" text-anchor="middle" fill="var(--ink)">
+        <g transform="translate(0,-80)"><rect x="-14" y="-14" width="28" height="28" fill="#5fb84a"/><text y="28">Survival</text></g>
+        <g transform="translate(69,-40)"><rect x="-14" y="-14" width="28" height="28" fill="#4fb0d8"/><text y="28">Skyblock</text></g>
+        <g transform="translate(69,40)"><rect x="-14" y="-14" width="28" height="28" fill="#e2c33b"/><text y="28">OneBlock</text></g>
+        <g transform="translate(0,80)"><rect x="-14" y="-14" width="28" height="28" fill="#d0473c"/><text y="28">BedWars</text></g>
+        <g transform="translate(-69,40)"><rect x="-14" y="-14" width="28" height="28" fill="#a259c9"/><text y="28">Hide &amp; Seek</text></g>
+        <g transform="translate(-69,-40)"><rect x="-14" y="-14" width="28" height="28" fill="#e08a2c"/><text y="28">PvP</text></g>
+        <g transform="translate(-30,50)"><rect x="-10" y="-6" width="20" height="12" fill="var(--gold)"/><text y="20" font-size="9">Hall of Fame</text></g>
+      </g>
+      <circle cx="0" cy="32" r="5" fill="var(--redstone)"/><text x="10" y="35" font-size="10" fill="var(--ink)" font-family="var(--body)">spawn</text>
+    </svg>
+  </div>
+  <div class="grid2">
+    <div class="card"><span class="label">Hotbar</span><p>Compass = the game menu, a native pop-up window (Minecraft dialog) with live player counts for every game · Grass = survival worlds · TNT = Goose Chase · Feather = parkour · Dye = hide/show players · Nether star = owner dashboard (najurs only).</p></div>
+    <div class="card"><span class="label">Feel</span><p>Double-jump anywhere in the hub, no damage, no hunger, permanent noon. Fall off the island and you land back at spawn.</p></div>
+    <div class="card"><span class="label">Sidebar &amp; tab</span><p>Your kills, wins and parkour best on the right. World names, online count and ping in the tab list. Hidden inside games so it never covers the action.</p></div>
+  </div>
+</section>
+
+<section id="games">
+  <h2>Every game and how it flows</h2>
+  <div class="note"><strong>Play-tested</strong><p>Each flow below was played start to finish by test bots joining through ViaVersion: joining, queues, countdowns, rounds, eliminations, wins, rematch votes, bed breaks, checkpoints, waves, disguises and leaving. Bugs found in those runs were fixed before release.</p></div>
+  <div class="games">
+
+  <article class="game" style="--c:#5fb84a"><header><h3>Survival worlds</h3><span class="join">/worlds · /go &lt;world&gt;</span></header>
+    <ol class="flow"><li>Pick a world in the menu. Each has its own nether, end and inventory, and you return to the exact spot you left. Any number of worlds can run at the same time.</li><li>Owner: <strong>+ Create a new world</strong> opens a form (name, type, mode toggles, seed). The ⚙ next to a world opens its manager: rename, toggle modes, pull everyone in, reset with the same or a new seed, delete. Tip: use Reset, not Delete, if you only want a fresh map.</li><li>First visit gives a starter kit (except Random Drops and the co-op island worlds).</li><li>Homes, <code>/tpa</code>, beds and deaths work normally. Death respawns you in that world.</li><li><code>/hub</code> to leave.</li></ol>
+    <div class="tags"><span class="tag">Survival</span><span class="tag">Random Drops</span><span class="tag">Mob Morph</span><span class="tag">Co-op Skyblock</span><span class="tag">Co-op OneBlock</span><span class="tag">Goose Chase</span></div></article>
+
+  <article class="game" style="--c:#e2a03b"><header><h3>Random Drops SMP</h3><span class="join">/go sw_random_drops</span></header>
+    <ol class="flow"><li>Every block type drops one random item, the same item every time, so learn the table.</li><li>Mobs drop random loot. No starter kit.</li></ol></article>
+
+  <article class="game" style="--c:#3c8a3c"><header><h3>Mob Morph SMP</h3><span class="join">/go sw_mob_morph</span></header>
+    <ol class="flow"><li>You turn into a random mob 2 seconds after you arrive, then a new one every 60 seconds (39 forms). Everyone sees it, no mods. Press F5 to see yourself.</li><li>You take that mob's size and power: a giant, strong warden, a tiny chicken with slow falling, a jumpy rabbit, and more.</li><li>Big forms are hidden from your own first-person view so they never block the screen.</li></ol></article>
+
+
+  <article class="game" style="--c:#c0392b"><header><h3>Goose Chase</h3><span class="join">/go sw_goose_chase</span></header>
+    <ol class="flow"><li>Every 25s (owner can change with <code>/worlds wavetime</code>): a 5-second countdown, then a wave of 3+ stacked attacks on everyone.</li><li>40+ attacks: nuke, TNT/anvil/block/arrow rain, THE GOOSE, flying mobs, creeper bombers, bees, phantoms, sky drop, swaps, giant/tiny, floor is lava… Waves grow every 5.</li><li>Screen chaos: inverted colours (enderman vision), green creeper vision, spider eyes, blood-red screen, Warden darkness with heartbeats, blackout, drunk nausea, frostbite, fake fire and phantom sounds, tornado spin, potion roulette, withering, toxic cloud.</li><li>Permanent Regeneration II and Resistance I: you die slowly. Gifts sometimes drop mid-chaos.</li><li>Your best wave goes on the Hall of Fame.</li></ol></article>
+
+  <article class="game" style="--c:#4fb0d8"><header><h3>Skyblock &amp; OneBlock</h3><span class="join">menu → Skyblock / OneBlock</span></header>
+    <ol class="flow"><li>The menu's first option is the <strong>Co-op world</strong>: one shared island (Skyblock) or one shared magic block (OneBlock) that everyone plays on together. The owner can reset it for everyone.</li><li>Co-op OneBlock: break the block and it becomes the next one. 9 phases of 100 blocks (Plains → Underground → Ocean → Snowy Peaks → Jungle → Desert → Nether → Deep Dark → The End), with treasure chests every 25 blocks and mobs. Drops go straight into your inventory.</li><li><strong>My own island</strong>: your personal BentoBox island with challenges, level and warps. Teams up to 10 (<code>/island team invite &lt;name&gt;</code>).</li><li><strong>Reset my island</strong> starts your personal one again, after a confirm. Only the island's owner can reset it: team members can't, and nobody can reset someone else's island. The shared co-op worlds can only be reset by the owner (najurs), from the ⚙ manager.</li></ol></article>
+
+  <article class="game" style="--c:#d0473c"><header><h3>BedWars</h3><span class="join">/bwmenu</span></header>
+    <ol class="flow"><li>Pick a map: Skylands, Frostbite, Overgrown (4 teams) or Inferno (2 teams).</li><li>Wait on the glass platform above the map and pick a team with the compass, or don't: anyone without a team is placed automatically. The game starts at 2 players after a 10-second countdown, with a server-wide announcement.</li><li>Bronze and iron at your base, iron on the side islands, gold in the middle, shop villager on every island.</li><li>Lose your bed and you get a <strong>BED DESTROYED</strong> title, and after that you can't respawn.</li><li>The last team alive gets a <strong>VICTORY</strong> title and fireworks; everyone else sees <strong>DEFEAT</strong>. Your game stats show at the end and the result is broadcast.</li><li>Only chat commands work in a game. <code>/hub</code> leaves properly.</li></ol></article>
+
+  <article class="game" style="--c:#a259c9"><header><h3>Hide &amp; Seek</h3><span class="join">/hsmenu</span></header>
+    <ol class="flow"><li>Pick a map: Village (plains), Haunted Mansion (midnight) or Deep Dark (ancient city with the Warden).</li><li>Wait on the glass lobby above the map. At 2+ players the seeker is locked in a dark box while hiders run.</li><li>Teleport commands are blocked in-game. <code>/hub</code> leaves cleanly.</li></ol></article>
+
+  <article class="game" style="--c:#e08a2c"><header><h3>PvP</h3><span class="join">/pvp · /go arena · /go teams</span></header>
+    <ol class="flow"><li><strong>Arena Rounds</strong>: wait in the Colosseum stands. At 2+ players a countdown starts.</li><li>Each round picks a random map from 10 (Colosseum, Nether Pit, Sky Ruins, Frozen Lake, Jungle Temple, Cherry Grove, End Citadel, Sculk Depths, Ocean Ruins, Mushroom Isle), never the same twice in a row, and a random kit theme everyone shares: Knights, Archers, Pirates, Mace &amp; Wind, Potion Brawl, Ninjas, Netherite Gods, Cowboys, Vikings.</li><li>3-2-1 FIGHT. Die or fall and you watch from that map's sky platform. Sudden death after 2 minutes.</li><li>Winner: VICTORY title, fireworks, broadcast. Then everyone gets a REMATCH / LEAVE vote.</li><li><strong>Team Battle</strong> (Red vs Blue): the same maps and kits, but in teams. Each player who joins goes to the smaller team, and teams are rebalanced at every round start. Banner hats show your team, friendly fire is off, and the last team standing wins. Arena Rounds and Team Battle can run at the same time on different maps.</li><li><strong>Sumo</strong> and <strong>Spleef</strong> work the same way on their own platforms. <strong>Knockback FFA</strong> is non-stop free-for-all.</li><li>The vote and the mode picker are pop-up windows. Closing the vote means you stay and watch; right-click the clock to queue again.</li><li>Every mode has a live Top 5 board, a kill feed, streak announcements and stats on your action bar. Arena lag is cleaned every 30s.</li></ol></article>
+
+  <article class="game" style="--c:#8a1010"><header><h3>NIGHTFALL (horror party games)</h3><span class="join">/go nightfall</span></header>
+    <ol class="flow"><li>Everyone waits in one lobby above Blackwood Manor: 25 pitch-black rooms (kitchen, library, crypt, lab, chapel, nursery, generator rooms…). At 2+ players a random game starts, never the same one twice in a row.</li><li>No light at all inside: <strong>your torch is the only light</strong> and it moves with you. Torches sputter out, and you'll hear doors, whispers and footsteps.</li><li><strong>The Impostor</strong> (3+): crewmates do 4 tasks each at stations (right-click and stand still). The impostor has a knife and can cut the lights (fix them in the Fuse Room). Bodies stay where they fall: right-click one to report it, or ring the hall bell. Meetings vote in a pop-up window, and the most-voted player is thrown out.</li><li><strong>Blackout Escape</strong> (2+): survivors sneak next to generators to repair them (faster together, but misfires give you away). After 4, the gates open and you run for an exit. The hunter sees in the dark, you hear their heartbeat, and two hits kill.</li><li><strong>Soul Candles</strong> (2+): free-for-all, most candles in 3 minutes wins. Punch rivals to steal; ghosts knock candles out of your hands.</li><li><strong>Silent Relics</strong> (co-op): bring 5 relics to the hall table while a real Warden hunts by sound. Sneak!</li><li>Dead players become ghosts and watch. Wins go on your stats. Owner: <code>/nightfall start|stop|impostor|escape|candles|relics</code>.</li></ol></article>
+
+  <article class="game" style="--c:#5a1f1f"><header><h3>Infection</h3><span class="join">menu → Hide &amp; Seek → Infection</span></header>
+    <ol class="flow"><li>Queue on the mansion platform. One alpha zombie hunts the survivors; every kill makes a new zombie.</li><li>4-minute rounds. Leaving, the end of the game or your final death all send you back to the hub.</li></ol></article>
+
+  <article class="game" style="--c:#4fb0d8"><header><h3>Hub Parkour</h3><span class="join">/go parkour</span></header>
+    <ol class="flow"><li>Step on the start plate: a live timer appears on your action bar.</li><li>Six zones: Sky Garden, Frozen Caverns, Launch Pads, Nether Run, The Tower, End Skies. A checkpoint after each.</li><li>Fall and you return to your last checkpoint. Hotbar buttons: back to checkpoint / restart / quit.</li><li>Finish: fireworks, broadcast, personal best and a Top 5 board.</li></ol></article>
+
+  <article class="game" style="--c:#d9b26a"><header><h3>Creative</h3><span class="join">/go creative</span></header>
+    <ol class="flow"><li>Flat build world in creative mode with its own inventory. You return to your last spot.</li></ol></article>
+  </div>
+</section>
+
+<section id="boards">
+  <h2>Leaderboards</h2>
+  <div class="table"><table>
+    <thead><tr><th>Where</th><th>Shows</th></tr></thead>
+    <tbody>
+      <tr><td>Each hub station</td><td>Top 3: Survival playtime · Skyblock and OneBlock island level · BedWars score · Hide &amp; Seek wins · PvP kills and wins</td></tr>
+      <tr><td>Hall of Fame (by spawn)</td><td>PvP, BedWars, Parkour times, Goose Chase best wave</td></tr>
+      <tr><td>Each PvP mode</td><td>Top 5 kills or wins, with best streak</td></tr>
+      <tr><td>Parkour start</td><td>Top 5 fastest times</td></tr>
+      <tr><td>Hub sidebar</td><td>Your own kills, wins and parkour best</td></tr>
+      <tr><td>Menu → My Stats</td><td>Your kills, deaths, wins and best streak in every PvP mode, parkour best, Goose Chase best wave, Nightfall wins</td></tr>
+    </tbody>
+  </table></div>
+  <p class="lede">Boards refresh every 30 seconds and right after a game ends.</p>
+</section>
+
+<section id="owner">
+  <h2>Owner tools (najurs)</h2>
+  <div class="grid2">
+    <div class="card"><span class="label">Dashboard</span><h3>Nether star / <code>/dashboard</code></h3><p>A pop-up window with live server stats (TPS, RAM, uptime, players). Buttons: <strong>Send EVERYONE to…</strong> any game or world; <strong>Players</strong> (teleport, bring, hub, heal, game mode, send to a game, kick); <strong>Survival worlds</strong> (create, reset, new seed, delete); day, night, clear weather, save. Older clients get the chest version.</p></div>
+    <div class="card"><span class="label">Admin panel</span><h3><code>/admin</code></h3><p>Manage buttons per mode world, game modes, fly, heal, vanish, time and weather, force-start BedWars / Hide &amp; Seek, Hide &amp; Seek map saves, map teleports.</p></div>
+    <div class="card"><span class="label">Worlds</span><h3><code>/worlds …</code></h3><p>Easiest: the menu's <strong>+ Create a new world</strong> form and the ⚙ manager. Or type: <code>create &lt;name&gt; [normal|flat|amplified|large_biomes|skyblock|oneblock] [randomdrops mobmorph chaos] [seed:n]</code> · <code>reset &lt;id&gt; [newseed] confirm</code> · <code>sendall &lt;id&gt;</code> · <code>rename</code> · <code>flag</code> · <code>delete &lt;id&gt; confirm</code> · <code>wavetime &lt;s&gt;</code></p></div>
+    <div class="card"><span class="label">Nightfall</span><h3><code>/nightfall …</code></h3><p><code>start</code> skips the countdown · <code>stop</code> ends the round · <code>impostor</code> / <code>escape</code> / <code>candles</code> / <code>relics</code> picks the next game.</p></div>
+    <div class="card"><span class="label">Players</span><h3><code>/send all &lt;cmd&gt;</code></h3><p>Make everyone (or one player) run a command, e.g. join a game. <code>/kick</code>, <code>/ban</code> and <code>/whitelist on</code> as usual.</p></div>
+  </div>
+</section>
+
+<section id="commands">
+  <h2>Commands for everyone</h2>
+  <div class="table"><table>
+    <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>/play</code> · <code>/menu</code></td><td>The game menu (same as the compass)</td></tr>
+      <tr><td><code>/pvp</code> · <code>/bwmenu</code> · <code>/hsmenu</code></td><td>Jump straight to a game picker. <code>/games</code> opens the old chest menu.</td></tr>
+      <tr><td><code>/nightfall</code></td><td>Enter the Nightfall lobby</td></tr>
+      <tr><td><code>/hub</code> · <code>/leave</code></td><td>Leave any game or world and return to the hub</td></tr>
+      <tr><td><code>/go &lt;place&gt;</code></td><td>Any survival world id (e.g. <code>sw_survival</code>, <code>sw_coop_skyblock</code>, <code>sw_coop_oneblock</code>), creative, arena, teams, sumo, spleef, kbffa, parkour, nightfall</td></tr>
+      <tr><td><code>/tpa Name</code> · <code>/sethome</code> · <code>/home</code></td><td>Friends and homes in survival worlds</td></tr>
+      <tr><td><code>/duel Name</code></td><td>1v1 challenge (after the duel arenas are set up)</td></tr>
+      <tr><td><code>/msg Name</code> · <code>/r</code></td><td>Private messages (work inside games too)</td></tr>
+      <tr><td><code>/sb</code></td><td>Hide or show the sidebar</td></tr>
+      <tr><td><code>/island</code> · <code>/ob</code></td><td>Your personal Skyblock island or OneBlock (<code>team invite &lt;name&gt;</code>, <code>reset</code>)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="updates">
+  <h2>Updates and future versions</h2>
+  <div class="note"><strong>Saving</strong><p>Worlds save automatically every 5 minutes and whenever the server stops or restarts from the panel. "Save all worlds" in the dashboard only forces a save right now, which is handy before turning the PC off.</p></div>
+  <div class="note"><strong>Players on newer or older Minecraft</strong><p>ViaVersion and ViaBackwards translate between client and server versions, so friends on a newer release can still join. Update ViaVersion first when a new release comes out.</p></div>
+  <ol class="flow"><li>Stop the server from the panel.</li><li>Run <code>~/minecraft/tools/update-plugins.sh</code> (same version) or <code>~/minecraft/tools/update-plugins.sh 26.4</code> (move to a new version once Paper supports it).</li><li>Rebuild the custom plugin with <code>~/minecraft/plugin-src/NajursCore/build.sh</code>, then start the server.</li></ol>
+</section>
+
+<section id="files">
+  <h2>Files</h2>
+  <div class="table"><table>
+    <thead><tr><th>Path</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>~/minecraft/server/</code></td><td>Paper server (6 GB, managed by the MCSManager panel in the top bar)</td></tr>
+      <tr><td><code>~/minecraft/tools/build/</code></td><td>Scripts that build the hub, BedWars maps, the 10 PvP maps (<code>pvp_maps.py</code>), Blackwood Manor (<code>nightfall.py</code>), parkour, NPCs, holograms and the fallback chest menus</td></tr>
+      <tr><td><code>~/minecraft/plugin-src/NajursCore/</code></td><td>Custom plugin: worlds, modes, co-op islands, hub, parkour, PvP rounds and teams, Nightfall, pop-up menus, boards, dashboard</td></tr>
+      <tr><td><code>~/minecraft/tools/panel.sh</code></td><td>Start, stop or restart the server through the panel</td></tr>
+      <tr><td><code>~/minecraft/PANEL-LOGIN.txt</code></td><td>Panel and in-game logins for najurs</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>Paper 26.3 · 35 plugins · Vanilla clients, any version via ViaVersion</footer>
+</div>
+
+<script>
+document.getElementById("copyAddr").addEventListener("click", async () => {
+  const msg = document.getElementById("copyMsg");
+  try { await navigator.clipboard.writeText(document.getElementById("addr").textContent); msg.textContent = "Copied"; }
+  catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById("addr")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent = "Selected, press Ctrl+C"; }
+});
+</script>

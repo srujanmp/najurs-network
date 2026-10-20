@@ -1,0 +1,111 @@
+
+#   ┌─────────────┐
+#───┘ Hider Items └──────────────────────────────────────────────────────────────────────────────────────
+
+# Items that hiders are given
+hiderItems:
+  - name: "Hider Sword"
+    material: "STONE_SWORD"
+    lore: ["This is the hider sword"]
+    enchantments:
+      sharpness: 2
+    unbreakable: true
+    slot: 0
+  - material: "SPLASH_POTION"
+    lore: []
+    enchantments: {}
+    effect: "REGEN"
+    slot: 1
+  - material: "POTION"
+    lore: []
+    enchantments: {}
+    effect: "INSTANT_HEAL"
+    slot: 2
+hiderHelmet: null
+hiderChestplate: null
+hiderLeggings: null
+hiderBoots: null
+
+#   ┌──────────────┐
+#───┘ Seeker Items └─────────────────────────────────────────────────────────────────────────────────────
+
+# Items that seekers are given
+seekerItems:
+  - name: "Seeker Sword"
+    material: "DIAMOND_SWORD"
+    lore: ["this is the seeker sword"]
+    enchantments:
+      sharpness: 1
+    unbreakable: true
+    slot: 0
+  - name: "Wacky Stick"
+    material: "STICK"
+    lore:
+      - "It will launch people very far"
+      - "Use wisely!"
+    enchantments:
+      knockback: 3
+    slot: 1
+seekerHelmet:
+  material: "LEATHER_HELMET"
+  lore: []
+  enchantments: {}
+  slot: null
+seekerChestplate:
+  material: "LEATHER_CHESTPLATE"
+  lore: []
+  enchantments: {}
+  slot: null
+seekerLeggings:
+  material: "LEATHER_LEGGINGS"
+  lore: []
+  enchantments: {}
+  slot: null
+seekerBoots:
+  material: "LEATHER_BOOTS"
+  lore: []
+  enchantments:
+    feather_falling: 4
+  slot: null
+
+#   ┌───────────────┐
+#───┘ Hider Effects └────────────────────────────────────────────────────────────────────────────────────
+
+# Effects hiders are given at the start of the round
+hiderEffects:
+  - type: "WATER_BREATHING"
+    duration: 1000000
+    amplifier: 1
+    ambient: false
+    particles: false
+  - type: "DOLPHINS_GRACE"
+    duration: 1000000
+    amplifier: 1
+    ambient: false
+    particles: false
+
+#   ┌────────────────┐
+#───┘ Seeker Effects └───────────────────────────────────────────────────────────────────────────────────
+
+# Effects seekers given at the start of the round and when they respawn
+seekerEffects:
+  - type: "SPEED"
+    duration: 1000000
+    amplifier: 2
+    ambient: false
+    particles: false
+  - type: "JUMP"
+    duration: 1000000
+    amplifier: 1
+    ambient: false
+    particles: false
+  - type: "WATER_BREATHING"
+    duration: 1000000
+    amplifier: 10
+    ambient: false
+    particles: false
+  - type: "DOLPHINS_GRACE"
+    duration: 1000000
+    amplifier: 1
+    ambient: false
+    particles: false

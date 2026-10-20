@@ -1,0 +1,80 @@
+
+#   ┌───────┐
+#───┘ Lobby └────────────────────────────────────────────────────────────────────────────────────────────
+
+# Change what is displayed on the scoreboard/leaderboard
+# while in the lobby
+# 
+#   {COUNTDOWN} - Displays the time left until the game starts
+#   {COUNT}     - The amount of players in the lobby
+#   {SEEKER%}   - % chance that you will be a seeker
+#   {HIDER%}    - % chance that you will be a hider
+#   {MAP}       - The name of the current map
+lobby:
+  title: "&eHIDE AND SEEK"
+  content:
+    - "{COUNTDOWN}"
+    - ""
+    - "Players: {COUNT}"
+    - ""
+    - "&cSEEKER % &f{SEEKER%}"
+    - "&6HIDER % &f{HIDER%}"
+    - ""
+    - "Map: {MAP}"
+
+#   ┌──────┐
+#───┘ Game └─────────────────────────────────────────────────────────────────────────────────────────────
+
+# Change what is displayed on the scoreboard/leaderboard
+# while playing the game
+# 
+#   {TIME}      - The time left in the game (MM:SS)
+#   {TEAM}      - The team you are on
+#   {BORDER}    - The current status of the world border event
+#   {TAUNT}     - The current status of the taunt event
+#   {GLOW}      - The current status of the glow power-up
+#   {#SEEKER}   - The number of seekers in the game right now
+#   {#HIDER}    - The number of hiders in the game right now
+#   {MAP}       - The name of the current map
+game:
+  title: "&eHIDE AND SEEK"
+  content:
+    - "Map: {MAP}"
+    - "Team: {TEAM}"
+    - ""
+    - "Time Left: &a{TIME}"
+    - ""
+    - "Taunt: &e{TAUNT}"
+    - "Glow: {GLOW}"
+    - "Border: &b{BORDER}"
+    - ""
+    - "&cSEEKERS: &f{#SEEKER}"
+    - "&6HIDERS: &f{#HIDER}"
+
+#   ┌───────────┐
+#───┘ Templates └────────────────────────────────────────────────────────────────────────────────────────
+
+# Locale strings for the {COUNTDOWN} display
+countdown:
+  waiting: "Waiting for players..."
+  # {1} - time in seconds till game start
+  startingIn: "Starting in: &a{1}s"
+  # {1} - how many minutes till game end
+  # {2} - how many seconds till game end
+  timer: "{1}m{2}s"
+# Locale strings for the {TAUNT} placeholder
+taunt:
+  # {1} - number of minutes till taunt event
+  # {2} - number of seconds till taunt event
+  timer: "{1}m{2}s"
+  active: "Active"
+# Locale strings for the {GLOW} placeholder
+glow:
+  active: "&aActive"
+  disabled: "&cDisabled"
+# Locale strings for the {BORDER} placeholder
+border:
+  # {1} - number of minutes till border event
+  # {2} - number of seconds till border event
+  timer: "{1}m{2}s"
+  shrinking: "Shrinking"

@@ -1,0 +1,453 @@
+# BentoBox v3.23.4 configuration file.
+# 
+general:
+  # Default language for new players.
+  # This is the filename in the locale folder without .yml.
+  # If this does not exist, the default en-US will be used.
+  default-language: en-US
+  # Use economy or not. If true, an economy plugin is required. If false, no money is used or given.
+  # If there is no economy plugin present anyway, money will be automatically disabled.
+  use-economy: true
+  # Whether to charge the blueprint bundle cost when a player resets their island.
+  # If false, only island creation will charge the cost. Default is false.
+  charge-for-blueprint-on-reset: false
+  # Submit anonymous, aggregate usage statistics to bStats (https://bstats.org/plugin/bukkit/BentoBox/3555).
+  # No personal data is ever sent - see https://github.com/BentoBoxWorld/.github/blob/master/PRIVACY.md
+  # Setting this to false disables metrics for BentoBox only; the global switch in
+  # plugins/bStats/config.yml disables bStats for every plugin on the server.
+  # Changing this setting requires a server restart.
+  # Added since 3.22.3.
+  metrics: true
+  # Console commands to run when BentoBox has loaded all worlds and addons.
+  # Commands are run as the console.
+  # e.g. set aliases for worlds in Multiverse here, or anything you need to
+  # run after the plugin is fully loaded.
+  # Added since 1.24.2.
+  ready-commands: []
+  database:
+    # JSON, MYSQL, MARIADB, MONGODB, SQLITE, and POSTGRESQL.
+    # Transition database options are:
+    #   JSON2MARIADB, JSON2MYSQL, JSON2MONGODB, JSON2SQLITE, JSON2POSTGRESQL
+    #   MYSQL2JSON, MARIADB2JSON, MONGODB2JSON, SQLITE2JSON, POSTGRESQL2JSON
+    # If you need others, please make a feature request.
+    # Minimum required versions:
+    #    MySQL versions 5.7 or later
+    #    MariaDB versions 10.2.3 or later
+    #    MongoDB versions 3.6 or later
+    #    SQLite versions 3.28 or later
+    #    PostgreSQL versions 9.4 or later
+    # Transition options enable migration from one database type to another. Use /bbox migrate.
+    # JSON is a file-based database.
+    # MYSQL might not work with all implementations: if available, use a dedicated database type (e.g. MARIADB).
+    # BentoBox uses HikariCP for connecting with SQL databases.
+    # If you use MONGODB, you must also run the BSBMongo plugin (not addon).
+    # See https://github.com/tastybento/bsbMongo/releases/.
+    # You can find more details in this video: https://youtu.be/FFzCk5-y7-g
+    type: JSON
+    host: localhost
+    # Port 3306 is MySQL's default. Port 27017 is MongoDB's default.
+    port: 3306
+    name: bentobox
+    username: username
+    password: password
+    # How often the data will be saved to file in mins. Default is 5 minutes.
+    # This helps prevent issues if the server crashes.
+    # Data is also saved at important points in the game.
+    backup-period: 5
+    # How many players will be saved in one tick. Default is 200
+    # Reduce if you experience lag while saving.
+    # Do not set this too low or data might get lost!
+    max-saved-players-per-tick: 20
+    # How many islands will be saved in one tick. Default is 200
+    # Reduce if you experience lag while saving.
+    # Do not set this too low or data might get lost!
+    max-saved-islands-per-tick: 20
+    # Number of active connections to the SQL database at the same time.
+    # Default 10.
+    # Added since 1.21.0.
+    max-pool-size: 10
+    # Enable SSL connection to MongoDB, MariaDB, MySQL and PostgreSQL databases.
+    # Added since 1.12.0.
+    use-ssl: false
+    # Database table prefix. Adds a prefix to the database tables. Not used by flatfile databases.
+    # Only the characters A-Z, a-z, 0-9 can be used. Invalid characters will become an underscore.
+    # Set this to a unique value if you are running multiple BentoBox instances that share a database.
+    # Be careful about length - databases usually have a limit of 63 characters for table lengths
+    # Added since 1.13.0.
+    prefix-character: ''
+    # Custom connection datasource properties that will be applied to connection pool.
+    # Check available values to your SQL driver implementation.
+    # Example: 
+    #   custom-properties: 
+    #     cachePrepStmts: 'true'
+    #     prepStmtCacheSize: '250'
+    #     prepStmtCacheSqlLimit: '2048'
+    # Added since 1.21.0.
+    custom-properties: {}
+    # MongoDB client connection URI to override default connection options.
+    # See: https://docs.mongodb.com/manual/reference/connection-string/
+    # Added since 1.14.0.
+    mongodb-connection-uri: ''
+  # Allow FTB Autonomous Activator to work (will allow a pseudo player [CoFH] to place and break blocks and hang items)
+  # Add other fake player names here if required
+  # /!\ This feature is experimental and might not work as expected or might not work at all.
+  fakeplayers:
+  - '[CoFH]'
+  # Flingback power. How far hostile mobs will be flung back when a player teleports into them.
+  # 2.5 will push back a number of blocks, 5 will throw them far, 1 will not do much.
+  flingback: 5.0
+  # Kill mobs on teleport. If the world flag in Admin Settings is set, then they will be killed/removed instead of flung.
+  teleport-remove-mobs: false
+  did-you-mean:
+    # Did-you-mean command suggestions.
+    # When a player types an unknown command, e.g. /teams instead of /oneblock team,
+    # BentoBox suggests the closest matching BentoBox command. The player can click the
+    # suggestion or type 'yes' to run it.
+    # Added since 3.20.0.
+    unknown-commands: true
+    # When a player types an unknown subcommand, e.g. /island invit instead of /island team invite,
+    # BentoBox suggests the closest matching subcommand instead of showing an error.
+    # Added since 3.20.0.
+    subcommands: true
+  # Register commands with Paper's Brigadier command system instead of the legacy command map.
+  # Brigadier lets the client show subcommands and completions as the player types, rather than
+  # only after they press enter or TAB. Turn this off to go back to the legacy registration if
+  # another plugin conflicts with it.
+  # Added since 3.22.0.
+  brigadier-commands: true
+panel:
+  # Panel click cooldown. Value is in milliseconds. Prevents players spamming button presses in GUIs.
+  click-cooldown-ms: 250
+  # Toggle whether panels should be closed or not when the player clicks anywhere outside of the inventory view.
+  close-on-click-outside: true
+  # Defines the Material of the item that fills the gaps (in the header, etc.) of most panels.
+  # Added since 1.14.0.
+  filler-material: light_blue_stained_glass_pane
+  # Toggle whether player head texture should be gathered from Mojang API or mc-heads.net cache server.
+  # Mojang API sometime may be slow and may limit requests to the player data, so this will allow to
+  # get player heads a bit faster then Mojang API.
+  # Added since 1.16.0.
+  use-cache-server: false
+  # Defines how long player skin texture link is stored into local cache before it is requested again.
+  # Defined value is in the minutes.
+  # Value 0 will not clear cache until server restart.
+  # Added since 1.14.1.
+  head-cache-time: 60
+  # Defines a number of player heads requested per tasks.
+  # Setting it too large may lead to temporarily being blocked from head gatherer API.
+  # Added since 1.16.0.
+  heads-per-call: 9
+  # Defines a number of ticks between each player head request task.
+  # Setting it too large may lead to temporarily being blocked from head gatherer API.
+  # Added since 1.16.0.
+  # /!\ In order to apply the changes made to this option, you must restart your server. Reloading BentoBox or the server won't work.
+  ticks-between-calls: 10
+dynmap:
+  # Toggle whether BentoBox shows a marker (house icon) on Dynmap at the center of every island.
+  # On worlds with many tightly-packed islands these icons can flood the map. Set to false to hide them.
+  # /!\ Restart the server or use /bbox reload after changing this for it to take effect.
+  # Added since 3.17.1.
+  island-markers: true
+  # Toggle whether BentoBox draws the protected area border box of every island on Dynmap.
+  # /!\ Restart the server or use /bbox reload after changing this for it to take effect.
+  # Added since 3.17.1.
+  island-areas: true
+bluemap:
+  # Toggle whether BentoBox shows a marker (pin) on BlueMap at the center of every island.
+  # Set to false if you manage your own island markers and don't want BentoBox's layer.
+  # /!\ Restart the server or use /bbox reload after changing this for it to take effect.
+  # Added since 3.18.1.
+  island-markers: true
+  # Toggle whether BentoBox draws the protected area border box of every island on BlueMap.
+  # /!\ Restart the server or use /bbox reload after changing this for it to take effect.
+  # Added since 3.18.1.
+  island-areas: true
+  # Path to a custom icon for the island POI marker, relative to BlueMap's web root
+  # (e.g. "assets/island.png" or "assets/island.svg"). Leave blank to use BlueMap's
+  # default POI icon.
+  # Added since 3.18.1.
+  marker-icon: ''
+  # Pixel anchor of the custom icon - the point of the image that sits on the island
+  # location. Ignored when marker-icon is blank.
+  # Added since 3.18.1.
+  marker-icon-anchor-x: 25
+  # Added since 3.18.1.
+  marker-icon-anchor-y: 45
+  # Distance range (in blocks) within which the island POI marker is visible on the map.
+  # Raise min-distance to hide markers when zoomed far out; lower max-distance to hide them
+  # when zoomed in. The default range effectively means "always visible".
+  # Added since 3.18.1.
+  marker-min-distance: 0.0
+  # Added since 3.18.1.
+  marker-max-distance: 1.0E7
+  # Colour and styling of the protected-area rectangle. Colours are hex strings.
+  # Added since 3.18.1.
+  area-line-color: '#3388FF'
+  # Added since 3.18.1.
+  area-fill-color: '#3388FF'
+  # Fill opacity, 0.0 (transparent) to 1.0 (opaque).
+  # Added since 3.18.1.
+  area-fill-opacity: 0.15
+  # Border line width in pixels.
+  # Added since 3.18.1.
+  area-line-width: 2
+logs:
+  # Toggle whether superflat chunks regeneration should be logged in the server logs or not.
+  # It can be spammy if there are a lot of superflat chunks to regenerate.
+  # However, as superflat chunks regeneration can be performance-intensive, it is recommended to keep
+  # this setting set to true, as it will help you know if there are regenerations taking place.
+  # Added since 1.2.0.
+  clean-super-flat-chunks: true
+  # Toggle whether downloading data from GitHub should be logged in the server logs or not.
+  # Added since 1.5.0.
+  github-download-data: true
+island:
+  # Override island distance mismatch checking. BentoBox normally refuses to run if
+  # the island distance in the gamemode config is different to the one stored in the database
+  # for safety. This overrides that check. You should never need this, and if you do not understand it
+  # keep it as false
+  override-safety-check: false
+  # The default number of concurrent islands a player may have.
+  # This may be overridden by individual game mode config settings.
+  concurrent-islands: 1
+  # Hide used blueprints.
+  # Blueprints can have a maximum use when players have concurrent islands.
+  # If this is true, then ones that are used up will not be shown in the island create menu.
+  # Added since 2.3.0.
+  hide-used-blueprints: false
+  cooldown:
+    time:
+      # How long a player must wait until they can rejoin a team island after being kicked in minutes.
+      # This slows the effectiveness of players repeating challenges
+      # by repetitively being invited to a team island.
+      invite: 60
+      # How long a player must wait until they can coop a player in minutes.
+      coop: 5
+      # How long a player must wait until they can trust a player in minutes.
+      trust: 5
+      # How long a player must wait until they can ban a player after unbanning them. In minutes.
+      ban: 10
+      # How long a player must wait before they can reset their island again in seconds.
+      reset: 300
+    options:
+      # Whether the reset cooldown should be applied when the player creates an island for the first time or not.
+      # Added since 1.2.0.
+      set-reset-cooldown-on-create: true
+  confirmation:
+    # Time in seconds that players have to confirm sensitive commands, e.g. island reset.
+    time: 10
+    commands:
+      # Ask the player to confirm the command he is using by typing it again.
+      kick: true
+      leave: true
+      reset: true
+    # Ask the recipient to confirm trust or coop invites.
+    # Team invites will always require confirmation, for safety concerns.
+    # Added since 1.8.0.
+    invites: false
+  delay:
+    # Time in seconds that players have to stand still before teleport commands activate, e.g. island go.
+    time: 0
+  dialogs:
+    # Modal dialog options. Dialogs are the 'menu they can't click away' shown to
+    # players for high-friction flows. They require a server that supports dialogs
+    # (Minecraft 26+); on older servers every option below falls back automatically
+    # to the classic chat/command behaviour regardless of the setting.
+    # Show sensitive-command confirmations as a modal [Confirm]/[Cancel] dialog
+    # instead of asking the player to type the command again.
+    # Added since 3.21.0.
+    confirmations: true
+    # Auto-open an [Accept]/[Decline] dialog when a player receives a team invite,
+    # instead of relying on them to type the accept/reject command.
+    # Added since 3.21.0.
+    team-invites: true
+    # Show a button-per-destination picker when a player runs the island go/home
+    # command with no name and has more than one island or home to choose from.
+    # Added since 3.21.0.
+    go-picker: true
+    # Show a non-dismissable 'choose your game' dialog to brand new players when
+    # more than one game mode is installed. Off by default: it is intrusive and
+    # clicking a game runs that game mode's command for the player.
+    # Added since 3.21.0.
+    game-mode-selection: false
+  name:
+    # Sets the minimum length an island custom name is required to have.
+    min-length: 4
+    # Sets the maximum length an island custom name cannot exceed.
+    max-length: 20
+    # Requires island custom names to be unique in the gamemode the island is in.
+    # As a result, only one island per gamemode are allowed to share the same name.
+    # Note that island names are purely cosmetics and are not used as a way to programmatically identify islands.
+    # Added since 1.7.0.
+    uniqueness: false
+  # Remove hostile mob on teleport box radius
+  # If hostile mobs are cleared on player teleport, then this sized box will be cleared
+  # around the player. e.g. 5 means a 10 x 10 x 10 box around the player
+  # Be careful not to make this too big. Does not cover standard nether or end teleports.
+  # Added since 1.6.0.
+  clear-radius: 5
+  # Minimum nether portal search radius. If this is too low, duplicate portals may appear.
+  # Vanilla default is 128.
+  # Added since 1.16.2.
+  portal-search-radius: 64
+  # Number of blocks to paste per tick when pasting blueprints.
+  # Smaller values will help reduce noticeable lag but will make pasting take slightly longer.
+  # On the contrary, greater values will make pasting take less time, but this benefit is quickly severely impacted by the
+  # resulting amount of chunks that must be loaded to fulfill the process, which often causes the server to hang out.
+  paste-speed: 64
+  # Island Level Purge Protection
+  # Islands above this level will not be purged even if they are old. Requires the Level Addon.
+  # If the Level addon is not present, this will not be checked.
+  purge-level: 10
+  # Island deletion: Number of chunks per world to regenerate per second.
+  # If there is a nether and end then 3x this number will be regenerated per second.
+  # Smaller values will help reduce noticeable lag but will make deleting take longer.
+  # A setting of 0 will leave island blocks (not recommended).
+  # Added since 1.7.0.
+  delete-speed: 100
+  deletion:
+    housekeeping:
+      deleted-sweep:
+        # Housekeeping: periodic auto-purge of unused region files.
+        # When a player resets their island, the old island is orphaned (marked
+        # deletable) and its region files are reclaimed later by a scheduled purge.
+        # 
+        # WARNING: housekeeping deletes .mca region files from disk. It uses the same
+        # protections as the /bbox purge regions command (online players, island level,
+        # purge-protected flag, spawn islands, and unowned-but-not-deletable islands are
+        # all skipped) but is destructive by design.
+        # 
+        # --- Deleted-island sweep (safe, on by default) ---
+        # Reaps region files for islands explicitly marked deletable (e.g. /is reset).
+        # Only removes islands that BentoBox itself soft-deleted — never touches
+        # active or unvisited islands. Enable this and leave age-sweep off for a
+        # 'just works' experience that reclaims disk space from reset islands.
+        # Added since 3.15.0.
+        enabled: true
+        # How often the deleted-island sweep runs, in hours.
+        # Added since 3.15.0.
+        interval-hours: 24
+      age-sweep:
+        # 
+        # --- Age-based sweep (opt-in, more aggressive) ---
+        # Reaps region files whose .mca files are older than min-age-days, regardless
+        # of whether those islands are marked deletable. Can remove islands that were
+        # never reset but simply abandoned. Disabled by default — enable only if you
+        # want automatic reclamation of all old, unvisited islands.
+        # Added since 3.15.0.
+        enabled: false
+        # How often the age-based sweep runs, in days.
+        # Added since 3.15.0.
+        interval-days: 30
+        # Minimum age (in days) of region files eligible for the age-based purge.
+        # Added since 3.15.0.
+        min-age-days: 60
+  pregeneration:
+    # 
+    # Chunk pre-generation settings.
+    # Pre-generates chunks around predicted future island locations
+    # to reduce lag when islands are created or reset.
+    # 
+    # Enable or disable chunk pre-generation.
+    # Added since 3.14.0.
+    enabled: false
+    # Number of future islands to pre-generate chunks for, per game mode world.
+    # Higher values use more disk space but reduce the chance of lag on island creation.
+    # Added since 3.14.0.
+    islands-ahead: 3
+    # Maximum number of async chunk generation requests dispatched per tick batch.
+    # Lower values reduce server impact. Paper handles these asynchronously.
+    # Recommended range: 2-10.
+    # Added since 3.14.0.
+    chunks-per-tick: 4
+    # Ticks between pre-generation batches.
+    # 1 = every tick (fastest), 20 = once per second (gentlest).
+    # Added since 3.14.0.
+    tick-interval: 5
+  # By default, If the destination is not safe, the plugin will try to search for a safe spot around the destination,
+  # then it will try to expand the y-coordinate up and down from the destination.
+  # This setting limits how far the y-coordinate will be expanded.
+  # If set to 0 or lower, the plugin will not expand the y-coordinate.
+  # Added since 1.19.1.
+  safe-spot-search-vertical-range: 400
+  # By default, if the destination is not safe, the plugin will try to search for a safe spot around the destination.
+  # This allows to change the distance for searching this spot. Larger value will mean longer position search.
+  # This value is also used for valid nether portal linking between dimension.
+  # Added since 1.21.0.
+  safe-spot-search-range: 16
+  expel:
+    # The command to run as the expelled player if they have no island and no spawn is set.
+    # This is typically provided by other plugins like EssentialsX.
+    # Leave blank to do nothing in this situation.
+    # Added since 3.11.3.
+    command: spawn
+  # The radius (in blocks) around an obsidian block to check for other obsidian blocks
+  # when a player tries to scoop it up with an empty bucket (OBSIDIAN_SCOOPING flag).
+  # If any obsidian is found within this radius, the scooping is denied.
+  # Set to 0 to disable the check and allow any lone obsidian block to be scooped.
+  # Range: 0 to 15. Default is 2.
+  # Added since 3.11.3.
+  obsidian-scooping-radius: 2
+  # The duration of the cooldown (in minutes) applied after a player scoops an obsidian block
+  # into a lava bucket using the OBSIDIAN_SCOOPING flag. During this cooldown, the player
+  # cannot scoop another obsidian block. This prevents lava bucket duplication exploits
+  # caused by rapidly scooping obsidian near water.
+  # Minimum value is 1 minute. Default is 1 minute.
+  # Note: Changes to this value require a server restart to take effect.
+  # Added since 3.11.4.
+  obsidian-scooping-cooldown: 1
+  # How long (in seconds) to show a hologram tip above newly formed obsidian
+  # that can be scooped back into lava. The hologram reminds players they can
+  # right-click obsidian with an empty bucket to recover lava.
+  # Set to 0 or less to disable the tip entirely. Default is 5 seconds.
+  # Added since 3.14.0.
+  obsidian-scooping-lava-tip-duration: 5
+  history:
+    # Maximum number of history (log) entries kept per island. The oldest entries
+    # are dropped first once the cap is reached, so long-lived islands do not grow
+    # without bound in memory and in the database.
+    # Set to 0 (or a negative value) for unlimited history. This is the default so
+    # existing servers keep their current behaviour.
+    # Note: capping can undercount the historical-members placeholder once old
+    # JOINED entries are dropped off the front.
+    # Added since 3.22.4.
+    max-entries: 0
+slowDeletion: false
+world:
+  # Vanilla structures disabled by default in EVERY BentoBox game mode world
+  # (overworld, nether and end). List the structure keys to stop generating and to
+  # skip in structure searches (/locate, Eyes of Ender, explorer/treasure maps,
+  # dolphins and villager cartographer trades). Suppressing a structure this way also
+  # prevents those searches scanning to the world border and freezing the server.
+  # Keys are the vanilla structure ids: tab-complete '/locate structure ' in-game for
+  # the full list ('minecraft:mansion' is listed here as 'mansion'). Keys may use '-'
+  # or '_' and any case, e.g. trial_chambers, ancient-city.
+  # To stop the map searches that most commonly freeze servers with void worlds
+  # (villager cartographer explorer-map trades, dolphins, chest treasure maps),
+  # disable the structures those maps look for:
+  #   disabled-structures:
+  #   - monument
+  #   - mansion
+  #   - trial_chambers
+  #   - buried_treasure
+  # Worlds whose generator places no structures at all (e.g. classic skyblock void
+  # worlds) skip these searches automatically — no entries are needed for them.
+  # A game mode can override this per structure in its own config, both to disable
+  # more structures and to force-enable one that this list disables.
+  # Empty (the default) disables nothing, so behaviour is unchanged.
+  # Added since 3.19.1.
+  disabled-structures: []
+web:
+  github:
+    # Toggle whether BentoBox can connect to GitHub to get data about updates and addons.
+    # Disabling this will result in the deactivation of the update checker and of some other
+    # features that rely on the data downloaded from the GitHub API.
+    # It does not send any data.
+    # Added since 1.5.0.
+    download-data: true
+    # Time in minutes between each connection to the GitHub API.
+    # This allows for up-to-the-minute information gathering.
+    # However, as the GitHub API data does not get updated instantly, this value cannot be set to less than 60 minutes.
+    # Setting this to 0 will make BentoBox download data only at startup.
+    # Added since 1.5.0.
+    connection-interval: 120

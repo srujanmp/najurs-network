@@ -1,0 +1,299 @@
+
+#   ┌──────────┐
+#───┘ Language └─────────────────────────────────────────────────────────────────────────────────────────
+
+# What language is this for?
+locale: "en_US"
+
+#   ┌──────────────────┐
+#───┘ Message prefixes └─────────────────────────────────────────────────────────────────────────────────
+
+# Specify prefixes for plugin chat messages.
+prefix:
+  default: "&9Hide and Seek > &f"
+  warning: "&eWarning > &f"
+  error: "&cError > &f"
+  abort: "&cAbort > &f"
+  taunt: "&eTaunt > &f"
+  border: "&cWorld Border > &f"
+  gameOver: "&aGame Over > &f"
+
+#   ┌────────────────────┐
+#───┘ Placeholder errors └───────────────────────────────────────────────────────────────────────────────
+
+# PlaceholderAPI error strings
+placeholder:
+  # Displayed if the requested placeholder is invalid
+  invalid: "{Error}"
+  # Displayed if the requested placeholder has no value
+  noData: "-"
+
+#   ┌───────────────────┐
+#───┘ Command responses └────────────────────────────────────────────────────────────────────────────────
+
+command:
+  playerOnly: "This command can only be run by a player"
+  notAllowed: "You are not allowed to run this command"
+  notAllowedTemp: "You are not allowed to run this command right now"
+  unknownError: "An unknown error has occurred"
+  # {1} - position of invalid argument
+  invalidArgument: "Invalid argument: {1}"
+  notEnoughArguments: "This command requires more arguments to run"
+  # {1} - the invalid integer
+  invalidInteger: "Invalid integer: {1}"
+  # {1} - the invalid player name
+  invalidPlayer: "Invalid player: {1}"
+  reloading: "Reloading the config..."
+  reloaded: "Reloaded the config"
+  errorReloading: "Error reloading config, please check the server logs!"
+  # {1} - the bungeecord server name
+  sendToServerFailed: "Cannot teleport you to server: {1}"
+
+#   ┌──────────┐
+#───┘ Gameplay └─────────────────────────────────────────────────────────────────────────────────────────
+
+game:
+  player:
+    # {1} - name of the player who died
+    death: "&c{1}&f was killed"
+    # {1} - name of the hider who was found
+    found: "&e{1}&f was found"
+    # {1} - name of the hider who was found
+    # {2} - name of the seeker who found the hider
+    foundBy: "&e{1}&f was found by &c{2}&f"
+    # {1} - name of the hider who was tagged
+    # {2} - name of the seeker who tagged the hider
+    taggedBy: "&e{1}&f was tagged by &c{2}&f"
+  gameOver:
+    hidersFound: "All hiders have been found"
+    # {1} - the name of the last hider
+    lastHider: "{1} is the last hider alive"
+    playersQuit: "Too many players have quit the game"
+    time: "Seekers have run out of time. Hiders win!"
+    tag: "All non-tagged players win!"
+  title:
+    hidersWin: "&aHiders Win!"
+    # {1} - the name of the hider who won
+    singleHiderWin: "&a{1} Wins!"
+    seekersWin: "&cSeekers Win!"
+    noWin: "&bGame Over"
+    tag: "&bTimes up!"
+  countdown:
+    # {1} - the amount of seconds hiders have left to hide
+    notify: "Hiders have {1} seconds left to hide!"
+    last: "Hiders have 1 second left to hide"
+  team:
+    hider: "&6&lHIDER &r"
+    seeker: "&c&lSEEKER &r"
+    spectator: "&8&lSPECTATOR"
+    hiderSubtitle: "Hide from the seekers"
+    seekerSubtitle: "Find the hiders"
+    spectatorSubtitle: "You've joined mid-game"
+  setup: "There are no maps setup! Run /hs map status on a map to see what you need to do"
+  inGame: "You are already in the lobby/game"
+  notInGame: "You are not in a lobby/game"
+  inProgress: "There is currently a game in progress"
+  notInProgress: "There is no game in progress"
+  join: "You have joined mid game and are now a spectator"
+  # {1} - the name of the player who left the game
+  leave: "{1} has left the game"
+  start: "Attention SEEKERS, it's time to find the hiders!"
+  stop: "The game has been forcefully stopped"
+  # {1} - the time till respawn
+  respawn: "You will respawn in {1} seconds"
+
+#   ┌───────────┐
+#───┘ Spectator └────────────────────────────────────────────────────────────────────────────────────────
+
+spectator:
+  flyingEnabled: "&l&bFlying enabled"
+  flyingDisabled: "&l&bFlying disabled"
+
+#   ┌───────┐
+#───┘ Lobby └────────────────────────────────────────────────────────────────────────────────────────────
+
+lobby:
+  # {1} - the name of the player who joined the lobby
+  join: "{1} has joined the lobby"
+  # {1} - the name of the player who left the lobby
+  leave: "{1} has left the lobby"
+  inUse: "Can't modify the lobby while players are in it"
+  full: "You cannot join the lobby since it is full"
+  # {1} - the minimum number of players required to start the game
+  notEnoughPlayers: "You must have at least {1} players to start"
+
+#   ┌─────┐
+#───┘ Map └──────────────────────────────────────────────────────────────────────────────────────────────
+
+map:
+  save:
+    start: "Starting map save"
+    warning: "All commands will be disabled when the save is in progress. Do not turn of the server."
+    inProgress: "Map save is currently in progress! Try again later."
+    finished: "Map save complete"
+    # {1} - the error message
+    failed: "Map save failed with the following error: {1}"
+    failedLocate: "Map save failed. Could not locate the map to save!"
+    failedLoad: "Map save failed. Could not load the map!"
+    # {1} - the name of the directory that could not be renamed
+    failedDir: "Failed to rename/delete directory: {1}"
+    disabled: "Map saves are disabled in config.yml"
+  setup:
+    # {1} - the map that is not yet setup
+    not: "Map {1} is not setup (/hs map status <map>)"
+    header: "&f&lThe following is needed for setup..."
+    game: "&c&l- &fGame spawn isn't setup, /hs map set spawn <map>"
+    lobby: "&c&l- &fLobby spawn isn't setup, /hs map set lobby <map>"
+    seekerLobby: "&c&l- &fSeeker Lobby spawn isn't setup, /hs map set seekerLobby <map>"
+    exit: "&c&l- &fQuit/exit teleport location isn't set, /hs setexit"
+    saveMap: "&c&l- &FMap isn't saved, /hs map save <map>"
+    bounds: "&c&l- &fPlease set game bounds in 2 opposite corners of the game map, /hs map set bounds <map>"
+    blockHunt: "&c&l - &fSince block hunt is enabled, there needs to be at least 1 block set, /hs map blockHunt block add block <map> <block>"
+    complete: "Everything is setup and ready to go!"
+  error:
+    locationNotSet: "This location is not set (run /hs map status <map> for more info)"
+    notInRange: "This position is out of range (check bounds or world border)"
+    bounds: "Please set map bounds first"
+  warn:
+    gameSpawnReset: "Game spawn has been reset due to being out of range"
+    seekerSpawnReset: "Seeker spawn has been reset due to being out of range"
+  set:
+    gameSpawn: "Set game spawn position to your current position"
+    seekerSpawn: "Set seeker spawn position to your current position"
+    lobby: "Set lobby position to your current position"
+    exit: "Set exit position to your current position"
+    # {1} - if the 1st or 2nd bound position was set
+    bounds: "Successfully set bounds at your current position ({1}/2)"
+  list: "The current maps are:"
+  none: "There are no maps known to the plugin (/hs map add <name> <world>)"
+  noneSetup: "There are no maps setup and ready to play"
+  invalidName: "A map name can only contain ascii numbers and letters"
+  # {1} - The name of the world to run the command in
+  wrongWorld: "Please run this command in the map's world: {1}"
+  exists: "A map with this name already exists!"
+  unknown: "That map does not exist"
+  # {1} - the name of the new map
+  created: "Created map: {1}"
+  # {1} - the name of the deleted map
+  deleted: "Deleted map: {1}"
+
+#   ┌──────────────┐
+#───┘ World Border └─────────────────────────────────────────────────────────────────────────────────────
+
+worldBorder:
+  disable: "Disabled world border"
+  minSize: "World border cannot be smaller than 100 blocks"
+  minChange: "World border move be able to move"
+  position: "Spawn position must be 100 from world border center"
+  # {1} - the new size of the world border
+  # {2} - the new delay of the world border
+  # {3} - how much the border changes at a time
+  enable: "Set border center to current location, size to {1}, delay to {2}, and steps by {3} blocks"
+  warn: "World border will shrink in the next 30s!"
+  shrinking: "&c&oWorld border is shrinking!"
+
+#   ┌─────────────┐
+#───┘ Taunt event └──────────────────────────────────────────────────────────────────────────────────────
+
+taunt:
+  chosen: "&c&oOh no! You have been chosen to be taunted"
+  warning: "A random hider will be taunted in the next 30s"
+  activate: "Taunt has been activated"
+
+#   ┌────────────┐
+#───┘ Block Hunt └───────────────────────────────────────────────────────────────────────────────────────
+
+blockHunt:
+  notEnabled: "Block hunt is not enabled on ths map"
+  notSupported: "Block hunt does not work on 1.8"
+  enabled: "Block hunt has been enabled"
+  disabled: "Block hunt has been disabled"
+  block:
+    # {1} - the block trying to be added to the block hunt map
+    exists: "{1} has already been added to this map"
+    # {1} - the block trying to be removed from the block hunt map
+    doesntExist: "{1} is already not used for the map"
+    # {1} - the block added to the block hunt map
+    added: "Added {1} as a disguise to the map"
+    # {1} - the block removed from the block hunt map
+    removed: "Removed {1} as a disguise from the map"
+    list: "The block disguises for the map are:"
+    none: "There are no block disguises in use for this map"
+    unknown: "This block name does not exist"
+  # {1} - The player that was revealed in block hunt
+  notify: "&oYou have revealed {1}!"
+
+#   ┌───────┐
+#───┘ World └────────────────────────────────────────────────────────────────────────────────────────────
+
+world:
+  # {1} - the world name
+  exists: "A world named {1} already exists"
+  # {1} - the world name
+  doesntExist: "There is no world named {1}"
+  # {1} - the world name
+  added: "Created a world named {1}"
+  addedFailed: "Failed to create a world named {1}"
+  # {1} - the world name
+  removed: "Removed the world named {1}"
+  removedFailed: "Failed to remove the world named {1}"
+  # {1} - the world name
+  # {2} - the map using the world
+  inUseBy: "The world {1} is in use by map {2}"
+  inUse: "The world {1} is in use by the plugin"
+  # {1} - the world name
+  loadFailed: "Failed to load: {1}"
+  # {1} - the given world type
+  invalidType: "Invalid world type: {1}"
+  notEmpty: "World must be empty to be deleted"
+  builtin: "That world cannot be removed"
+  list: "The following worlds are"
+  none: "Failed to fetch any worlds"
+
+#   ┌──────────┐
+#───┘ Database └─────────────────────────────────────────────────────────────────────────────────────────
+
+database:
+  noInfo: "No gameplay info"
+  # {1} - the player associated with the following win information
+  infoFor: "Win information for {1}:"
+  totalWins: "&bTOTAL WINS: &f{1}"
+  hiderWins: "&6HIDER WINS: &f{1}"
+  seekerWins: "&cSEEKER WINS: &f{1}"
+  gamesPlayed: "GAMES PLAYED: &Vf{1}"
+  lastGame: "Results of the last game:"
+  lastWinners: "&6WINNERS: &f{1}"
+  lastLoosers: "&cLOOSERS: &f{1}"
+
+#   ┌─────────┐
+#───┘ Confirm └──────────────────────────────────────────────────────────────────────────────────────────
+
+confirm:
+  none: "You have nothing to confirm"
+  timedOut: "The confirmation has timed out"
+  # {1} - the length of time in ticks a player has to confirm an action
+  confirm: "Run /hs confirm within {1}s to confirm"
+
+#   ┌──────┐
+#───┘ Menu └─────────────────────────────────────────────────────────────────────────────────────────────
+
+menu:
+  blockHuntPrefix: "Select a Block: "
+  teleportTitle: "Teleport to players"
+  teleportPrefix: "Page "
+  debugTitle: "Debug Menu"
+
+#   ┌──────┐
+#───┘ Misc └─────────────────────────────────────────────────────────────────────────────────────────────
+
+misc:
+  # {1} - The current plugin version
+  # {2} - The available plugin version to update to
+  updateAvailable: "An update is available: &c{1} &f-> &a{2}"
+
+#   ┌──────────┐
+#───┘ Metadata └─────────────────────────────────────────────────────────────────────────────────────────
+
+meta:
+  # This marks the revision of your locale.yml file, DO NOT EDIT THIS!!
+  revision: 1

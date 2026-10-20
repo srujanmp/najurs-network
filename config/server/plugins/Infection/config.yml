@@ -1,0 +1,180 @@
+# Config file uses minimessage for minecraft color formatting. Read more here: https://docs.adventure.kyori.net/minimessage/
+# You can find a tool to generate colored messages here: https://tools.nauticalhosting.org/rgbgen/
+# and a list for minecraft color codes here: https://htmlcolorcodes.com/minecraft-color-codes/
+
+roles:
+  survivor: "<green>Survivor"
+  infected: "<red>Infected"
+  alpha: "<red>Alpha"
+
+messages:
+  # An optional prefix used for game messages.
+  prefix: ""
+
+  # Message for when the Alpha dies
+  # %player% - Returns the username of the Alpha
+  alpha-dead: "<red><bold>Alpha died! <reset><red>It was %player%"
+  alpha-dead-info: "<yellow>Infected players will no longer respawn!"
+
+  # %time% - The time until the game starts (returns colored)
+  gamestart: "<yellow>Game is starting in <red>%time%<yellow>s"
+
+  # %time% - The time until the roles are assigned
+  roleassign: "<yellow>Roles are assigned in <red>%time%<yellow>s"
+
+  # %player% - The name of the player who executed the command
+  # %player-count% - current number of players in the queue
+  # %max-player-count% - maximum number of players allowed
+  playerjoin: "<green>+ <gray>You joined the queue (<green>%player-count%<gray>/<green>%max-player-count%<gray>)"
+  playerleave: "<red>- <gray>You left the queue (<red>%player-count%<gray>/<green>%max-player-count%<gray>)"
+
+  # %player% - the name of the player who joined or left
+  # %player-count% - current number of players in the queue
+  # %max-player-count% - maximum number of players allowed
+  broadcast-playerjoin: "<green>+ <yellow>%player% <gray>joined the queue (<green>%player-count%<gray>/<green>%max-player-count%<gray>)"
+  broadcast-playerleave: "<red>- <yellow>%player% <gray>left the queue (<red>%player-count%<gray>/<green>%max-player-count%<gray>)"
+
+  winners:
+    survivors: "<green>Survivors"
+    infected: "<red>Infected"
+
+  # %winners% - Returns winners.survivors or winners.infected
+  # %kills% - Returns the players kills
+  # <center> - A custom tag to center text (only works with the end-message)
+  end-message:
+    - "<green><bold>--------------------------------------"
+    - " "
+    - "<center><yellow><bold>Infection              "
+    - " "
+    - "<center><white>Winners: %winners%          "
+    - "<center><white>Kills: <green>%kills%           "
+    - " "
+    - "<green><bold>--------------------------------------"
+
+titles:
+  roles:
+    survivor:
+      title: "<green>ROLE: Survivor"
+      subtitle: "<yellow>Stay alive as long as possible!"
+    alpha:
+      title: "<red>ROLE: Alpha"
+      subtitle: "<yellow>Secretly infect other players!"
+    infected:
+      title: "<red>Infected"
+      subtitle: "<yellow>You have been infected!"
+    infected-respawn:
+      title: "<red>You died!"
+      subtitle: "<yellow>Respawning in <red>%time%s<yellow>!" # %time% - Returns the time until the player respawns
+
+    # Title for when the player can no longer respawn
+    final-death:
+      title: "<red>You died!"
+      subtitle: "<yellow>You can't respawn anymore!"
+  win:
+    title: "<green>YOU WIN!"
+    subtitle: ""
+  lose:
+    title: "<red>YOU LOSE!"
+    subtitle: ""
+
+# Available placeholders:
+# %player% - the players username
+# %role% - The players ingame role (Alpha, Infected, Survivor) roles are returned with a color (§a or §c)
+# %survivors% - The count of players with the role "Survivor"
+# %infected% - The count of players with the role "Infected"
+# %timer% - The game timer
+# %kills% - The amount of kills a player has
+# %map% - The name of the map the game is currently on
+scoreboard:
+  title: "<yellow><bold>Infection"
+  lines:
+    - "<green> "
+    - "Role: %role%"
+    - "<red> "
+    - "Time left: <green>%timer%"
+    - "<dark_green> "
+    - "Survivors: <green>%survivors%"
+    - "Infected: <red>%infected%"
+    - "<dark_red> "
+    - "Kills: <green>%kills%"
+    - "<yellow> "
+    - "Map: <green>%map%"
+
+settings:
+  # The time a game takes in seconds
+  gametime: 240
+
+  executes:
+    # Replace with /hub or /spawn
+    playerOnLeaveQueue: "/hub"
+    playerOnGameEnd: "/hub"
+    playerOnFinalDeath: "/hub"
+
+  quit-item:
+    item: "minecraft:red_bed"
+    name: "<red>Quit <gray>(Right-click)"
+    amount: 1
+    slot: 8 # Hotbar slot 9
+    lore:
+      - "<aqua> "
+      - "<yellow>Right-click while holding the item"
+      - "<yellow>to leave the queue."
+
+  # These are the items a player is given based on their role
+  game-items:
+    # Survivor Role
+    survivor:
+      bow:
+        name: "<green>Basic Bow"
+        lore:
+          - "<gray>Defend yourself!"
+      arrows:
+        name: "<green>Arrow"
+        amount: 32
+        lore:
+          - "<gray>Deadly arrows"
+    # Infected Role
+    infected:
+      sword:
+        type: "minecraft:iron_sword"
+        name: "<green>Sword"
+        lore:
+          - "<gray>Eliminate survivors!"
+      armor:
+        helmet:
+          type: "minecraft:iron_helmet"
+          name: "<red>Iron Helmet"
+        leggings:
+          type: "minecraft:iron_leggings"
+          name: "<red>Iron Leggings"
+        boots:
+          type: "minecraft:iron_boots"
+          name: "<red>Iron Boots"
+    # Alpha Role
+    alpha:
+      bow:
+        name: "<green>Basic Bow"
+        lore:
+          - "<gray>Defend yourself!"
+      sword:
+        type: "minecraft:iron_sword"
+        name: "<green>Sword"
+        lore:
+          - "<gray>Eliminate survivors!"
+
+# Your maps will be saved here
+maps:
+  mansion:
+    name: mansion
+    queue-limit: 10
+    area:
+      pos1: [-6830.0, 50.0, -4740.0]
+      pos2: [-6700.0, 110.0, -4610.0]
+    spawns:
+      survivor:
+      - {world: hs_horror, x: -6759.5, y: 63.0, z: -4699.5, yaw: 180.0, pitch: 0.0}
+      - {world: hs_horror, x: -6744.5, y: 63.0, z: -4704.5, yaw: 180.0, pitch: 0.0}
+      - {world: hs_horror, x: -6774.5, y: 63.0, z: -4704.5, yaw: 180.0, pitch: 0.0}
+      infected:
+      - {world: hs_horror, x: -6759.5, y: 63.0, z: -4717.5, yaw: 180.0, pitch: 0.0}
+      queue-spawn: [hs_horror, -6767.5, 111.0, -4671.5, 0.0, 0.0]

@@ -1,0 +1,13 @@
+# Everything the server generates or downloads stays local: worlds, players, databases, jars, logs, secrets.
+/server/
+/tools/jdk/
+/tools/.jdk-tmp/
+/tools/.rcon-pass
+/tools/boot.log
+/tools/disabled/
+/removed-plugins/
+/PANEL-LOGIN.txt
+plugin-src/*/out/
+__pycache__/
+*.pyc
+.DS_Store

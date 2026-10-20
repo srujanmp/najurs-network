@@ -1,0 +1,90 @@
+# Multiverse-Inventories Groups
+  
+# To ADD, DELETE, and EDIT groups use the command /mvinv group.
+# No support will be given for those who manually edit these groups.
+groups:
+  default:
+    worlds:
+    - lobby
+    - lobby_nether
+    - lobby_the_end
+    shares:
+    - all
+  arena:
+    worlds:
+    - arena
+    shares:
+    - all
+  skyblock:
+    worlds:
+    - bskyblock_world
+    - bskyblock_world_nether
+    - bskyblock_world_the_end
+    shares:
+    - all
+  oneblock:
+    worlds:
+    - oneblock_world
+    - oneblock_world_nether
+    - oneblock_world_the_end
+    shares:
+    - all
+  creative:
+    worlds:
+    - creative
+    shares:
+    - all
+  sw_random_drops:
+    worlds:
+    - sw_random_drops
+    - sw_random_drops_nether
+    - sw_random_drops_the_end
+    shares:
+    - all
+  sw_mob_morph:
+    worlds:
+    - sw_mob_morph
+    - sw_mob_morph_nether
+    - sw_mob_morph_the_end
+    shares:
+    - all
+  sw_goose_chase:
+    worlds:
+    - sw_goose_chase
+    - sw_goose_chase_nether
+    - sw_goose_chase_the_end
+    shares:
+    - all
+  sw_survival:
+    worlds:
+    - sw_survival
+    - sw_survival_nether
+    - sw_survival_the_end
+    shares:
+    - all
+  nightfall:
+    worlds:
+    - nightfall
+    shares:
+    - all
+  sw_263:
+    worlds:
+    - sw_263
+    - sw_263_nether
+    - sw_263_the_end
+    shares:
+    - all
+  sw_coop_skyblock:
+    worlds:
+    - sw_coop_skyblock
+    - sw_coop_skyblock_nether
+    - sw_coop_skyblock_the_end
+    shares:
+    - all
+  sw_coop_oneblock:
+    worlds:
+    - sw_coop_oneblock
+    - sw_coop_oneblock_nether
+    - sw_coop_oneblock_the_end
+    shares:
+    - all

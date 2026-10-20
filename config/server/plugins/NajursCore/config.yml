@@ -1,0 +1,42 @@
+worlds:
+  sw_random_drops:
+    name: Random Drops
+    type: normal
+    flags:
+    - randomdrops
+    created: 1792425049343
+  sw_mob_morph:
+    name: Mob Morph
+    type: normal
+    flags:
+    - mobmorph
+    created: 1792425051042
+  sw_goose_chase:
+    name: Goose Chase
+    type: normal
+    flags:
+    - chaos
+    created: 1792427494171
+  sw_survival:
+    name: Survival
+    type: normal
+    flags: []
+    created: 1792453581016
+  sw_263:
+    name: '263'
+    type: normal
+    flags: []
+    created: 1792454617107
+  sw_coop_skyblock:
+    name: Coop Skyblock
+    type: skyblock
+    flags: []
+    created: 1792455172163
+  sw_coop_oneblock:
+    name: Coop OneBlock
+    type: oneblock
+    flags: []
+    created: 1792455173134
+    count: 0
+chaos-wave-seconds: 25
+force-dialogs: false

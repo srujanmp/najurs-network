@@ -1,0 +1,939 @@
+{
+ "lobby": [
+  0.5,
+  120,
+  4.5
+ ],
+ "hall": [
+  0.5,
+  65,
+  0.5
+ ],
+ "spawns": [
+  [
+   5.0,
+   65,
+   0.5
+  ],
+  [
+   3.68,
+   65,
+   3.68
+  ],
+  [
+   0.5,
+   65,
+   5.0
+  ],
+  [
+   -2.68,
+   65,
+   3.68
+  ],
+  [
+   -4.0,
+   65,
+   0.5
+  ],
+  [
+   -2.68,
+   65,
+   -2.68
+  ],
+  [
+   0.5,
+   65,
+   -4.0
+  ],
+  [
+   3.68,
+   65,
+   -2.68
+  ]
+ ],
+ "bell": [
+  0,
+  66,
+  0
+ ],
+ "rooms": [
+  {
+   "name": "NorthWest Generator Room",
+   "kind": "generator",
+   "x1": -39,
+   "z1": -39,
+   "x2": -25,
+   "z2": -25
+  },
+  {
+   "name": "Bedroom",
+   "kind": "bedroom",
+   "x1": -39,
+   "z1": -23,
+   "x2": -25,
+   "z2": -9
+  },
+  {
+   "name": "Storage",
+   "kind": "storage",
+   "x1": -39,
+   "z1": -7,
+   "x2": -25,
+   "z2": 7
+  },
+  {
+   "name": "Armory",
+   "kind": "armory",
+   "x1": -39,
+   "z1": 9,
+   "x2": -25,
+   "z2": 23
+  },
+  {
+   "name": "SouthWest Generator Room",
+   "kind": "generator",
+   "x1": -39,
+   "z1": 25,
+   "x2": -25,
+   "z2": 39
+  },
+  {
+   "name": "Laboratory",
+   "kind": "lab",
+   "x1": -23,
+   "z1": -39,
+   "x2": -9,
+   "z2": -25
+  },
+  {
+   "name": "Greenhouse",
+   "kind": "greenhouse",
+   "x1": -23,
+   "z1": -23,
+   "x2": -9,
+   "z2": -9
+  },
+  {
+   "name": "Study",
+   "kind": "study",
+   "x1": -23,
+   "z1": -7,
+   "x2": -9,
+   "z2": 7
+  },
+  {
+   "name": "Kitchen",
+   "kind": "kitchen",
+   "x1": -23,
+   "z1": 9,
+   "x2": -9,
+   "z2": 23
+  },
+  {
+   "name": "Dining Room",
+   "kind": "dining",
+   "x1": -23,
+   "z1": 25,
+   "x2": -9,
+   "z2": 39
+  },
+  {
+   "name": "Library",
+   "kind": "library",
+   "x1": -7,
+   "z1": -39,
+   "x2": 7,
+   "z2": -25
+  },
+  {
+   "name": "Central Generator Room",
+   "kind": "generator",
+   "x1": -7,
+   "z1": -23,
+   "x2": 7,
+   "z2": -9
+  },
+  {
+   "name": "Great Hall",
+   "kind": "hall",
+   "x1": -7,
+   "z1": -7,
+   "x2": 7,
+   "z2": 7
+  },
+  {
+   "name": "Fuse Room",
+   "kind": "fuse",
+   "x1": -7,
+   "z1": 9,
+   "x2": 7,
+   "z2": 23
+  },
+  {
+   "name": "Cellar",
+   "kind": "cellar",
+   "x1": -7,
+   "z1": 25,
+   "x2": 7,
+   "z2": 39
+  },
+  {
+   "name": "Crypt",
+   "kind": "crypt",
+   "x1": 9,
+   "z1": -39,
+   "x2": 23,
+   "z2": -25
+  },
+  {
+   "name": "Bathroom",
+   "kind": "bathroom",
+   "x1": 9,
+   "z1": -23,
+   "x2": 23,
+   "z2": -9
+  },
+  {
+   "name": "Chapel",
+   "kind": "chapel",
+   "x1": 9,
+   "z1": -7,
+   "x2": 23,
+   "z2": 7
+  },
+  {
+   "name": "Nursery",
+   "kind": "nursery",
+   "x1": 9,
+   "z1": 9,
+   "x2": 23,
+   "z2": 23
+  },
+  {
+   "name": "South Crypt",
+   "kind": "crypt",
+   "x1": 9,
+   "z1": 25,
+   "x2": 23,
+   "z2": 39
+  },
+  {
+   "name": "NorthEast Generator Room",
+   "kind": "generator",
+   "x1": 25,
+   "z1": -39,
+   "x2": 39,
+   "z2": -25
+  },
+  {
+   "name": "East Crypt",
+   "kind": "crypt",
+   "x1": 25,
+   "z1": -23,
+   "x2": 39,
+   "z2": -9
+  },
+  {
+   "name": "East Storage",
+   "kind": "storage",
+   "x1": 25,
+   "z1": -7,
+   "x2": 39,
+   "z2": 7
+  },
+  {
+   "name": "East Kitchen",
+   "kind": "kitchen",
+   "x1": 25,
+   "z1": 9,
+   "x2": 39,
+   "z2": 23
+  },
+  {
+   "name": "SouthEast Generator Room",
+   "kind": "generator",
+   "x1": 25,
+   "z1": 25,
+   "x2": 39,
+   "z2": 39
+  }
+ ],
+ "stations": [
+  {
+   "id": "s0",
+   "x": -32,
+   "y": 65,
+   "z": -36,
+   "room": "NorthWest Generator Room",
+   "task": "Refuel the generator",
+   "kind": "generator"
+  },
+  {
+   "id": "s1",
+   "x": -32,
+   "y": 65,
+   "z": -20,
+   "room": "Bedroom",
+   "task": "Mend the curtains",
+   "kind": "bedroom"
+  },
+  {
+   "id": "s2",
+   "x": -32,
+   "y": 65,
+   "z": -4,
+   "room": "Storage",
+   "task": "Search the crates",
+   "kind": "storage"
+  },
+  {
+   "id": "s3",
+   "x": -32,
+   "y": 65,
+   "z": 12,
+   "room": "Armory",
+   "task": "Sharpen the blades",
+   "kind": "armory"
+  },
+  {
+   "id": "s4",
+   "x": -32,
+   "y": 65,
+   "z": 28,
+   "room": "SouthWest Generator Room",
+   "task": "Refuel the generator",
+   "kind": "generator"
+  },
+  {
+   "id": "s5",
+   "x": -16,
+   "y": 65,
+   "z": -36,
+   "room": "Laboratory",
+   "task": "Mix the antidote",
+   "kind": "lab"
+  },
+  {
+   "id": "s6",
+   "x": -16,
+   "y": 65,
+   "z": -20,
+   "room": "Greenhouse",
+   "task": "Feed the plants",
+   "kind": "greenhouse"
+  },
+  {
+   "id": "s7",
+   "x": -16,
+   "y": 65,
+   "z": -4,
+   "room": "Study",
+   "task": "Sort the old maps",
+   "kind": "study"
+  },
+  {
+   "id": "s8",
+   "x": -16,
+   "y": 65,
+   "z": 12,
+   "room": "Kitchen",
+   "task": "Stir the soup",
+   "kind": "kitchen"
+  },
+  {
+   "id": "s9",
+   "x": -16,
+   "y": 65,
+   "z": 28,
+   "room": "Dining Room",
+   "task": "Set the table",
+   "kind": "dining"
+  },
+  {
+   "id": "s10",
+   "x": 0,
+   "y": 65,
+   "z": -36,
+   "room": "Library",
+   "task": "Read the cursed tome",
+   "kind": "library"
+  },
+  {
+   "id": "s11",
+   "x": 0,
+   "y": 65,
+   "z": -20,
+   "room": "Central Generator Room",
+   "task": "Refuel the generator",
+   "kind": "generator"
+  },
+  {
+   "id": "s12",
+   "x": 0,
+   "y": 65,
+   "z": 12,
+   "room": "Fuse Room",
+   "task": "Fix the wiring",
+   "kind": "fuse"
+  },
+  {
+   "id": "s13",
+   "x": 0,
+   "y": 65,
+   "z": 28,
+   "room": "Cellar",
+   "task": "Tap the old barrel",
+   "kind": "cellar"
+  },
+  {
+   "id": "s14",
+   "x": 16,
+   "y": 65,
+   "z": -36,
+   "room": "Crypt",
+   "task": "Light the crypt fire",
+   "kind": "crypt"
+  },
+  {
+   "id": "s15",
+   "x": 16,
+   "y": 65,
+   "z": -20,
+   "room": "Bathroom",
+   "task": "Drain the bath",
+   "kind": "bathroom"
+  },
+  {
+   "id": "s16",
+   "x": 16,
+   "y": 65,
+   "z": -4,
+   "room": "Chapel",
+   "task": "Pray at the altar",
+   "kind": "chapel"
+  },
+  {
+   "id": "s17",
+   "x": 16,
+   "y": 65,
+   "z": 12,
+   "room": "Nursery",
+   "task": "Wind the music box",
+   "kind": "nursery"
+  },
+  {
+   "id": "s18",
+   "x": 16,
+   "y": 65,
+   "z": 28,
+   "room": "South Crypt",
+   "task": "Light the crypt fire",
+   "kind": "crypt"
+  },
+  {
+   "id": "s19",
+   "x": 32,
+   "y": 65,
+   "z": -36,
+   "room": "NorthEast Generator Room",
+   "task": "Refuel the generator",
+   "kind": "generator"
+  },
+  {
+   "id": "s20",
+   "x": 32,
+   "y": 65,
+   "z": -20,
+   "room": "East Crypt",
+   "task": "Light the crypt fire",
+   "kind": "crypt"
+  },
+  {
+   "id": "s21",
+   "x": 32,
+   "y": 65,
+   "z": -4,
+   "room": "East Storage",
+   "task": "Search the crates",
+   "kind": "storage"
+  },
+  {
+   "id": "s22",
+   "x": 32,
+   "y": 65,
+   "z": 12,
+   "room": "East Kitchen",
+   "task": "Stir the soup",
+   "kind": "kitchen"
+  },
+  {
+   "id": "s23",
+   "x": 32,
+   "y": 65,
+   "z": 28,
+   "room": "SouthEast Generator Room",
+   "task": "Refuel the generator",
+   "kind": "generator"
+  }
+ ],
+ "generators": [
+  {
+   "x": -32,
+   "y": 65,
+   "z": -36,
+   "room": "NorthWest Generator Room",
+   "lamps": [
+    -36,
+    -36,
+    -28,
+    -28
+   ]
+  },
+  {
+   "x": -32,
+   "y": 65,
+   "z": 28,
+   "room": "SouthWest Generator Room",
+   "lamps": [
+    -36,
+    28,
+    -28,
+    36
+   ]
+  },
+  {
+   "x": 0,
+   "y": 65,
+   "z": -20,
+   "room": "Central Generator Room",
+   "lamps": [
+    -4,
+    -20,
+    4,
+    -12
+   ]
+  },
+  {
+   "x": 32,
+   "y": 65,
+   "z": -36,
+   "room": "NorthEast Generator Room",
+   "lamps": [
+    28,
+    -36,
+    36,
+    -28
+   ]
+  },
+  {
+   "x": 32,
+   "y": 65,
+   "z": 28,
+   "room": "SouthEast Generator Room",
+   "lamps": [
+    28,
+    28,
+    36,
+    36
+   ]
+  }
+ ],
+ "candles": [
+  [
+   -36.5,
+   65.2,
+   -30.5
+  ],
+  [
+   -30.5,
+   65.2,
+   -26.5
+  ],
+  [
+   -25.5,
+   65.2,
+   -37.5
+  ],
+  [
+   -27.5,
+   65.2,
+   -17.5
+  ],
+  [
+   -26.5,
+   65.2,
+   -9.5
+  ],
+  [
+   -34.5,
+   65.2,
+   -12.5
+  ],
+  [
+   -29.5,
+   65.2,
+   6.5
+  ],
+  [
+   -28.5,
+   65.2,
+   -4.5
+  ],
+  [
+   -27.5,
+   65.2,
+   4.5
+  ],
+  [
+   -27.5,
+   65.2,
+   13.5
+  ],
+  [
+   -26.5,
+   65.2,
+   22.5
+  ],
+  [
+   -28.5,
+   65.2,
+   17.5
+  ],
+  [
+   -37.5,
+   65.2,
+   37.5
+  ],
+  [
+   -36.5,
+   65.2,
+   33.5
+  ],
+  [
+   -26.5,
+   65.2,
+   27.5
+  ],
+  [
+   -17.5,
+   65.2,
+   -36.5
+  ],
+  [
+   -11.5,
+   65.2,
+   -31.5
+  ],
+  [
+   -12.5,
+   65.2,
+   -34.5
+  ],
+  [
+   -21.5,
+   65.2,
+   -13.5
+  ],
+  [
+   -14.5,
+   65.2,
+   -20.5
+  ],
+  [
+   -16.5,
+   65.2,
+   -21.5
+  ],
+  [
+   -13.5,
+   65.2,
+   -4.5
+  ],
+  [
+   -21.5,
+   65.2,
+   -5.5
+  ],
+  [
+   -20.5,
+   65.2,
+   -4.5
+  ],
+  [
+   -11.5,
+   65.2,
+   19.5
+  ],
+  [
+   -15.5,
+   65.2,
+   19.5
+  ],
+  [
+   -11.5,
+   65.2,
+   12.5
+  ],
+  [
+   -11.5,
+   65.2,
+   27.5
+  ],
+  [
+   -21.5,
+   65.2,
+   35.5
+  ],
+  [
+   -15.5,
+   65.2,
+   29.5
+  ],
+  [
+   -2.5,
+   65.2,
+   -36.5
+  ],
+  [
+   2.5,
+   65.2,
+   -28.5
+  ],
+  [
+   -3.5,
+   65.2,
+   -27.5
+  ],
+  [
+   6.5,
+   65.2,
+   -13.5
+  ],
+  [
+   6.5,
+   65.2,
+   -15.5
+  ],
+  [
+   -4.5,
+   65.2,
+   -17.5
+  ],
+  [
+   -2.5,
+   65.2,
+   12.5
+  ],
+  [
+   6.5,
+   65.2,
+   17.5
+  ],
+  [
+   4.5,
+   65.2,
+   16.5
+  ],
+  [
+   5.5,
+   65.2,
+   30.5
+  ],
+  [
+   4.5,
+   65.2,
+   28.5
+  ],
+  [
+   -4.5,
+   65.2,
+   27.5
+  ],
+  [
+   11.5,
+   65.2,
+   -28.5
+  ],
+  [
+   22.5,
+   65.2,
+   -30.5
+  ],
+  [
+   20.5,
+   65.2,
+   -36.5
+  ],
+  [
+   15.5,
+   65.2,
+   -9.5
+  ],
+  [
+   13.5,
+   65.2,
+   -17.5
+  ],
+  [
+   10.5,
+   65.2,
+   -9.5
+  ],
+  [
+   10.5,
+   65.2,
+   4.5
+  ],
+  [
+   17.5,
+   65.2,
+   6.5
+  ],
+  [
+   10.5,
+   65.2,
+   -2.5
+  ],
+  [
+   20.5,
+   65.2,
+   14.5
+  ],
+  [
+   20.5,
+   65.2,
+   10.5
+  ],
+  [
+   11.5,
+   65.2,
+   20.5
+  ],
+  [
+   15.5,
+   65.2,
+   38.5
+  ],
+  [
+   10.5,
+   65.2,
+   29.5
+  ],
+  [
+   13.5,
+   65.2,
+   28.5
+  ],
+  [
+   27.5,
+   65.2,
+   -30.5
+  ],
+  [
+   29.5,
+   65.2,
+   -32.5
+  ],
+  [
+   27.5,
+   65.2,
+   -34.5
+  ],
+  [
+   34.5,
+   65.2,
+   -9.5
+  ],
+  [
+   38.5,
+   65.2,
+   -16.5
+  ],
+  [
+   31.5,
+   65.2,
+   -11.5
+  ],
+  [
+   27.5,
+   65.2,
+   4.5
+  ],
+  [
+   29.5,
+   65.2,
+   1.5
+  ],
+  [
+   37.5,
+   65.2,
+   4.5
+  ],
+  [
+   36.5,
+   65.2,
+   18.5
+  ],
+  [
+   29.5,
+   65.2,
+   21.5
+  ],
+  [
+   35.5,
+   65.2,
+   22.5
+  ],
+  [
+   35.5,
+   65.2,
+   38.5
+  ],
+  [
+   28.5,
+   65.2,
+   36.5
+  ],
+  [
+   36.5,
+   65.2,
+   37.5
+  ]
+ ],
+ "gates": [
+  {
+   "x1": -1,
+   "y1": 65,
+   "z1": -40,
+   "x2": 1,
+   "y2": 67,
+   "z2": -40,
+   "zone": [
+    -6,
+    -49,
+    6,
+    -41
+   ]
+  },
+  {
+   "x1": -1,
+   "y1": 65,
+   "z1": 40,
+   "x2": 1,
+   "y2": 67,
+   "z2": 40,
+   "zone": [
+    -6,
+    41,
+    6,
+    49
+   ]
+  }
+ ],
+ "bounds": [
+  -40,
+  -40,
+  40,
+  40
+ ]
+}

@@ -1,0 +1,1440 @@
+# DO NOT EDIT THIS VALUE!
+config-version: 20
+
+# Define placeholders usable in any message below.
+# Example: Adding 'PREFIX: "[Cool]"' below and then putting '{PREFIX}' in a message will display '[Cool]' when the message is sent in game.
+STRINGS:
+  PREFIX: '&9[Duels]'
+  LINE: '&9&m------------------------------------&r'
+  HALF_LINE: '&9&m----------------&r'
+  FAIL_PREFIX: '&cFailed to start the match:'
+
+
+GENERAL:
+  true: '&atrue'
+  false: '&cfalse'
+  enabled: '&aenabled'
+  disabled: '&cdisabled'
+  not-selected: 'Not Selected'
+  random: 'Random'
+  none: 'none'
+  unlimited: 'Unlimited'
+  unknown: 'Unknown'
+  kit-selector: 'Kit Selector'
+  arena-selector: 'Arena Selector'
+  item-betting: 'Item Betting'
+  betting: 'Betting'
+  cancelled: '{PREFIX} &eAction cancelled.'
+
+
+ERROR:
+  no-permission: '{PREFIX} &cNope! You are lacking the following permission: ''%permission%'''
+  data:
+    load-failure: '{PREFIX} &cCould not load your duel stats. Please try re-logging.'
+    not-loaded: '{PREFIX} &cUsers are still under load, please try again later.'
+    not-found: '{PREFIX} &c%name% has no duel stats available.'
+  top:
+    no-data-available: '{PREFIX} &cThere were no data available.'
+  player:
+    not-found: '{PREFIX} &c%name% is not online.'
+    no-longer-online: '{PREFIX} &cThat player is no longer online.'
+  arena:
+    not-found: '{PREFIX} &cNo arena exists with the name ''%name%''.'
+    already-exists: '{PREFIX} &cAn arena named ''%name%'' already exists.'
+    delete-failure: '{PREFIX} &cCannot delete an arena that is currently in use. Please disable it first using the command ''/duels toggle %name%'''
+    invalid-position: '{PREFIX} &cPosition must be 1 or 2.'
+    no-position-set: '{PREFIX} &cArena ''%name%'' have no positions set.'
+    empty-hand: '{PREFIX} &cYou must be holding an item to use this command.'
+  kit:
+    not-found: '{PREFIX} &cNo kit exists with the name ''%name%''.'
+    already-exists: '{PREFIX} &cA kit named ''%name%'' already exists.'
+    empty-hand: '{PREFIX} &cYou must be holding an item to use this command.'
+  customkits:
+    limit-reached: '{PREFIX} &cYou have reached your custom kit limit of &e%limit%&c.'
+    name-empty: '{PREFIX} &cKit name cannot be empty.'
+    name-too-short: '{PREFIX} &cKit name must be at least &e%min% &ccharacters long.'
+    name-too-long: '{PREFIX} &cKit name cannot exceed &e%max% &ccharacters.'
+    name-no-spaces: '{PREFIX} &cKit name cannot contain spaces.'
+    name-invalid-chars: '{PREFIX} &cKit name contains invalid characters.'
+    name-duplicate: '{PREFIX} &cYou already have a custom kit named ''&e%name%&c''.'
+    not-found: '{PREFIX} &cCustom kit ''&e%name%&c'' was not found.'
+    material-blocked: '{PREFIX} &cMaterial ''&e%material%&c'' is not allowed in custom kits.'
+    material-not-allowed: '{PREFIX} &cMaterial ''&e%material%&c'' is not allowed in custom kits.'
+    invalid-amount: '{PREFIX} &cInvalid item amount.'
+    invalid-amount-stack: '{PREFIX} &cItem amount for ''&e%material%&c'' exceeds vanilla maximum stack size (&e%max%&c).'
+    item-data-disallowed: '{PREFIX} &cCustom item data (attributes, unbreakable, etc.) goes beyond vanilla mechanics and requires permission.'
+    enchantment-blocked: '{PREFIX} &cEnchantment ''&e%enchantment%&c'' is not allowed.'
+    enchantment-incompatible: '{PREFIX} &cEnchantment ''&e%enchantment%&c'' cannot be applied to ''&e%item%&c''.'
+    enchantment-level-too-high: '{PREFIX} &cEnchantment ''&e%enchantment%&c'' level exceeds maximum allowed (&e%max%&c).'
+    too-many-attributes: '{PREFIX} &cToo many attribute modifiers on item (max: &e%max%&c).'
+    attribute-amount-invalid: '{PREFIX} &cAttribute modifier amount for &e%attribute% &cmust be between &e%min% &cand &e%max%&c.'
+    kit-null: '{PREFIX} &cInvalid custom kit.'
+    invalid-armor-slot: '{PREFIX} &cItem ''&e%material%&c'' cannot be equipped in the &e%slot% &cslot.'
+    potion-not-extendable: '{PREFIX} &cThis potion type cannot be extended.'
+    potion-not-upgradeable: '{PREFIX} &cThis potion type cannot be upgraded to Tier II.'
+    item-betting-disabled: '{PREFIX} &cPlayer-created custom kit duels only support money betting. Item betting is disabled.'
+
+  player-only: '{PREFIX} &cThis command can only be used by players.'
+  duel:
+    is-self: '{PREFIX} &cYou cannot duel yourself.'
+    inventory-not-empty: '{PREFIX} &cYou must have a cleared inventory to use this command.'
+    in-creative-mode: '{PREFIX} &cYou cannot duel in creative mode.'
+    in-blacklisted-world: '{PREFIX} &cYou cannot duel in this world.'
+    is-tagged: '{PREFIX} &cYou cannot duel while combat tagged.'
+    in-cooldown: '{PREFIX} &c%name% is in duel cooldown for %time%.'
+    not-in-duelzone: '{PREFIX} &cYou can only duel in the following regions: %regions%'
+    requests-disabled: '{PREFIX} &c%name% is currently not accepting duel requests.'
+    already-has-request: '{PREFIX} &cYou already have a request sent to %name%.'
+    no-request: '{PREFIX} &cYou do not have a request from %name%.'
+    already-in-match:
+      sender: '{PREFIX} &cYou cannot do this while in a duel.'
+      target: '{PREFIX} &c%name% is already in a duel.'
+    mode-unselected: '{PREFIX} &cYou must either choose a kit or enable own inventory mode.'
+    mode-fixed: '{PREFIX} &cYou are not allowed to disable own inventory mode.'
+    already-spectating:
+      sender: '{PREFIX} &cYou cannot do this while in spectator mode.'
+      target: '{PREFIX} &c%name% is in spectator mode.'
+    not-in-match: '{PREFIX} &c%name% is not in a duel.'
+    prevent-teleportation: '{PREFIX} &cYou cannot teleport to this player because he is in a duel.'
+  party-duel:
+    inventory-not-empty: '{PREFIX} &cYou and your party members must have a cleared inventory to use this command.'
+    in-creative-mode: '{PREFIX} &cYou or your party member is in creative mode.'
+    in-blacklisted-world: '{PREFIX} &cYou or your party member is in a blacklisted world.'
+    is-tagged: '{PREFIX} &cYou or your party member is currently combat tagged.'
+    not-in-duelzone: '{PREFIX} &cYou or your party member is currently not in one of the following regions: %regions%'
+    already-has-request: '{PREFIX} &cYou already have a request sent to %name%''s party.'
+    no-request: '{PREFIX} &cYou do not have a request from %name%''s party.'
+    already-in-match:
+      sender: '{PREFIX} &cYou cannot do this while your party in a duel.'
+      target: '{PREFIX} &c%name%''s party is already in a duel.'
+    already-spectating:
+      sender: '{PREFIX} &cYou cannot do this while you or your party member is in spectator mode.'
+      target: '{PREFIX} &cA member of %name%''s party is in spectator mode.'
+    option-unavailable: '{PREFIX} &cItem/Money Betting is currently not available for party duels.'
+  party:
+    is-self: '{PREFIX} &cYou cannot create a party with yourself.'
+    is-not-owner: '{PREFIX} &cYou must be the owner of this party to do this.'
+    is-owner: '{PREFIX} &cYou cannot leave this party as you are the owner. You must either transfer the ownership of the party using ''/party transfer'' or disband the party using ''/party disband''.'
+    requests-disabled: '{PREFIX} &c%name% is currently not accepting party requests.'
+    already-has-invite: '{PREFIX} &cYou already have a invite sent to %name%.'
+    no-invite: '{PREFIX} &cYou do not have an invite from %name%.'
+    not-found: '{PREFIX} &cThat party no longer exists.'
+    already-in-party:
+      sender: '{PREFIX} &cYou cannot do this while in a party.'
+      target: '{PREFIX} &c%name% is already in a party.'
+    not-in-party:
+      sender: '{PREFIX} &cYou must be in a party to do this.'
+      target: '{PREFIX} &c%name% is not in a party.'
+    not-a-member: '{PREFIX} &c%name% is not a member of your party.'
+    in-same-party: '{PREFIX} &c%name% is in your party.'
+    kick-self: '{PREFIX} &cYou cannot kick yourself from the party.'
+    is-not-same-size: '{PREFIX} &cParty sizes must match to do this.'
+    is-not-online:
+      sender: '{PREFIX} &cAll members of your party must be online!'
+      target: '{PREFIX} &cAll members of %name%''s party must be online!'
+    max-size-reached:
+      sender: '{PREFIX} &cYour party has reached the maximum number of members!'
+      target: '{PREFIX} &c%name%''s Party has reached the maximum number of members!'
+    cannot-friendly-fire: '{PREFIX} &cFriendly fire is not allowed.'
+  setting:
+    disabled-option: '{PREFIX} &c%option% is currently disabled.'
+    arena-not-applicable: '{PREFIX} &cYou cannot use kit %kit% on arena %arena%.'
+  inventory-view:
+    not-a-uuid: '{PREFIX} &c%input% is not a valid UUID.'
+    not-found: '{PREFIX} &cNo inventory exists with the UUID ''%uuid%''.'
+  queue:
+    not-found: '{PREFIX} &cNo queue exists with kit %kit% and bet $%bet_amount%.'
+    not-found-name: '{PREFIX} &cNo queue exists with the name ''%name%''.'
+    already-exists: '{PREFIX} &cA queue with kit ''%kit%'' and bet $%bet_amount% already exists.'
+    already-in: '{PREFIX} &cYou are already in a queue!'
+    not-in-queue: '{PREFIX} &cYou are not in a queue.'
+    not-enough-money: '{PREFIX} &cYou need $%bet_amount% to join that queue.'
+    party-too-large: '{PREFIX} &cYour party has %party_size% members, but this queue allows teams of %team_size%.'
+    no-queues-available: '{PREFIX} &cNo queues are available.'
+  sign:
+    not-a-sign: '{PREFIX} &cThe block you are looking at is not a sign!'
+    not-found: '{PREFIX} &cThat sign is not a queue sign!'
+    already-exists: '{PREFIX} &cThat sign is already a queue sign! To remove, use the command ''/duels delsign'''
+    cancel-break: '{PREFIX} &cYou cannot break a queue sign manually! Please use the command ''/duels delsign'''
+  sound:
+    not-found: '{PREFIX} &cNo sound exists with the name ''%name%''.'
+  command:
+    invalid-sub-command: '{PREFIX} &c''%argument%'' is not a valid sub command. Please type ''/%command%'' for help.'
+    invalid-option: '{PREFIX} &c''%option%'' is not a valid option. Available options are: %available_options%'
+    invalid-action: '{PREFIX} &c''%action%'' is not a valid action. Available actions are: %available_actions%'
+    not-enough-money: '{PREFIX} &cYou do not have enough money to bet!'
+    lobby-save-failure: '{PREFIX} &cCould not save lobby location. Please check the console for more information.'
+    name-not-alphanumeric: '{PREFIX} &c''%name%'' is not alphanumeric.'
+    invalid-argument: "{PREFIX} &cInvalid argument: {arg}. Placeholders are not allowed in commands."
+
+
+COMMAND:
+  kit:
+    usage: '{PREFIX} &cUsage: /kit [edit|save|reset] [player] [kitname]'
+    edit:
+      usage: '{PREFIX} &cUsage: /kit edit <kitname>'
+    reset:
+      usage: '{PREFIX} &cUsage: /kit reset <kitname> or /kit reset <player> <kitname>'
+    unknown-subcommand: '{PREFIX} &cUnknown subcommand: %subcommand%'
+  duel:
+    usage:
+      - '{LINE}'
+      - '&f/%command% [player] &e- &7Sends a duel request to player.'
+      - '&f/%command% [player] <amount> &e- &7Sends a duel request with a bet.'
+      - '&f/%command% [accept | deny] [player] &e- &7Accepts or denies a duel request.'
+      - '&f/%command% stats <name> &e- &7Displays your duel stats.'
+      - '&f/%command% toggle &e- &7Enable or disable receiving duel requests.'
+      - '&f/%command% top [-|wins|losses|kit] &e- &7Displays top wins, losses, or rating for the kit.'
+      - '{LINE}'
+    request:
+      send:
+        sender:
+          - '{LINE}'
+          - '&7Duel request sent to &f%name%&7.'
+          - '&6- &7Kit: &3%kit%'
+          - '&6- &7Own Inventory: &r%own_inventory%'
+          - '&6- &7Arena: &e%arena%'
+          - '&6- &7Bet: &6$%bet_amount%'
+          - '&6- &7Item Betting: &r%item_betting%'
+          - '{LINE}'
+        receiver:
+          - '{LINE}'
+          - '&7Duel request received from &f%name%&7.'
+          - '&6- &7Kit: &3%kit%'
+          - '&6- &7Own Inventory: &r%own_inventory%'
+          - '&6- &7Arena: &e%arena%'
+          - '&6- &7Bet: &6$%bet_amount%'
+          - '&6- &7Item Betting: &r%item_betting%'
+          - '{LINE}'
+        clickable-text:
+          info:
+            text: '&7Click to '
+            hover-text: ''
+          accept:
+            text: '&a&l[ACCEPT] '
+            hover-text: '&7Click to &aaccept &7this request.'
+          deny:
+            text: '&c&l[DENY]'
+            hover-text: '&7Click to &cdeny &7this request.'
+      accept:
+        sender: '{PREFIX} &f%name% &7has accepted your duel request.'
+        receiver: '{PREFIX} &7Accepted the duel request from &f%name%&7.'
+      deny:
+        sender: '{PREFIX} &7Your duel request to &f%name% &7was denied.'
+        receiver: '{PREFIX} &7Denied the duel request from &f%name%&7.'
+    party-request:
+      send:
+        sender-party:
+          - '{LINE}'
+          - '&f%owner% &7has sent a duel request sent to &f%name%''s Party&7.'
+          - '&6- &7Kit: &3%kit%'
+          - '&6- &7Own Inventory: &r%own_inventory%'
+          - '&6- &7Arena: &e%arena%'
+          - '{LINE}'
+        receiver-party:
+          - '{LINE}'
+          - '&7Duel request received from &f%name%''s Party&7.'
+          - '&6- &7Kit: &3%kit%'
+          - '&6- &7Own Inventory: &r%own_inventory%'
+          - '&6- &7Arena: &e%arena%'
+        clickable-text:
+          info:
+            text: '&7Click to '
+            hover-text: ''
+          accept:
+            text: '&a&l[ACCEPT] '
+            hover-text: '&7Click to &aaccept &7this request.'
+          deny:
+            text: '&c&l[DENY]'
+            hover-text: '&7Click to &cdeny &7this request.'
+          extra:
+            text: '{LINE}'
+            hover-text: ''
+      accept:
+        sender-party:
+          - '{LINE}'
+          - '{PREFIX} &f%name%''s Party &7has accepted &f%owner%&7''s duel request.'
+          - '{LINE}'
+        receiver-party:
+          - '{LINE}'
+          - '{PREFIX} &f%owner% &7has accepted the duel request from &f%name%''s Party&7.'
+          - '{LINE}'
+      deny:
+        sender-party:
+          - '{LINE}'
+          - '{PREFIX} &f%name%''s Party &7has declined &f%owner%&7''s duel request.'
+          - '{LINE}'
+        receiver-party:
+          - '{LINE}'
+          - '{PREFIX} &7&f%owner%&7''s has declined the duel request from &f%name%''s Party&7.'
+          - '{LINE}'
+      preview:
+        server-kit: '{PREFIX} &aKit used for this duel request is server kit: &e%kit%'
+        own-inventory: '{PREFIX} &aThis duel request uses own inventory.'
+    stats:
+      displayed:
+        - '{LINE}'
+        - '&7Stats of &f%name% &e-'
+        - '&7Wins: &a%wins%'
+        - '&7Losses: &c%losses%'
+        - '&7W/L Ratio: &b%wl_ratio%'
+        - '&7Requests: &r%requests_enabled%'
+      # NOTE: Ratings will only display if either 'display-kit-ratings' or 'display-nokit-rating' is enabled in the configuration.
+      rating:
+        header: '&7Ratings &e-'
+        format: '&f%type%&7: &b%rating%'
+        footer: ''
+      # NOTE: Past matches will only display if 'display-past-matches' is enabled in the configuration.
+      match:
+        header: '&7Recent Matches &e-'
+        format: '&a%winner% &fvs &c%loser% &6[Hover Me!]'
+        hover-text:
+          - '&7Kit: &3%kit%'
+          - '&7Duration: &a%duration%'
+          - '&7Time: &f%time% ago'
+          - '&7Health: &d%health%❤'
+        footer: '{LINE}'
+    toggle:
+      enabled: '{PREFIX} &aYou are now receiving duel requests.'
+      disabled: '{PREFIX} &cYou are no longer accepting duel requests.'
+    top:
+      next-update: '{PREFIX} &7Next update: &f%remaining%'
+      header: '{HALF_LINE} &7Top &f10 &7%type% {HALF_LINE}'
+      display-format: '&e%rank%. &f%name% &e- &f%score% &7%identifier%'
+      footer: '{HALF_LINE} &7Top &f10 &7%type% {HALF_LINE}'
+
+  duels:
+    usage:
+      - '{LINE}'
+      - '&f/%command% help &e- &7Displays this page.'
+      - '&f/%command% help arena &e- &7Displays a list of arena commands.'
+      - '&f/%command% help kit &e- &7Displays a list of kit commands.'
+      - '&f/%command% help queue &e- &7Displays a list of queue commands.'
+      - '&f/%command% help sign &e- &7Displays a list of sign commands.'
+      - '&f/%command% help user &e- &7Displays a list of user edit commands.'
+      - '&f/%command% help extra &e- &7Displays a list of extra commands.'
+      - '{LINE}'
+    help:
+      arena:
+        - '{HALF_LINE} &fArena Commands {HALF_LINE}'
+        - '&f/%command% create [name] &e- &7Creates an arena with given name.'
+        - '&f/%command% set [name] [1|2] &e- &7Sets the teleport position of an arena.'
+        - '&f/%command% delete [name] &e- &7Deletes an arena.'
+        - '&f/%command% setarenaitem [name] &e- &7Sets the displayed item for selected arena.'
+        - '&f/%command% info [name] &e- &7Displays a list of information about the selected arena.'
+        - '&f/%command% toggle [name] &e- &7Enables or disables an arena.'
+        - '&f/%command% tp [name] <1|2> &e- &7Teleports to an arena.'
+        - '&f/%command% list &e- &7Displays the list of all arenas.'
+        - '{HALF_LINE} &fArena Commands {HALF_LINE}'
+      kit:
+        - '{HALF_LINE} &fKit Commands {HALF_LINE}'
+        - '&f/%command% savekit <-o> [name] &e- &7Saves a kit with given name.'
+        - '&f/%command% loadkit [name] &e- &7Loads the selected kit to your inventory.'
+        - '&f/%command% kitgive [kit] [player] &e- &7Gives a kit to a player.'
+        - '&f/%command% deletekit [name] &e- &7Deletes a kit.'
+        - '&f/%command% setitem [name] &e- &7Sets the displayed item for selected kit.'
+        - '&f/%command% options [kit] &e- &7Opens the options gui for selected kit.'
+        - '&f/%command% bind [kit] &e- &7Opens the arena bind gui for selected kit.'
+        - '&f/%command% list &e- &7Displays the list of all kits.'
+        - '{HALF_LINE} &fKit Commands {HALF_LINE}'
+      queue:
+        - '{HALF_LINE} &fQueue Sign Commands {HALF_LINE}'
+        - '&f/%command% createqueue [bet] [-|kit] &e- &7Creates a queue with bet and kit.'
+        - '&f/%command% deletequeue &e- &7Deletes the queue with bet and kit.'
+        - '&f/%command% queueoptions [name] [rated|maxdifference] [value] &e- &7Sets whether a queue is rated or its max rating difference.'
+        - '&f/%command% list &e- &7Displays a list of available queues.'
+        - '{HALF_LINE} &fQueue Sign Commands {HALF_LINE}'
+      sign:
+        - '{HALF_LINE} &fQueue Sign Commands {HALF_LINE}'
+        - '&f/%command% addsign [bet] [-|kit] &e- &7Creates a queue sign with bet and kit.'
+        - '&f/%command% delsign &e- &7Deletes the queue sign you are looking at.'
+        - '&f/%command% list &e- &7Displays a list of queue signs.'
+        - '{HALF_LINE} &fQueue Sign Commands {HALF_LINE}'
+      user:
+        - '{HALF_LINE} &fUser Edit Commands {HALF_LINE}'
+        - '&f/%command% setrating [name] [-|kit] [amount] &e- &7Sets player''s rating for kit.'
+        - '&f/%command% edit [name] [add|remove|set] [wins|losses] [amount] &e- &7Edits player''s stats.'
+        - '&f/%command% resetrating [name] [-|kit|all] &e- &7Resets all or specified kit''s rating for player.'
+        - '&f/%command% reset [name] &e- &7Resets player''s stats.'
+        - '{HALF_LINE} &fUser Edit Commands {HALF_LINE}'
+      extra:
+        - '{HALF_LINE} &fExtra Commands {HALF_LINE}'
+        - '&f/%command% setlobby &e- &7Sets duel lobby location.'
+        - '&f/%command% lobby &e- &7Teleports to duel lobby.'
+        - '&f/%command% playsound [name] &e- &7Plays the selected sound if defined in config.'
+        - '&f/%command% reload <module> &e- &7Reloads the plugin or the specified module.'
+        - '&f/%command% start <player1> <player2> [kit] [arena] &e- &7Forcefully starts a duel between two players.'
+        - '{HALF_LINE} &fExtra Commands {HALF_LINE}'
+    start:
+      usage: '{PREFIX} &cUsage: /%command% [admin] start <player1> <player2> [kit] [arena]'
+      same-player: '{PREFIX} &cYou cannot start a duel between the same player!'
+      player-dead: '{PREFIX} &c%name% is currently dead!'
+      already-in-match: '{PREFIX} &c%name% is already in a match!'
+      no-arena-available: '{PREFIX} &cNo arenas are currently available for this duel.'
+      arena-in-use: '{PREFIX} &cArena ''%name%'' is currently in use.'
+      arena-disabled: '{PREFIX} &cArena ''%name%'' is currently disabled.'
+      target: '{PREFIX} &eAn administrator has forcefully started a duel between you and &f%opponent%&e.'
+      success: '{PREFIX} &aForcefully started a duel between &e%player1% &aand &e%player2% &aon arena &e%arena% &awith kit &e%kit%&a.'
+    create: '{PREFIX} &7Arena &e%name% &7was successfully created. To set spawnpoints for this arena, use the command &f/duels set %name% 1'
+    delete: '{PREFIX} &7Arena &e%name% &7was successfully removed.'
+    set: '{PREFIX} &7Set position &f%position% &7for arena &e%name% &7at &f%location%&7.'
+    toggle: '{PREFIX} &7Arena &e%name% &7is now &r%state%&7.'
+    disable: '{PREFIX} &7Arena &e%name% &7is now disabled.'
+    enable: '{PREFIX} &7Arena &e%name% &7is now enabled.'
+    already-disabled: '{PREFIX} &c%name% is already disabled.'
+    already-enabled: '{PREFIX} &c%name% is already enabled.'
+    teleport: '{PREFIX} &7You have been teleported to arena &e%name%&7''s position &f%position%&7.'
+    save-kit: '{PREFIX} &7Kit &3%name% &7was successfully saved.'
+    delete-kit: '{PREFIX} &7Kit &3%name% &7was successfully removed.'
+    load-kit: '{PREFIX} &7Kit &3%name% &7was loaded in your inventory.'
+    kit-give: '{PREFIX} &7Gave kit &3%kit% &7to &f%name%&7.'
+    kit-give-target: '{PREFIX} &7You were given kit &3%kit%&7.'
+    set-item: '{PREFIX} &7Kit &3%name%&7''s displayed item was changed to your held item.'
+    set-arena-item: '{PREFIX} &7Arena &e%name%&7''s displayed item was changed to your held item.'
+    create-queue: '{PREFIX} &7Created a queue with kit &3%kit% &7and bet &6$%bet_amount%&7.'
+    delete-queue: '{PREFIX} &7Deleted a queue with kit &3%kit% &7and bet &6$%bet_amount%&7.'
+    queue-options:
+      rated: '{PREFIX} &7Set rated to %rated% &7for queue &f%name%&7.'
+      max-difference: '{PREFIX} &7Set max rating difference to &a%max_difference% &7for queue &f%name%&7.'
+      max-difference-default: '{PREFIX} &7Queue &f%name% &7now uses the default max rating difference of &a%max_difference%&7.'
+    add-sign: '{PREFIX} &7Created queue sign at &f%location% &7with kit &3%kit% &7and bet &6$%bet_amount%&7.'
+    del-sign: '{PREFIX} &7Deleted queue sign at &f%location% &7with kit &3%kit% &7and bet &6$%bet_amount%&7.'
+    set-lobby: '{PREFIX} &7Duel lobby set at your current location.'
+    lobby: '{PREFIX} &7You have been teleported to lobby!'
+    edit: '{PREFIX} &7Following action has been executed for &f%name%&7: &f%action% %amount% %type%'
+    set-rating: '{PREFIX} &f%name%&7''s rating for kit &3%kit% &7was set to &a%rating%&7.'
+    reset-rating: '{PREFIX} &7Reset &f%name%&7''s rating for kit &3%kit%&7.'
+    reset: '{PREFIX} &7Reset &f%name%&7''s stats.'
+    info:
+      - '{HALF_LINE} &7Arena &e%name% {HALF_LINE}'
+      - '&7In Use: &r%in_use%'
+      - '&7Disabled: &r%disabled%'
+      - '&7Bound Kits: &3%kits%'
+      - '&7Positions: &f%positions%'
+      - '&7Players: &f%players%'
+      - '{HALF_LINE} &7Arena &e%name% {HALF_LINE}'
+    list:
+      - '{LINE}'
+      - '&4DARK RED&7: Disabled arena'
+      - '&9BLUE&7: Arena without spawn positions set'
+      - '&aGREEN&7: Available arena'
+      - '&cRED&7: Arena in use'
+      - '&7Arenas: &r%arenas%'
+      - '&7Kits: &f%kits%'
+      - '&7Queues: &b%queues%'
+      - '&7Queue Signs: &f%queue_signs%'
+      - '&7Duel lobby is located at &f%lobby%&7.'
+      - '{LINE}'
+
+  spectate:
+    usage:
+      - '{LINE}'
+      - '&f/spectate [player] &e- &7Spectates the a player in duel.'
+      - '{LINE}'
+    start-spectate: '{PREFIX} &7Now spectating &f%name%&7 vs &f%opponent%&7 in arena &e%arena%&7. Type &f/spectate &7to stop spectating.'
+    stop-spectate: '{PREFIX} &7You are no longer spectating &f%name%&7.'
+  party:
+    usage:
+      - '{LINE}'
+      - '&f/%command% toggle &e- &7Enable or disable receiving party invites.'
+      - '&f/%command% [player] &e- &7Sends a party invite to a player.'
+      - '&f/%command% list &e- &7Lists the current party''s members.'
+      - '&f/%command% accept [player] &e- &7Accepts a party invite.'
+      - '&f/%command% leave &e- &7Leaves the current party.'
+      - '&f/%command% kick [player] &e- &7Kicks a player from your party.'
+      - '&f/%command% friendlyfire &e- &7Enable or disable friendly fire for your party.'
+      - '&f/%command% transfer [player] &e- &7Transfers the ownership of your party to player.'
+      - '&f/%command% disband &e- &7Disbands the current party.'
+      - '{LINE}'
+    toggle:
+      enabled: '{PREFIX} &aYou are now receiving party requests.'
+      disabled: '{PREFIX} &cYou are no longer accepting party requests.'
+    list:
+      - '{LINE}'
+      - '&7Leader: &f%owner%'
+      - '&7Members (&r%members_count%&7): &r%members%'
+      - '&7Online (&r%online_count%&7): &r%online_members%'
+      - '{LINE}'
+    invite:
+      send:
+        receiver:
+          - '{LINE}'
+          - '{PREFIX} &7Party invite received from &f%name%&7. Type &f/party accept %name% &7to join the party.'
+          - '{LINE}'
+        members:
+          - '{LINE}'
+          - '{PREFIX} &f%owner% &7has invited &f%name% &7to the party!'
+          - '{LINE}'
+      accept:
+        receiver:
+          - '{LINE}'
+          - '{PREFIX} &7Accepted the party invite from &f%name%&7.'
+          - '{LINE}'
+        members:
+          - '{LINE}'
+          - '{PREFIX} &f%name% &7has joined the party!'
+          - '{LINE}'
+    leave:
+      sender:
+        - '{LINE}'
+        - '{PREFIX} &7You have left &f%name%''s Party&7.'
+        - '{LINE}'
+      members:
+        - '{LINE}'
+        - '{PREFIX} &f%name% &7has left the party!'
+        - '{LINE}'
+    kick:
+      receiver:
+        - '{LINE}'
+        - '{PREFIX} &f%owner% &7has kicked you from the party!'
+        - '{LINE}'
+      members:
+        - '{LINE}'
+        - '{PREFIX} &f%owner% &7has kicked &f%name% &7from the party!'
+        - '{LINE}'
+    friendly-fire:
+      enabled:
+        - '{LINE}'
+        - '{PREFIX} &cFriendly fire &7is now &aenabled&7!'
+        - '{LINE}'
+      disabled:
+        - '{LINE}'
+        - '{PREFIX} &cFriendly fire &7is now &cdisabled&7!'
+        - '{LINE}'
+    transfer:
+      - '{LINE}'
+      - '{PREFIX} &f%owner% &7has transferred the party to &f%name%&7.'
+      - '{LINE}'
+    disband:
+      - '{LINE}'
+      - '{PREFIX} &f%owner% &7has disbanded the party.'
+      - '{LINE}'
+
+  customkits:
+    created: '{PREFIX} &aCustom kit ''&e%kit%&a'' created successfully!'
+    saved: '{PREFIX} &aCustom kit ''&e%kit%&a'' saved successfully!'
+    renamed: '{PREFIX} &aCustom kit renamed to ''&e%kit%&a''.'
+    duplicated: '{PREFIX} &aCustom kit duplicated as ''&e%kit%&a''!'
+    deleted: '{PREFIX} &aCustom kit ''&e%kit%&a'' has been deleted.'
+    enter-name: '{PREFIX} &aPlease type the new kit name in chat (or type &ccancel&a):'
+    enter-new-name: '{PREFIX} &aPlease type the new name for this kit in chat (or type &ccancel&a):'
+    enter-description: '{PREFIX} &aType kit description in chat (or type &cclear&a to remove, or &ccancel&a):'
+    description-updated: '{PREFIX} &aKit description has been updated.'
+    icon-changed: '{PREFIX} &aKit icon changed to &e%material%&a.'
+    no-item-in-hand: '{PREFIX} &cYou must be holding an item in your main hand to set it as kit icon.'
+    usage-create: '{PREFIX} &cUsage: /customkits create <name>'
+    usage-edit: '{PREFIX} &cUsage: /customkits edit <name>'
+    usage-delete: '{PREFIX} &cUsage: /customkits delete <name>'
+    usage-duplicate: '{PREFIX} &cUsage: /customkits duplicate <oldname> <newname>'
+    usage-preview: '{PREFIX} &cUsage: /customkits preview <name>'
+    list:
+      header: '{PREFIX} &aYour Custom Kits (&e%count%&a):'
+      entry: '{PREFIX} &7%kits%'
+      empty: '{PREFIX} &cYou do not have any custom kits.'
+    
+    replay:
+      usage: '{PREFIX} &cUsage: /%command% [play <id>|list [player]|stop|delete <id>]'
+      unknown: '{PREFIX} &cUnknown replay or player ''&e%name%&c''. Usage: /%command% [play <id>|list [player]|stop|delete <id>]'
+      only-players: '{PREFIX} &cOnly in-game players can use this command.'
+
+  sub-command-usage: '{PREFIX} &f/%command% %usage% &e- &7%description%'
+
+
+DUEL:
+  start-failure:
+    mode-unselected: '{FAIL_PREFIX} &cEither a kit or own inventory must be selected to start a duel.'
+    player-is-dead: '{FAIL_PREFIX} You or your opponent is currently dead!'
+    in-blacklisted-world: '{FAIL_PREFIX} You or your opponent is in a blacklisted world!'
+    is-tagged: '{FAIL_PREFIX} You or your opponent is in combat!'
+    player-moved: '{FAIL_PREFIX} You or your opponent moved after sending/accepting the request!'
+    not-in-duelzone: '{FAIL_PREFIX} You or your opponent moved out of the duelzone sending/accepting the request!'
+    in-creative-mode: '{FAIL_PREFIX} You or your opponent is in creative mode!'
+    no-arena-available: '{FAIL_PREFIX} No arenas are currently available. Please try again later.'
+    arena-in-use: '{FAIL_PREFIX} The selected arena is already in use. Please select a different arena.'
+    arena-not-applicable: '{FAIL_PREFIX} Kit %kit% cannot be used on the selected arena.'
+    not-enough-money: '{FAIL_PREFIX} You or your opponent does not have $%bet_amount%.'
+  rounds:
+    round-end: '{PREFIX} &7Round &e%round% &7finished! &f%winner% &7won the round!'
+    round-status: '{PREFIX} &7Current score: &f%player1% &7(&a%wins1%&7) vs &f%player2% &7(&a%wins2%&7)'
+    round-start: '{PREFIX} &7Round &e%round% &7starting...'
+    match-point: '{PREFIX} &c&lMatch Point &7for &f%player%&7!'
+  party-start-failure:
+    option-unavailable: '{FAIL_PREFIX} &cItem/Money Betting is currently not available for party duels.'
+    party-changed: '{FAIL_PREFIX} Either the request sender or the request accepter has changed their party.'
+    player-is-dead: '{FAIL_PREFIX} One or more player is currently dead!'
+    in-blacklisted-world: '{FAIL_PREFIX} One or more player is in a blacklisted world!'
+    is-tagged: '{FAIL_PREFIX} One or more player is in combat!'
+    player-moved: '{FAIL_PREFIX} One or more player moved after sending/accepting the request!'
+    not-in-duelzone: '{FAIL_PREFIX} One or more player moved out of the duelzone after sending/accepting the request!'
+    in-creative-mode: '{FAIL_PREFIX} One or more player is in creative mode!'
+    is-not-same-size: '{PREFIX} &cParty sizes must match to do this.'
+    is-not-all-online: '{FAIL_PREFIX} Members of all parties must be online!'
+  prevent:
+    item-drop: '&cYou cannot drop items while in a duel.'
+    command: '&cYou cannot use ''%command%'' while in a duel.'
+    teleportation: '&cYou cannot teleport while in a duel.'
+    inventory-open: '&cYou cannot open inventories while in a duel.'
+  projectile-hit-message: '{PREFIX} &f%name% &7is now at &d%health%❤&7!'
+  on-death:
+    with-killer: '{PREFIX} &a%killer% &7has slain &c%name% &7with &d%health%❤&7.'
+    no-killer: '{PREFIX} &c%name% &7died.'
+  on-end:
+    tie: '{PREFIX} &7Tie Game!'
+    plugin-disable: '{PREFIX} &cPlugin is disabling! Ending match automatically.'
+    opponent-defeat: '{PREFIX} &f%winner% &a(%winner_rating%) (+%change%) &7defeated &f%loser% &c(%loser_rating%) (-%change%) &7with kit &3%kit% &7on arena &e%arena%&7.'
+    team-opponent-defeat: '{PREFIX} &f%winners% &7defeated &f%losers% &7with kit &3%kit% &7on arena &e%arena%&7.'
+    party-opponent-defeat: '{PREFIX} &f%winners% &7defeated &f%losers% &7with kit &3%kit% &7on arena &e%arena%&7.'
+  inventories:
+    message: '&7Inventories (click on the name to view): '
+    name-color: '&b'
+  reward:
+    money:
+      message: '{PREFIX} &7You have received &6$%money% &7for winning against &f%name%&7!'
+      title: '&eYOU WON &6$%money%&e!'
+    items:
+      message: '{PREFIX} &7You have received &f%name%&7''s items for winning!'
+  leave:
+    countdown-active: '{PREFIX} &cYou cannot give up during countdown.'
+
+PARTY:
+  auto-disband:
+    - '{LINE}'
+    - '{PREFIX} &7The party has been automatically disbanded due to inactivity.'
+    - '{LINE}'
+
+
+QUEUE:
+  prevent:
+    command: '&cYou cannot use ''%command%'' while in a queue.'
+  add: '{PREFIX} &7You have been added to the queue for kit &3%kit% &7and bet &6$%bet_amount%&7. Click the sign again or type &f/queue leave &7to leave the queue.'
+  remove: '{PREFIX} &7You have been removed from the queue.'
+  found-opponent: '{PREFIX} &7Opponent found: &f%name%&7! Starting match with kit &3%kit% &7and a bet of &6$%bet_amount%&7...'
+
+
+SIGN:
+  format:
+    - '&a[Click to Join]'
+    - '&3%name%&f:&e$%bet_amount%'
+    - '&f&l%in_queue% IN QUEUE'
+    - '&f&l%in_match% IN MATCH'
+
+
+SPECTATE:
+  arena-broadcast: '{PREFIX} &f%name% &7is now spectating the match!'
+  match-end: '{PREFIX} &7The match you were spectating has ended.'
+  prevent:
+    command: '&cYou cannot use ''%command%'' while in spectator mode.'
+    teleportation: '&cYou cannot teleport while in spectator mode.'
+
+
+REPLAY:
+  protocollib-missing: '{PREFIX} &cThe replay system is disabled because ProtocolLib is missing from this server.'
+  already-watching: '{PREFIX} &cYou are already watching a replay.'
+  not-watching: '{PREFIX} &cYou are not currently watching a replay.'
+  not-found: '{PREFIX} &cReplay ''&e%id%&c'' was not found or failed to load.'
+  deleted: '{PREFIX} &aReplay ''&e%id%&a'' was deleted.'
+  delete-no-permission: '{PREFIX} &cYou do not have permission to delete replays.'
+  finished-watching: '{PREFIX} &7Finished watching replay.'
+  restored-after-restart: '{PREFIX} &aYour inventory and location have been restored from your previous replay session.'
+  recording-started: '{PREFIX} &7Duel recording started.'
+  recording-saved: '{PREFIX} &7Duel recording saved with ID: &e%id%&7.'
+  world-not-found: '{PREFIX} &cWorld ''&e%world%&c'' was not found for this replay.'
+  prevent:
+    command: '&cYou cannot use ''%command%'' while watching a replay. Use /replay stop to exit.'
+    teleportation: '&cYou cannot teleport while watching a replay.'
+    inventory-open: '&cYou cannot open inventories while watching a replay.'
+    item-drop: '&cYou cannot drop items while watching a replay.'
+    damage: '&cYou cannot take or deal damage while watching a replay.'
+    block-break: '&cYou cannot break blocks while watching a replay.'
+    block-place: '&cYou cannot place blocks while watching a replay.'
+    interact: '&cYou cannot interact with blocks while watching a replay.'
+  items:
+    inspect: '&b&lInspect Perspective'
+    teleport: '&b&lInspect Perspective'
+    speed: '&e&lSpeed: &6%speed%x'
+    pause: '&c&lPause'
+    play: '&a&lPlay'
+    forward: '&b&lForward (10s)'
+    backward: '&b&lBackward (10s)'
+    leave: '&4&lLeave Replay'
+
+
+GUI:
+  customkits-menu:
+    title: 'My Custom Kits'
+    buttons:
+      kit:
+        name: '&e&l%name%'
+        lore:
+          - '%description%'
+          - '&7Items: &f%items%'
+          - ' '
+          - '&a[Left-Click] &7Edit Kit'
+          - '&b[Right-Click] &7Preview Kit'
+          - '&e[Shift-Left] &7Duplicate Kit'
+          - '&c[Shift-Right] &7Delete Kit'
+      limit:
+        name: '&e&lKit Limit'
+        lore:
+          - '&7Kits: &a%count% &7/ &e%limit%'
+          - '&7Remaining: &b%remaining%'
+      create:
+        name: '&a&l+ Create New Kit'
+        name-reached: '&c&lKit Limit Reached'
+        lore:
+          - '&7Click to name and create a new kit.'
+        lore-reached:
+          - '&cYou cannot create more custom kits.'
+      close:
+        name: '&c&lClose Menu'
+        lore:
+          - '&7Click to exit.'
+    confirm-delete:
+      title: 'Delete Kit?'
+      message: 'Are you sure you want to delete kit ''%kit%''?'
+  customkit-confirm:
+    buttons:
+      confirm:
+        name: '&a&lConfirm'
+        lore:
+          - '&7Click to proceed with this action.'
+      cancel:
+        name: '&c&lCancel'
+        lore:
+          - '&7Click to cancel and go back.'
+      info:
+        name: '&e&lInformation'
+        lore:
+          - '&7%text%'
+  customkit-selector:
+    title: 'Select Custom Kit'
+    buttons:
+      empty:
+        name: '&c&lNo Custom Kits Found'
+        lore:
+          - '&7You have not created any custom kits yet.'
+          - '&7Use &e/customkits &7to create your first kit!'
+      custom-kit:
+        name: '&d&l%name%'
+        lore:
+          - '%description%'
+          - '&7Items: &e%items%'
+          - ' '
+          - '&aClick to select this kit for duel request'
+          - '&7Note: Custom kit duels only support Money Betting'
+      back:
+        name: '&c&lBack'
+        lore:
+          - '&7Click to return to Kit Type Selection.'
+  kit-type-selector:
+    title: 'Select Kit Type'
+  customkit-editor:
+    title: 'Editing: %kit%'
+    placeholders:
+      helmet: '&7(Click to set Helmet)'
+      chestplate: '&7(Click to set Chestplate)'
+      leggings: '&7(Click to set Leggings)'
+      boots: '&7(Click to set Boots)'
+      offhand: '&7(Click to set Offhand)'
+      empty-slot: '&8(Empty Slot %slot%)'
+      empty-hotbar: '&8(Empty Hotbar %slot%)'
+      choose-item-lore:
+        - '&aClick to choose item'
+    buttons:
+      cancel:
+        name: '&c&lCancel / Discard'
+        lore:
+          - '&7Click to discard unsaved changes.'
+      clear:
+        name: '&c&lClear All Items'
+        lore:
+          - '&7Click to empty all kit inventory slots.'
+      settings:
+        name: '&e&lKit Settings'
+        lore:
+          - '&7Name: &f%name%'
+          - '&7Description: &f%description%'
+          - ' '
+          - '&a[Left-Click] &7Rename Kit'
+          - '&e[Right-Click] &7Edit Description'
+          - '&b[Shift-Click] &7Change Icon'
+      preview:
+        name: '&b&lPreview Kit'
+        lore:
+          - '&7Click to view read-only kit preview.'
+      save:
+        name: '&a&lSave Kit'
+        lore:
+          - '&7Click to validate and save this custom kit.'
+    confirm-discard:
+      title: 'Discard Changes?'
+      message: 'Are you sure you want to discard unsaved changes?'
+    confirm-clear:
+      title: 'Clear All Items?'
+      message: 'Are you sure you want to clear all items in this kit?'
+  customkit-preview:
+    title: 'Preview: %kit%'
+    placeholders:
+      helmet: '&7(Empty Helmet)'
+      chestplate: '&7(Empty Chestplate)'
+      leggings: '&7(Empty Leggings)'
+      boots: '&7(Empty Boots)'
+      offhand: '&7(Empty Offhand)'
+      empty-slot: '&8(Empty Slot)'
+      empty-hotbar: '&8(Empty Hotbar)'
+    buttons:
+      info:
+        name: '&e&lKit: %kit%'
+        owner: '&7Owner: &f%owner%'
+        description-header: '&7Description:'
+        readonly-footer: '&8Read-only preview'
+      close:
+        name: '&c&lClose Preview'
+        lore:
+          - '&7Click to close preview.'
+  material-browser:
+    title: 'Material Browser'
+    categories:
+      weapons: 'Weapons'
+      armor: 'Armor'
+      tools: 'Tools'
+      food: 'Food'
+      blocks: 'Blocks'
+      combat: 'Combat'
+      potions: 'Potions'
+      utility: 'Utility'
+      misc: 'Miscellaneous'
+    buttons:
+      armor-slot:
+        name: '&e&lArmor Slot: &b%slot%'
+        lore:
+          - '&7Select valid armor for this slot below.'
+      category-tab:
+        name: '&7%category%'
+        name-selected: '&a&l%category%'
+        lore:
+          - '&eClick to view category'
+        lore-selected:
+          - '&a▶ Currently viewing'
+      item:
+        lore:
+          - '&aClick to select this item'
+        lore-icon:
+          - '&aClick to select as kit icon'
+      previous-page:
+        name: '&ePrevious Page (%page%/%total%)'
+      next-page:
+        name: '&eNext Page (%page%/%total%)'
+      back:
+        name: '&c&lBack to Layout Editor'
+        lore:
+          - '&7Click to return to inventory editor.'
+  item-editor:
+    title: 'Item Editor'
+    enter-damage: '{PREFIX} &aType durability damage value in chat (or 0 for max durability):'
+    enter-model-data: '{PREFIX} &aType custom model data integer in chat (or 0 to remove):'
+    enter-rgb-color: '{PREFIX} &aType RGB color in chat (e.g. &e255 0 0&a):'
+    buttons:
+      change-material:
+        name: '&e&lChange Material'
+        lore:
+          - '&7Current: &f%material%'
+          - ' '
+          - '&aClick to browse materials'
+      change-amount:
+        name: '&e&lChange Amount: &a%amount%'
+        lore:
+          - '&a[Left-Click] &7+1'
+          - '&e[Right-Click] &7-1'
+          - '&b[Shift-Left] &7+16'
+          - '&c[Shift-Right] &7-16'
+      display-name-lore:
+        name: '&e&lDisplay Name & Lore'
+        lore:
+          - '&7Click to edit item name and lore lines.'
+      enchantments:
+        name: '&b&lEnchantments (&e%count%&b)'
+        lore:
+          - '&7Click to configure item enchantments.'
+      attributes:
+        name: '&b&lAttributes (&e%count%&b)'
+        lore:
+          - '&7Click to configure attribute modifiers.'
+      armor-trim:
+        name: '&b&lArmor Trim'
+        lore:
+          - '&7Click to configure trim pattern and material.'
+      potion-settings:
+        name: '&d&lPotion Settings'
+        lore:
+          - '&7Click to configure potion type and custom effects.'
+      durability-damage:
+        name: '&e&lDurability Damage: &f%damage%'
+        lore:
+          - '&a[Left-Click] &7Restore full durability (0 damage)'
+          - '&e[Right-Click] &7Enter custom damage value'
+      unbreakable:
+        name: '&eUnbreakable: %status%'
+        lore:
+          - '&aClick to toggle'
+      item-flags:
+        name: '&e&lItem Flags'
+        lore:
+          - '&7Hide Enchants: %hide_enchants%'
+          - '&7Hide Attributes: %hide_attributes%'
+          - '&7Hide Unbreakable: %hide_unbreakable%'
+          - ' '
+          - '&a[Left-Click] &7Toggle Hide Enchants'
+          - '&e[Right-Click] &7Toggle Hide Attributes'
+          - '&b[Shift-Click] &7Toggle Hide Unbreakable'
+      custom-model-data:
+        name: '&eCustom Model Data: &f%data%'
+        lore:
+          - '&aClick to enter custom model data number'
+      leather-color:
+        name: '&e&lLeather Armor Color'
+        lore:
+          - '&7RGB: &f%r%, %g%, %b%'
+          - ' '
+          - '&aClick to choose color'
+      remove-item:
+        name: '&c&lRemove Item'
+        lore:
+          - '&7Click to delete this item from the kit.'
+      back:
+        name: '&c&lBack to Layout Editor'
+        lore:
+          - '&7Click to return to the kit layout editor.'
+  enchantment-editor:
+    title: 'Enchantment Editor'
+    buttons:
+      add:
+        name: '&a&l+ Add Enchantment'
+        lore:
+          - '&7Click to browse and add an enchantment.'
+      clear:
+        name: '&c&lClear All Enchantments'
+        lore:
+          - '&7Click to remove all enchantments.'
+      enchant-entry:
+        name: '&b%enchantment% %level%'
+        lore:
+          - '&7Current Level: &e%level% &7/ &a%max%'
+          - ' '
+          - '&a[Left-Click] &7+1 Level'
+          - '&e[Right-Click] &7-1 Level'
+          - '&c[Shift-Click / Middle] &7Remove Enchantment'
+      browse-entry:
+        name: '&b%enchantment%'
+        lore:
+          - '&7Max Allowed Level: &a%max%'
+          - ' '
+          - '&aClick to add level 1'
+      previous-page:
+        name: '&ePrevious Page (%page%/%total%)'
+      next-page:
+        name: '&eNext Page (%page%/%total%)'
+      back-enchantments:
+        name: '&c&lBack to Enchantments'
+        lore:
+          - '&7Click to go back.'
+      back-item-editor:
+        name: '&c&lBack to Item Editor'
+        lore:
+          - '&7Click to go back.'
+  attribute-editor:
+    title: 'Attribute Modifier Editor'
+    enter-amount: '{PREFIX} &aType attribute modifier amount in chat:'
+    range-info: ' (Range: %min% to %max%)'
+    buttons:
+      add:
+        name: '&a&l+ Add Attribute Modifier'
+        lore:
+          - '&7Click to configure and add a modifier.'
+      clear:
+        name: '&c&lClear All Modifiers'
+        lore:
+          - '&7Click to remove all attribute modifiers.'
+      modifier-entry:
+        name: '&e%attribute%'
+        lore:
+          - '&7Amount: &f%amount%'
+          - '&7Operation: &f%operation%'
+          - '&7Slot: &f%slot%'
+          - ' '
+          - '&c[Click to remove]'
+      select-attribute:
+        name: '&b%attribute%'
+        lore:
+          - '&aClick to select attribute'
+      select-slot:
+        name: '&eSlot: %slot%'
+        lore:
+          - '&aClick to select equipment slot'
+      select-operation:
+        name: '&aOperation: %operation%'
+        lore:
+          - '&7Click to proceed to enter modifier amount.'
+      back:
+        name-back: '&c&lBack'
+        name-editor: '&c&lBack to Item Editor'
+        lore:
+          - '&7Click to go back.'
+  armor-trim-editor:
+    title: 'Armor Trim Editor'
+    buttons:
+      remove:
+        name: '&c&lRemove Armor Trim'
+        lore:
+          - '&7Click to clear the armor trim.'
+      pattern-entry:
+        name: '&b%pattern% Pattern'
+        lore:
+          - '&aClick to select pattern'
+      material-entry:
+        name: '&e%material% Trim'
+        lore:
+          - '&aClick to apply trim'
+      back:
+        name-patterns: '&c&lBack to Patterns'
+        name-editor: '&c&lBack to Item Editor'
+        lore:
+          - '&7Click to go back.'
+  potion-editor:
+    title: 'Potion Settings Editor'
+    enter-duration-amplifier: '{PREFIX} &aType duration (seconds) and amplifier (e.g. &e60 2&a) in chat:'
+    buttons:
+      extended:
+        name: '&eExtended Duration: %status%'
+        lore:
+          - '&aClick to toggle'
+      upgraded:
+        name: '&eUpgraded (Tier II): %status%'
+        lore:
+          - '&aClick to toggle'
+      potion-type:
+        name: '&b%type%'
+        name-selected: '&a&l%type%'
+        lore:
+          - '&eClick to select'
+        lore-selected:
+          - '&a▶ Currently selected'
+      add-effect:
+        name: '&a&l+ Add Custom Potion Effect'
+        lore:
+          - '&7Click to add a custom potion effect.'
+      clear-effects:
+        name: '&c&lClear Custom Effects'
+        lore:
+          - '&7Click to remove all custom potion effects.'
+      effect-entry:
+        name: '&e%effect%'
+        lore:
+          - '&7Duration: &f%duration%s'
+          - '&7Amplifier: &f%amplifier%'
+          - ' '
+          - '&c[Click to remove]'
+      browse-effect:
+        name: '&b%effect%'
+        lore:
+          - '&aClick to set duration and amplifier'
+      previous-page:
+        name: '&ePrevious Page (%page%/%total%)'
+      next-page:
+        name: '&eNext Page (%page%/%total%)'
+      back:
+        name-settings: '&c&lBack to Potion Settings'
+        name-editor: '&c&lBack to Item Editor'
+        lore:
+          - '&7Click to go back.'
+  lore-editor:
+    title: 'Name & Lore Editor'
+    enter-display-name: '{PREFIX} &aType display name in chat:'
+    enter-lore-line: '{PREFIX} &aType lore line to add in chat:'
+    enter-new-lore-line: '{PREFIX} &aType replacement lore line in chat:'
+    buttons:
+      set-name:
+        name: '&e&lSet Display Name'
+        default-name: '&7(Default)'
+        lore:
+          - '&7Current: %name%'
+          - ' '
+          - '&aClick to change display name.'
+      reset-name:
+        name: '&c&lReset Display Name'
+        lore:
+          - '&7Click to restore default item name.'
+      add-lore:
+        name: '&a&l+ Add Lore Line'
+        lore:
+          - '&7Click to append a new lore line.'
+      clear-lore:
+        name: '&c&lClear All Lore'
+        lore:
+          - '&7Click to remove all lore lines.'
+      lore-entry:
+        name: '&eLine %index%: %line%'
+        lore:
+          - '&a[Left-Click] &7Edit line'
+          - '&e[Shift-Left] &7Move UP'
+          - '&b[Shift-Right] &7Move DOWN'
+          - '&c[Right-Click] &7Delete line'
+      back:
+        name: '&c&lBack to Item Editor'
+        lore:
+          - '&7Click to go back.'
+  bedrock-customkits:
+    main-menu:
+      title: 'My Custom Kits'
+      content: '&7Manage your custom duel kits.\n&eKits: &a%count% &7/ &e%limit%\n'
+      create: '&a+ Create New Kit'
+      item-format: '&b%name%\n&7(%items% items)'
+    create-prompt:
+      title: 'Create Custom Kit'
+      name-label: 'Kit Name'
+      name-placeholder: 'Enter name (e.g. Sword PvP)'
+    duplicate-prompt:
+      title: 'Duplicate Kit'
+      name-label: 'New Kit Name'
+      copy-suffix: ' Copy'
+    actions:
+      title: 'Kit: %kit%'
+      content: '&eChoose an action for this kit:'
+      edit-layout: '&e✏ Edit Inventory Layout'
+      edit-settings: '&b⚙ Edit Kit Name / Description'
+      preview: '&a👁 Preview Kit'
+      duplicate: '&6❐ Duplicate Kit'
+      delete: '&c✘ Delete Kit'
+      back: '&7« Back to Kits'
+    layout:
+      title: 'Layout: %kit%'
+      content: '&7Tap any slot to configure its item:\n'
+      save: '&a✔ Save Kit'
+      discard: '&c✘ Discard / Cancel'
+      helmet: '&e[Helmet] &f%item%'
+      chestplate: '&e[Chestplate] &f%item%'
+      leggings: '&e[Leggings] &f%item%'
+      boots: '&e[Boots] &f%item%'
+      offhand: '&6[Offhand] &f%item%'
+      hotbar: '&b[Hotbar %slot%] &f%item%'
+      inventory: '&7[Inv %slot%] &f%item%'
+    slot-options:
+      title-item: 'Item: %material%'
+      title-empty: 'Empty Slot'
+      edit-properties: '&e✏ Edit Item Properties'
+      change-material: '&b🔄 Change Material'
+      clear-slot: '&c✘ Clear Slot'
+      choose-material: '&a+ Choose Material'
+      back: '&7« Back'
+    properties:
+      title: 'Edit: %material%'
+      display-name-label: 'Display Name'
+      amount-label: 'Amount'
+      unbreakable-label: 'Unbreakable'
+    settings:
+      title: 'Settings: %kit%'
+      name-label: 'Kit Name'
+      desc-line-1: 'Description Line 1'
+      desc-line-2: 'Description Line 2'
+    categories:
+      title: 'Select Category'
+    material-picker:
+      title-armor: 'Pick Armor (%slot%)'
+      title-category: 'Pick Material: %category%'
+    preview:
+      title: 'Preview: %kit%'
+      header: '&e=== Kit Preview: &f%kit% &e===\n\n'
+      armor-header: '&6Armor:\n'
+      armor-slot: '&7- %slot%: &f%item%\n'
+      offhand-slot: '&7- Offhand: &f%item%\n\n'
+      hotbar-header: '&6Hotbar Items:\n'
+      hotbar-item: '&7%slot%. &f%item%\n'
+      inventory-header: '\n&6Main Inventory:\n'
+      inventory-item: '&7%slot%. &f%item%\n'
+      back: '&a« Back'
+      empty: 'Empty'
+  bedrock-duel:
+    title: 'Duel %target%'
+    select-kit: 'Select Kit'
+    select-arena: 'Select Arena'
+    enable-bet: 'Enable Bet'
+    bet-amount: 'Bet Amount'
+    own-inventory: 'Own Inventory'
+    custom-kit-prefix: '[Custom] '
+    server-kit-prefix: '[Server] '
+  bedrock-accept:
+    title: 'Duel Request'
+    challenge: '&e%sender%&r has challenged you to a duel!\n\n'
+    kit: '&7Kit: &f%kit%\n'
+    own-inventory: '&7Own Inventory: &aEnabled\n'
+    arena: '&7Arena: &f%arena%\n'
+    bet: '&7Bet: &6$%bet%\n'
+    item-betting: '&7Item Betting: &aEnabled\n'
+    question: '\n&fDo you accept?'
+    accept: '&a✔ Accept'
+    deny: '&c✘ Deny'
+    preview-custom-kit: '&b👁 Preview Custom Kit'
+  settings:
+    title: 'Request Settings'
+    buttons:
+      details:
+        name: '&9Request Details'
+        lore:
+          - '&7Opponent: &f%opponent%'
+          - '&7Kit: &3%kit%'
+          - '&7Own Inventory: &r%own_inventory%'
+          - '&7Arena: &e%arena%'
+          - '&7Bet Items: &r%item_betting%'
+          - '&7Bet: &6$%bet_amount%'
+          - ' '
+          - '&7To change the bet'
+          - '&7amount, please type'
+          - '&b/duel %opponent% [amount]'
+      kit-selector:
+        name: '&9Kit Selection'
+        lore:
+          - '&7Selected Kit: &3%kit%'
+          - ' '
+          - '&aClick to Change Kit!'
+        lore-no-permission:
+          - '&cYou do not have permission to'
+          - '&cuse this option.'
+      use-own-inventory:
+        name: '&9Use Own Inventory'
+        material: CHEST
+        lore:
+          - '&7Own Inventory: &r%own_inventory%'
+          - ' '
+          - '&aClick to Toggle Own Inventory!'
+        lore-no-permission:
+          - '&cYou do not have permission to'
+          - '&cuse this option.'
+      arena-selector:
+        name: '&9Arena Selection'
+        lore:
+          - '&7Selected Arena: &e%arena%'
+          - ' '
+          - '&aClick to Change Arena!'
+        lore-no-permission:
+          - '&cYou do not have permission to'
+          - '&cuse this option.'
+      item-betting:
+        name: '&9Allow Betting Items'
+        lore:
+          - '&7Item Betting: &r%item_betting%'
+          - ' '
+          - '&aClick to Toggle Item Betting!'
+        lore-no-permission:
+          - '&cYou do not have permission to'
+          - '&cuse this option.'
+      send:
+        name: '&a&lSEND REQUEST'
+      cancel:
+        name: '&c&lCANCEL'
+  kit-selector:
+    title: 'Kit Selection'
+    buttons:
+      previous-page:
+        name: '&aPrevious Page'
+      next-page:
+        name: '&aNext Page'
+      empty:
+        name: '&cThis page is empty.'
+  kit-edit-selector:
+    title: 'Select Kit to Edit'
+    buttons:
+      previous-page:
+        name: '&aPrevious Page'
+      next-page:
+        name: '&aNext Page'
+      empty:
+        name: '&cNo kits available to edit.'
+  arena-selector:
+    title: 'Arena Selection'
+    buttons:
+      arena:
+        name: '&e%name%'
+        lore-default:
+          - '&eStatus: &r{status}'
+        lore-available:
+          - '&aAvailable'
+        lore-unavailable:
+          - '&cUnavailable'
+      previous-page:
+        name: '&aPrevious Page'
+      next-page:
+        name: '&aNext Page'
+      empty:
+        name: '&cThis page is empty.'
+  queues:
+    title: 'Available Queues'
+    buttons:
+      queue:
+        name: '&3%name%'
+        lore:
+          - '&7Bet: &6$%bet_amount%'
+          - '&7Ranked: %rated%'
+          - '&7In Queue: &f%in_queue%'
+          - '&7In Match: &f%in_match%'
+          - ' '
+          - '&a&lClick to Queue!'
+        rated: '&aYes'
+        unrated: '&cNo'
+      previous-page:
+        name: '&aPrevious Page'
+      next-page:
+        name: '&aNext Page'
+      empty:
+        name: '&cThis page is empty.'
+  item-betting:
+    title: 'Winner Takes All!'
+    buttons:
+      head:
+        name: '&e%name%'
+      state:
+        name-ready: '&a&lREADY'
+        name-not-ready: '&7&lNOT READY'
+      details:
+        name: '&9Match Details'
+        lore:
+          - '&7Kit: &3%kit%'
+          - '&7Arena: &e%arena%'
+          - '&7Bet: &6$%bet_amount%'
+      cancel:
+        name: '&c&lCLICK TO CANCEL'
+        lore:
+          - '&7Click or close inventory'
+          - '&7to cancel the match.'
+  inventory-view:
+    title: '&e%name%'
+    buttons:
+      head:
+        name: '&e%name%'
+      potion-counter:
+        name: '&d%potions% Health Potions'
+      effects:
+        name: '&bPotion Effects'
+        lore-format: '&7%type% %amplifier% (%duration%s)'
+      hunger:
+        name: '&6%hunger% bars'
+      health:
+        name: '&c%health% ❤'
+  options:
+    title: 'Kit: %kit%'
+    buttons:
+      option:
+        name: '&b%name%'
+        lore:
+          - ' '
+          - '&7Status: &r%state%'
+          - ' '
+          - '&r&lCLICK TO TOGGLE'
+  bind:
+    title: 'Kit: %kit%'
+    buttons:
+      arena:
+        name: '&e%arena%'
+        lore-bound:
+          - '&7Bound Kits: &3%kits%'
+          - ' '
+          - '&a&lBOUND'
+          - ' '
+          - '&r&lCLICK TO TOGGLE'
+        lore-not-bound:
+          - '&7Bound Kits: &3%kits%'
+          - ' '
+          - '&c&lNOT BOUND'
+          - ' '
+          - '&r&lCLICK TO TOGGLE'
+  replay-browser:
+    title: 'Duel Replays'
+    player-title: 'Replays: %player%'
+    end-reason:
+      OPPONENT_DEFEAT: 'Opponent Defeat'
+      TIE: 'Tie'
+      MAX_TIME_REACHED: 'Time Limit'
+      PLUGIN_DISABLE: 'Plugin Disable'
+      OTHER: 'Other'
+    buttons:
+      entry:
+        name: '&eReplay: &b%player1% &7vs &b%player2%'
+        lore:
+          - '&7ID: &8%id%'
+          - '&7Winner: &a%winner%'
+          - '&7Loser: &c%loser%'
+          - '&7Kit: &f%kit%'
+          - '&7Arena: &e%arena%'
+          - '&7Duration: &e%duration%'
+          - '&7End Reason: &7%reason%'
+          - '&7Date: &8%date%'
+          - ' '
+          - '&e► Left-Click to view options / watch'
+        lore-admin:
+          - '&c► Shift-Right-Click to delete'
+      previous-page:
+        name: '&a« Previous Page'
+      next-page:
+        name: '&aNext Page »'
+      empty:
+        name: '&cNo replays found.'
+  replay-details:
+    title: 'Replay: %id%'
+    buttons:
+      summary:
+        name: '&e&lMatch Details'
+        lore:
+          - '&7Replay ID: &f%id%'
+          - '&7Player 1: &b%player1%'
+          - '&7Player 2: &b%player2%'
+          - '&7Winner: &a%winner%'
+          - '&7Loser: &c%loser%'
+          - '&7Kit: &f%kit%'
+          - '&7Arena: &e%arena%'
+          - '&7Duration: &e%duration%'
+          - '&7End Reason: &7%reason%'
+          - '&7Date: &8%date%'
+        lore-bet: '&7Bet: &6$%bet%'
+      play:
+        name: '&a&l▶ Watch Replay'
+        lore:
+          - '&7Click to enter replay viewer mode.'
+          - '&eTakes you into spectator camera!'
+      delete:
+        name: '&c&l✖ Delete Replay'
+        lore:
+          - '&7Click to permanently delete this replay.'
+      back:
+        name: '&7« Back to Replay List'
+    end-reason:
+      OPPONENT_DEFEAT: 'Opponent Defeat'
+      TIE: 'Tie'
+      MAX_TIME_REACHED: 'Time Limit'
+      PLUGIN_DISABLE: 'Plugin Disable'
+      OTHER: 'Other'
+
+
+KIT:
+    EDIT:
+      started: '{PREFIX} &aYou are now editing kit &e%kit%&a. Use &e/%command% save &awhen done.'
+      saved: '{PREFIX} &aYour kit &e%kit% &ahas been saved and your inventory restored.'
+      already-editing: '{PREFIX} &cYou are already editing a kit. Use &e/%command% save &cto save first.'
+      not-editing: '{PREFIX} &cYou are not currently editing a kit.'
+      start-failed: '{PREFIX} &cFailed to start kit editing session.'
+      save-failed: '{PREFIX} &cFailed to save kit. Please try again.'
+      in-queue: '{PREFIX} &cYou cannot edit kits while in a queue. Leave the queue first.'
+      in-match: '{PREFIX} &cYou cannot edit kits while in a match. Wait for the match to end.'
+      session-aborted: '{PREFIX} &cYour kit editing session has been aborted because you joined a queue or match.'
+      invalid-items: '{PREFIX} &cKit editing session aborted! You can only modify items from the default kit. External items are not allowed.'
+      command-blocked: '{PREFIX} &cYou cannot use other commands while editing a kit. Use &e/%command% save &cto save.'
+      drop-blocked: '{PREFIX} &cYou cannot drop items while editing a kit.'
+      inventory-blocked: '{PREFIX} &cYou cannot access external inventories while editing a kit.'
+      block-break-blocked: '{PREFIX} &cYou cannot break blocks while editing a kit.'
+      block-place-blocked: '{PREFIX} &cYou cannot place blocks while editing a kit.'
+      interact-blocked: '{PREFIX} &cYou cannot interact with blocks while editing a kit.'
+      cancelled: '{PREFIX} &aKit editing session cancelled. Your inventory has been restored.'
+    RESET:
+      success: '{PREFIX} &aYour edited &e%kit% &akit has been reset to the default.'
+      success-other: '{PREFIX} &aReset &e%name%&a''s edited &e%kit% &akit to the default.'
+      reset-by-admin: '{PREFIX} &e%kit% &ahas been reset to the default by an administrator.'
+      not-edited: '{PREFIX} &c%name% does not have an edited &e%kit% &ckit.'
+      failed: '{PREFIX} &cFailed to reset %name%''s &e%kit% &ckit.'

@@ -1,0 +1,170 @@
+name: frostbite
+world: bedwars
+pos1: '325;0;-75;0.0;0.0'
+pos2: '475;140;75;0.0;0.0'
+specSpawn: '400.5;84;0.5;0;60'
+lobbySpawn: '400.5;101;0.5;0.0;0.0'
+lobbySpawnWorld: bedwars
+minPlayers: 2
+pauseCountdown: 30
+gameTime: 3600
+postGameWaiting: 3
+customPrefix: ''
+arenaTime: DAY
+arenaWeather: CLEAR
+teams:
+  Red:
+    color: RED
+    isNewColor: true
+    maxPlayers: 4
+    bed: '400;65;-44;0.0;0.0'
+    spawn: '400.5;65;-49.5;0.0;0.0'
+  Blue:
+    color: BLUE
+    isNewColor: true
+    maxPlayers: 4
+    bed: '444;65;0;0.0;0.0'
+    spawn: '450.5;65;0.5;90.0;0.0'
+  Green:
+    color: LIME
+    isNewColor: true
+    maxPlayers: 4
+    bed: '400;65;44;0.0;0.0'
+    spawn: '400.5;65;50.5;180.0;0.0'
+  Yellow:
+    color: YELLOW
+    isNewColor: true
+    maxPlayers: 4
+    bed: '356;65;0;0.0;0.0'
+    spawn: '350.5;65;0.5;-90.0;0.0'
+spawners:
+- location: '400.5;65;-54.5;0.0;0.0'
+  type: bronze
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Red
+  maxSpawnedResources: -1
+- location: '398.5;65;-54.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Red
+  maxSpawnedResources: -1
+- location: '455.5;65;0.5;0.0;0.0'
+  type: bronze
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Blue
+  maxSpawnedResources: -1
+- location: '455.5;65;-1.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Blue
+  maxSpawnedResources: -1
+- location: '400.5;65;55.5;0.0;0.0'
+  type: bronze
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Green
+  maxSpawnedResources: -1
+- location: '402.5;65;55.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Green
+  maxSpawnedResources: -1
+- location: '345.5;65;0.5;0.0;0.0'
+  type: bronze
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Yellow
+  maxSpawnedResources: -1
+- location: '345.5;65;2.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: Yellow
+  maxSpawnedResources: -1
+- location: '423.5;65;23.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+- location: '377.5;65;23.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+- location: '377.5;65;-22.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+- location: '423.5;65;-22.5;0.0;0.0'
+  type: iron
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+- location: '404.5;65;0.5;0.0;0.0'
+  type: gold
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+- location: '396.5;65;0.5;0.0;0.0'
+  type: gold
+  customName: null
+  startLevel: 1.0
+  hologramEnabled: true
+  team: null
+  maxSpawnedResources: -1
+stores:
+- loc: '405.5;65;-49.5;90.0;0.0'
+  shop: null
+  parent: true
+  type: VILLAGER
+  name: '&a&lSHOP'
+  isBaby: false
+  skin: null
+- loc: '450.5;65;5.5;180.0;0.0'
+  shop: null
+  parent: true
+  type: VILLAGER
+  name: '&a&lSHOP'
+  isBaby: false
+  skin: null
+- loc: '395.5;65;50.5;-90.0;0.0'
+  shop: null
+  parent: true
+  type: VILLAGER
+  name: '&a&lSHOP'
+  isBaby: false
+  skin: null
+- loc: '350.5;65;-4.5;0.0;0.0'
+  shop: null
+  parent: true
+  type: VILLAGER
+  name: '&a&lSHOP'
+  isBaby: false
+  skin: null
+constant: {}
+lobbyBossBarColor: default
+gameBossBarColor: default

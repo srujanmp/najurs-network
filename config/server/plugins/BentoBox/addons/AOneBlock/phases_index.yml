@@ -1,0 +1,110 @@
+phases:
+- file: 0_plains
+  section: '0'
+  name: Plains
+  length: 700
+- file: 700_underground
+  section: '700'
+  name: Underground
+  length: 1300
+- file: 2000_winter
+  section: '2000'
+  name: Winter
+  length: 1000
+- file: 3000_ocean
+  section: '3000'
+  name: Ocean
+  length: 1000
+- file: 4000_jungle
+  section: '4000'
+  name: Jungle
+  length: 1000
+- file: 5000_swamp
+  section: '5000'
+  name: Swamp
+  length: 1000
+- file: 6000_dungeon
+  section: '6000'
+  name: Dungeon
+  length: 1000
+- file: 7000_desert
+  section: '7000'
+  name: Desert
+  length: 500
+- file: 7500_the nether
+  section: '7500'
+  name: The Nether
+  length: 1000
+- file: 8500_plenty
+  section: '8500'
+  name: Plenty
+  length: 1000
+- file: 9500_desolation
+  section: '9500'
+  name: Desolation
+  length: 1000
+- file: 10500_deep_dark
+  section: '10500'
+  name: Deep Dark
+  length: 1000
+- file: 11500_the end
+  section: '11500'
+  name: The End
+  length: 500
+- file: 12000_lush_caves
+  section: '12000'
+  name: Lush Caves
+  length: 500
+- file: 12500_dripstone_caves
+  section: '12500'
+  name: Dripstone Caves
+  length: 500
+- file: 13000_mangrove_swamp
+  section: '13000'
+  name: Mangrove Swamp
+  length: 500
+- file: 13500_meadow
+  section: '13500'
+  name: Meadow
+  length: 500
+- file: 14000_cherry_grove
+  section: '14000'
+  name: Cherry Grove
+  length: 500
+- file: 14500_jagged_peaks
+  section: '14500'
+  name: Jagged Peaks
+  length: 500
+- file: 15000_sulfur_caves
+  section: '15000'
+  name: Sulfur Caves
+  length: 500
+  requiredMinecraftVersion: '26.2'
+- file: 15500_dappled_forest
+  section: '15500'
+  name: Dappled Forest
+  length: 500
+  requiredMinecraftVersion: '26.3'
+gotoAtEnd: 0
+shippedPhases:
+- 0_plains
+- 700_underground
+- 2000_winter
+- 3000_ocean
+- 4000_jungle
+- 5000_swamp
+- 6000_dungeon
+- 7000_desert
+- 7500_the nether
+- 8500_plenty
+- 9500_desolation
+- 10500_deep_dark
+- 11500_the end
+- 12000_lush_caves
+- 12500_dripstone_caves
+- 13000_mangrove_swamp
+- 13500_meadow
+- 14000_cherry_grove
+- 14500_jagged_peaks
+- 15000_sulfur_caves
+- 15500_dappled_forest
