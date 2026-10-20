@@ -41,8 +41,9 @@ EXCLUDE_PLUGINS = ("bStats", "faststats", "FancyAnalytics", "spark", "CustomEnti
 # Multiverse-Inventories keeps per-world/per-group inventories in these folders
 MVINV_DATA = ("plugins/Multiverse-Inventories/groups/", "plugins/Multiverse-Inventories/worlds/",
               "plugins/WorldGuard/worlds/")  # WorldGuard's per-world files are generated defaults (no custom regions)
-LOCAL_KEYS = ("rcon.password", "rcon.port", "server-port", "server-ip", "query.port")  # never shared
-PROPS_DEFAULTS = {"rcon.password": "", "rcon.port": "25575", "server-port": "25565", "server-ip": "", "query.port": "25565"}
+LOCAL_KEYS = ("rcon.password", "rcon.port", "server-port", "server-ip", "query.port", "management-server-secret")  # never shared
+PROPS_DEFAULTS = {"rcon.password": "", "rcon.port": "25575", "server-port": "25565", "server-ip": "", "query.port": "25565",
+                 "management-server-secret": ""}
 
 def is_config(rel):
     rel = rel.replace(os.sep, "/")

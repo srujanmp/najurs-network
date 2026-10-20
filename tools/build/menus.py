@@ -5,7 +5,7 @@ Each item: (slot, material, name, lore lines, commands run as the player; "@" pr
 """
 import json, os, sys
 
-OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/minecraft/server/plugins/DeluxeMenus/gui_menus")
+OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../server/plugins/DeluxeMenus/gui_menus")
 
 def back(menu="games"):
     return (49, "arrow", "&7« Back", [], [f"[openguimenu] {menu}"])

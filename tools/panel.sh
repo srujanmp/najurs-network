@@ -1,9 +1,10 @@
 #!/bin/bash
 # panel.sh start|stop|restart - control the Minecraft instance through MCSManager (keeps auto-restart sane).
+# Owner-machine only: needs PANEL-LOGIN.txt next to the repo root and a local MCSManager install.
 set -euo pipefail
 U=http://127.0.0.1:23333; H='X-Requested-With: XMLHttpRequest'; J=$(mktemp)
 trap 'rm -f "$J"' EXIT
-USER=$(sed -n 's/^username: //p' ~/minecraft/PANEL-LOGIN.txt); PASS=$(sed -n 's/^password: //p' ~/minecraft/PANEL-LOGIN.txt)
+USER=$(sed -n 's/^username: //p' "$(dirname "$0")/../PANEL-LOGIN.txt"); PASS=$(sed -n 's/^password: //p' "$(dirname "$0")/../PANEL-LOGIN.txt")
 curl -sf -c "$J" -b "$J" -H "$H" -H 'Content-Type: application/json' -d "{\"username\":\"$USER\",\"password\":\"$PASS\"}" "$U/api/auth/login" >/dev/null
 T=$(curl -sf -b "$J" -H "$H" "$U/api/auth/token" | python3 -c "import json,sys;print(json.load(sys.stdin)['data'])")
 DID=$(basename ~/.local/share/mcsmanager/web/data/RemoteServiceConfig/*.json .json)

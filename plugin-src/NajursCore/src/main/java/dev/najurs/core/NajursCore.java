@@ -64,6 +64,7 @@ public final class NajursCore extends JavaPlugin implements Listener {
     private List<Material> droppable;
     private File dataFile;
     YamlConfiguration data;
+    private boolean dataLoaded;
     Morph morph;
     Dashboard dashboard;
     Hub hub;
@@ -86,7 +87,13 @@ public final class NajursCore extends JavaPlugin implements Listener {
             saveConfig();
         }
         dataFile = new File(getDataFolder(), "data.yml");
-        data = YamlConfiguration.loadConfiguration(dataFile);
+        data = new YamlConfiguration();
+        // first tick: Multiverse worlds must exist or Location entries fail to deserialize (and the whole file would be dropped)
+        Bukkit.getScheduler().runTask(this, () -> {
+            YamlConfiguration loaded = new YamlConfiguration();
+            try { if (dataFile.exists()) loaded.load(dataFile); data = loaded; dataLoaded = true; }
+            catch (Exception e) { getLogger().warning("Could not load data.yml, leaving it untouched: " + e.getMessage()); }
+        });
         droppable = Arrays.stream(Material.values())
                 .filter(m -> m.isItem() && !m.isAir() && !m.isLegacy() && !OPERATOR_ONLY.contains(m.name())
                         && !m.name().endsWith("_SPAWN_EGG") && !m.name().contains("COMMAND_BLOCK"))
@@ -130,10 +137,12 @@ public final class NajursCore extends JavaPlugin implements Listener {
     public void onDisable() {
         for (Player p : Bukkit.getOnlinePlayers()) rememberLocation(p, p.getLocation());
         saveData();
+        if (match != null) match.rebuildFloors();
         if (worldState != null) worldState.save();
     }
 
     void saveData() {
+        if (!dataLoaded) return;
         try { data.save(dataFile); } catch (IOException e) { getLogger().warning("Could not save data.yml: " + e.getMessage()); }
     }
 
@@ -465,13 +474,13 @@ public final class NajursCore extends JavaPlugin implements Listener {
         data.set("starter." + id, null);
         for (String uuid : Optional.ofNullable(data.getConfigurationSection("last")).map(c -> c.getKeys(false)).orElse(Set.of()))
             data.set("last." + uuid + "." + id, null);   // a remembered spot in a missing world breaks data.yml loading
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
-            for (Path f : folders) {
-                if (Bukkit.getWorld(f.getFileName().toString()) != null) continue; // still loaded: never delete a live world
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            folders.removeIf(f -> Bukkit.getWorld(f.getFileName().toString()) != null); // still loaded: never delete a live world
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> { for (Path f : folders) {
                 try (Stream<Path> walk = Files.walk(f)) {
                     walk.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
                 } catch (IOException e) { getLogger().warning("Could not delete " + f + ": " + e.getMessage()); }
-            }
+            } });
         }, 40L);
         s.sendMessage(ChatColor.GREEN + "Deleted " + id + ".");
     }
@@ -502,8 +511,10 @@ public final class NajursCore extends JavaPlugin implements Listener {
         for (String uuid : Optional.ofNullable(data.getConfigurationSection("last")).map(c -> c.getKeys(false)).orElse(Set.of()))
             data.set("last." + uuid + "." + id, null);
         Bukkit.broadcastMessage(ChatColor.GOLD + "⟳ " + ChatColor.YELLOW + name + ChatColor.GRAY + " is being reset" + (newSeed ? " with a brand new seed" : "") + "...");
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            folders.removeIf(f -> Bukkit.getWorld(f.getFileName().toString()) != null); // still loaded: never delete a live world
             folders.add(getDataFolder().toPath().getParent().resolve("Multiverse-Inventories/groups/" + id));
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             for (Path f : folders) {
                 if (!Files.exists(f)) continue;
                 try (Stream<Path> walk = Files.walk(f)) { walk.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete()); }
@@ -515,7 +526,8 @@ public final class NajursCore extends JavaPlugin implements Listener {
                 Bukkit.getScheduler().runTaskLater(this, () -> Bukkit.broadcastMessage(ChatColor.GREEN + "✔ " + name
                         + " has been reset! " + ChatColor.GRAY + "Join with /go " + id), 80L);
             });
-        });
+            });
+        }, 40L);
     }
 
     boolean send(CommandSender s, String[] a) {

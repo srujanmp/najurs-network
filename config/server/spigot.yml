@@ -19,7 +19,7 @@ settings:
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 0.0625
   moved-too-quickly-multiplier: 10.0
-  timeout-time: 60
+  timeout-time: 180
   restart-on-crash: true
   restart-script: ./start.sh
   netty-threads: 4

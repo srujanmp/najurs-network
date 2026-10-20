@@ -122,6 +122,11 @@ final class VoidWorlds implements Listener {
             } else b.setType(p.blocks()[r.nextInt(p.blocks().length)]);
             if (r.nextInt(12) == 0) b.getWorld().spawnEntity(b.getLocation().add(0.5, 1.2, 0.5), p.mobs()[r.nextInt(p.mobs().length)]);
             b.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, b.getLocation().add(0.5, 1, 0.5), 8, 0.4, 0.3, 0.4);
+            if (p != before) {
+                Bukkit.broadcastMessage(ChatColor.GOLD + "✦ " + ChatColor.WHITE + plugin.managedId(b.getWorld()) + ChatColor.YELLOW + " reached the " + p.colour() + ChatColor.BOLD + p.name() + ChatColor.YELLOW + " phase (" + n + " blocks)!");
+                for (int i = 0; i < 3; i++) Bukkit.getScheduler().runTaskLater(plugin, () -> plugin.match.firework(b.getLocation().add(0.5, 1, 0.5)), i * 8L);
+            }
+            if (n % 25 == 0) for (Player x : b.getWorld().getPlayers()) x.playSound(x.getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.8f, 1.2f);   // treasure
             if (p != before) for (Player x : b.getWorld().getPlayers()) {
                 x.sendTitle(p.colour() + "" + ChatColor.BOLD + p.name(), ChatColor.GRAY + "New OneBlock phase!", 5, 50, 10);
                 x.playSound(x.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7f, 1f);

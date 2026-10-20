@@ -293,6 +293,10 @@ final class Nightfall implements Listener {
             if (!hunters.isEmpty()) all(ChatColor.GRAY + (game == Game.IMPOSTOR ? "The impostor was: " : "The hunter was: ") + ChatColor.RED + hunters);
         }
         all(ChatColor.DARK_RED + "☠ " + game.colour + ChatColor.BOLD + game.title + ChatColor.GRAY + " is over: " + ChatColor.WHITE + headline);
+        if (game == Game.CANDLES && !score.isEmpty())
+            all(ChatColor.AQUA + "Candles: " + String.join(ChatColor.DARK_GRAY + " | ", score.entrySet().stream().sorted(Map.Entry.<UUID, Integer>comparingByValue().reversed())
+                    .map(x -> ChatColor.WHITE + Optional.ofNullable(Bukkit.getPlayer(x.getKey())).map(Player::getName).orElse("?") + " " + ChatColor.YELLOW + x.getValue()).toList()));
+        if (winners != null) for (UUID u : winners) { Player w = Bukkit.getPlayer(u); if (w != null) w.sendMessage(ChatColor.GOLD + "★ Nightfall wins: " + ChatColor.WHITE + plugin.data.getInt("nightfall.wins." + u)); }
     }
 
     private void finish() {
@@ -766,7 +770,7 @@ final class Nightfall implements Listener {
         }
         List<Location> s = new ArrayList<>(spots().stream().filter(l -> l.distanceSquared(hall()) > 225).toList());
         Collections.shuffle(s, rnd);
-        for (Location l : s.subList(0, 8)) {
+        for (Location l : s.subList(0, Math.min(8, s.size()))) {
             Item it = world.dropItem(l, tagged(Material.ECHO_SHARD, "relic", "&3&lAncient relic", "&7Bring it to the Great Hall table."));
             it.setVelocity(new org.bukkit.util.Vector()); it.setUnlimitedLifetime(true); it.setPersistent(false); it.addScoreboardTag("nf_temp");
             spawned.add(it);

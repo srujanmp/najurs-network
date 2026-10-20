@@ -11,3 +11,5 @@ plugin-src/*/out/
 __pycache__/
 *.pyc
 .DS_Store
+/backups/
+/CLAUDE.md

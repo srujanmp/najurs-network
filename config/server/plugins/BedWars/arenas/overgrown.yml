@@ -16,25 +16,25 @@ teams:
   Red:
     color: RED
     isNewColor: true
-    maxPlayers: 4
+    maxPlayers: 2
     bed: '1200;65;-48;0.0;0.0'
     spawn: '1200.5;65;-53.5;0.0;0.0'
   Blue:
     color: BLUE
     isNewColor: true
-    maxPlayers: 4
+    maxPlayers: 2
     bed: '1248;65;0;0.0;0.0'
     spawn: '1254.5;65;0.5;90.0;0.0'
   Green:
     color: LIME
     isNewColor: true
-    maxPlayers: 4
+    maxPlayers: 2
     bed: '1200;65;48;0.0;0.0'
     spawn: '1200.5;65;54.5;180.0;0.0'
   Yellow:
     color: YELLOW
     isNewColor: true
-    maxPlayers: 4
+    maxPlayers: 2
     bed: '1152;65;0;0.0;0.0'
     spawn: '1146.5;65;0.5;-90.0;0.0'
 spawners:

@@ -80,6 +80,15 @@ final class Chaos implements org.bukkit.event.Listener {
     static final Set<String> GOOD = Set.of("OP GIFT", "FEAST", "SPEED PARTY", "XP SHOWER", "MOON JUMP", "SHEEP DISCO", "ITEM STORM");
     private final Map<String, Integer> waves = new HashMap<>();
 
+    @org.bukkit.event.EventHandler
+    public void onDeath(org.bukkit.event.entity.PlayerDeathEvent e) {
+        Player p = e.getEntity();
+        if (!plugin.hasFlag(p.getWorld(), "chaos")) return;
+        int n = waves.getOrDefault(p.getWorld().getName(), 0);
+        for (Player o : p.getWorld().getPlayers()) o.sendMessage(ChatColor.DARK_RED + "☠ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " was taken by the goose on wave " + ChatColor.YELLOW + n
+                + ChatColor.GRAY + " (record " + plugin.data.getInt("goose.best." + p.getUniqueId()) + ")");
+    }
+
     void start() { Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 20L * 10, 20L); }
 
     /** Runs every second: keeps everyone regenerating, counts down, and fires a wave every chaos-wave-seconds (config.yml). */
@@ -88,7 +97,7 @@ final class Chaos implements org.bukkit.event.Listener {
         for (World w : Bukkit.getWorlds()) {
             if (!plugin.hasFlag(w, "chaos")) continue;
             List<Player> players = w.getPlayers().stream().filter(p -> p.getGameMode() == GameMode.SURVIVAL || p.getGameMode() == GameMode.ADVENTURE).toList();
-            if (players.isEmpty() && w.getPlayers().stream().noneMatch(p -> watching.containsKey(p.getUniqueId()))) { nextAt.remove(w.getName()); continue; }
+            if (players.isEmpty() && w.getPlayers().stream().noneMatch(p -> watching.containsKey(p.getUniqueId()))) { nextAt.remove(w.getName()); waves.remove(w.getName()); continue; }   // empty world: next run starts at wave 1
             for (Player p : players) {
                 // you can survive a lot, but not forever: everything is designed to wear you down slowly
                 p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 60, 1, false, false, true));

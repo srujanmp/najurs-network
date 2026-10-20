@@ -122,6 +122,7 @@ final class Parkour implements Listener {
                 long t = System.currentTimeMillis() - r.start;
                 p.sendTitle(ChatColor.GOLD + "✔ " + cps.get(i).name(), ChatColor.GRAY + "Checkpoint " + (i + 1) + "/" + cps.size() + "  •  " + fmt(t), 0, 35, 10);
                 p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.7f, 1.6f);
+                p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, p.getLocation().add(0, 1, 0), 25, 0.5, 0.8, 0.5);
                 break;
             }
         }
@@ -157,10 +158,13 @@ final class Parkour implements Listener {
         String path = "parkour.best." + p.getUniqueId();
         long best = plugin.data.getLong(path, Long.MAX_VALUE);
         boolean pb = t < best;
+        ConfigurationSection all = plugin.data.getConfigurationSection("parkour.best");
+        boolean record = pb && (all == null || all.getKeys(false).stream().allMatch(k -> t < all.getLong(k) || k.equals(p.getUniqueId().toString())));
         if (pb) { plugin.data.set(path, t); plugin.data.set("parkour.names." + p.getUniqueId(), p.getName()); }
         p.sendTitle(ChatColor.GREEN + "" + ChatColor.BOLD + "FINISHED!", ChatColor.WHITE + fmt(t) + (pb ? ChatColor.GOLD + "  NEW BEST!" : ChatColor.GRAY + "  best " + fmt(best)), 5, 70, 15);
         Bukkit.broadcastMessage(ChatColor.GOLD + "✦ " + ChatColor.WHITE + p.getName() + ChatColor.YELLOW + " finished the Hub Parkour in "
                 + ChatColor.AQUA + fmt(t) + (pb ? ChatColor.GOLD + " (personal best!)" : ""));
+        if (record) Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "★ NEW SERVER RECORD ★ " + ChatColor.WHITE + p.getName() + ChatColor.YELLOW + " set the fastest Hub Parkour time: " + ChatColor.AQUA + fmt(t));
         p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1f, 1f);
         for (int i = 0; i < 5; i++) {
             int n = i;

@@ -72,6 +72,8 @@ tools/najurs.py publish     # copies the live configs into config/ and re-pins p
 git add -A && git commit -m "..." && git push
 ```
 
+Backups: `tools/backup.sh` archives worlds + plugin data (keeps 7); cron it with `0 4 * * * ~/minecraft/tools/backup.sh`.
+
 Updating plugins: stop the server, `tools/update-plugins.sh`, start and test, then `publish`.
 
 ## Guide

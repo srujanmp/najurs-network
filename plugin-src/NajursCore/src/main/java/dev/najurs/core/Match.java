@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,6 +41,8 @@ final class Match implements Listener {
         final LinkedHashSet<UUID> queue = new LinkedHashSet<>();
         final Set<UUID> alive = new HashSet<>(), players = new HashSet<>(), rematch = new HashSet<>(), watchers = new HashSet<>();
         boolean suddenDone;
+        /** kills this round, and how many floor-shrink steps have run (sumo/spleef). */
+        final Map<UUID, Integer> kills = new HashMap<>(); int shrink;
         int timer; int round; long fightStart;
         final List<PvpMap> maps = new ArrayList<>(); PvpMap map; Theme theme;
         Arena(String id, String title, ChatColor colour, Location wait, List<Location> spawns, boolean deathOut, double fallY) {
@@ -82,6 +85,7 @@ final class Match implements Listener {
     private final NajursCore plugin;
     private final Map<String, Arena> arenas = new LinkedHashMap<>();
     private final Map<UUID, String> kit = new HashMap<>();
+    private final Map<String, Integer> winStreak = new HashMap<>();   // "<arena>:<uuid>" -> consecutive round wins
     private final NamespacedKey key;
 
     Match(NajursCore plugin) { this.plugin = plugin; this.key = new NamespacedKey(plugin, "match_item"); }
@@ -277,6 +281,8 @@ final class Match implements Listener {
                     for (Player p : online(a.players)) p.sendActionBar(a.colour + "" + ChatColor.BOLD + a.title + ChatColor.GRAY + "  Round " + a.round + "  |  "
                             + ChatColor.GREEN + a.alive.size() + " alive" + ChatColor.GRAY + "  |  " + ChatColor.WHITE + secs / 60 + ":" + String.format("%02d", secs % 60));
                     if (secs >= 120 && !a.suddenDone) { a.suddenDone = true; suddenDeath(a); }
+                    if ((a.id.equals("sumo") || a.id.equals("spleef")) && secs >= 30) { int want = (int) (secs - 30) / 10 + 1; while (a.shrink < want && a.shrink < 8) shrink(a, ++a.shrink); }
+                    if (secs >= 300) { broadcast(a, ChatColor.RED + "Time's up - round ended in a draw."); a.alive.clear(); checkEnd(a); }
                 }
                 case VOTING -> { if (--a.timer <= 0) closeVote(a); }
             }
@@ -286,7 +292,8 @@ final class Match implements Listener {
     private void begin(Arena a) {
         a.state = State.FIGHT;
         a.round++;
-        a.players.clear(); a.alive.clear(); a.rematch.clear(); a.suddenDone = false;
+        a.players.clear(); a.alive.clear(); a.rematch.clear(); a.suddenDone = false; a.kills.clear(); a.shrink = 0;
+        rebuildFloor(a);
         List<Player> ps = online(a.queue);
         Collections.shuffle(ps, plugin.random);
         List<Location> spawns = a.spawns;
@@ -303,7 +310,6 @@ final class Match implements Listener {
             balance(a, ps);
             ps.sort(Comparator.comparingInt(p -> a.team.getOrDefault(p.getUniqueId(), 0)));  // reds first: they fill one half of the ring
         }
-        if (a.id.equals("spleef")) plugin.console("execute in minecraft:arena run fill -10 70 90 10 70 110 snow_block replace air");
         for (int i = 0; i < ps.size(); i++) {
             Player p = ps.get(i);
             a.queue.remove(p.getUniqueId()); a.watchers.remove(p.getUniqueId());
@@ -418,7 +424,7 @@ final class Match implements Listener {
     void eliminate(Player p, Player killer, String how) {
         Arena a = arenaOf(p);
         if (a == null || a.state != State.FIGHT || !a.alive.remove(p.getUniqueId())) return;
-        if (killer != null && a.alive.contains(killer.getUniqueId())) plugin.pvp.recordKill(a.id, killer, p, how);
+        if (killer != null && a.alive.contains(killer.getUniqueId())) { plugin.pvp.recordKill(a.id, killer, p, how); a.kills.merge(killer.getUniqueId(), 1, Integer::sum); }
         else { plugin.pvp.recordDeath(a.id, p); broadcast(a, a.colour + "☠ " + ChatColor.WHITE + p.getName() + ChatColor.GRAY + " is out"); }
         p.sendTitle(ChatColor.RED + "" + ChatColor.BOLD + "ELIMINATED", ChatColor.GRAY + "Spectating until the round ends", 5, 40, 10);
         Location watch = a.map != null ? a.map.spectate() : a.wait;
@@ -438,7 +444,10 @@ final class Match implements Listener {
             Bukkit.broadcastMessage(a.colour + "★ " + ChatColor.WHITE + winner.getName() + ChatColor.YELLOW + " won " + a.title + " round " + a.round + "!");
             for (int i = 0; i < 4; i++) Bukkit.getScheduler().runTaskLater(plugin, () -> firework(winner.getLocation()), i * 8L);
         }
+        streaks(a, winner == null ? List.of() : List.of(winner));
+        summary(a);
         for (Player p : online(a.players)) {
+            p.playSound(p.getLocation(), winner == p ? Sound.UI_TOAST_CHALLENGE_COMPLETE : Sound.ENTITY_WITHER_DEATH, 0.6f, 1f);
             p.sendTitle(winner == p ? ChatColor.GOLD + "" + ChatColor.BOLD + "VICTORY!" : ChatColor.RED + "" + ChatColor.BOLD + "GAME OVER",
                     winner == null ? "" : ChatColor.WHITE + winner.getName() + ChatColor.GRAY + " wins", 5, 50, 10);
         }
@@ -456,6 +465,8 @@ final class Match implements Listener {
                     + ChatColor.GRAY + "(" + String.join(", ", winners.stream().map(Player::getName).toList()) + ")");
             online(a.alive).forEach(p -> { for (int i = 0; i < 3; i++) Bukkit.getScheduler().runTaskLater(plugin, () -> firework(p.getLocation()), i * 8L); });
         }
+        streaks(a, winners);
+        summary(a);
         for (Player p : online(a.players)) {
             boolean w = winners.contains(p);
             p.sendTitle(w ? ChatColor.GOLD + "" + ChatColor.BOLD + "VICTORY!" : ChatColor.RED + "" + ChatColor.BOLD + "DEFEAT",
@@ -465,11 +476,73 @@ final class Match implements Listener {
         afterRound(a);
     }
 
+    /** Chat recap for everyone in the round: top killers, MVP first. */
+    private void summary(Arena a) {
+        if (a.kills.isEmpty()) return;
+        List<Map.Entry<UUID, Integer>> top = new ArrayList<>(a.kills.entrySet());
+        top.sort(Map.Entry.<UUID, Integer>comparingByValue().reversed());
+        StringBuilder sb = new StringBuilder(ChatColor.GOLD + "★ Round " + a.round + " MVP: ");
+        for (int i = 0; i < Math.min(3, top.size()); i++) {
+            String n = Bukkit.getOfflinePlayer(top.get(i).getKey()).getName();
+            sb.append(i == 0 ? ChatColor.WHITE + "" + ChatColor.BOLD : ChatColor.GRAY).append(n).append(ChatColor.YELLOW).append(" ").append(top.get(i).getValue()).append(i == 0 ? " kills" : "").append(i < Math.min(3, top.size()) - 1 ? ChatColor.DARK_GRAY + " | " : "");
+        }
+        broadcast(a, sb.toString());
+    }
+
+    /** Win streak per arena: winners +1 (announced from 2), everyone else in the round resets. */
+    private void streaks(Arena a, Collection<Player> winners) {
+        for (UUID u : a.players) {
+            String k = a.id + ":" + u;
+            if (winners.stream().noneMatch(w -> w.getUniqueId().equals(u))) { winStreak.remove(k); continue; }
+            int s = winStreak.merge(k, 1, Integer::sum);
+            if (s >= 2) Bukkit.broadcastMessage(ChatColor.GOLD + "✹ " + ChatColor.WHITE + Bukkit.getOfflinePlayer(u).getName() + ChatColor.YELLOW + " is on a "
+                    + ChatColor.RED + ChatColor.BOLD + s + "-round win streak" + ChatColor.YELLOW + " in " + a.title + "!");
+        }
+    }
+
+    /** Sumo: the platform tightens every 10s after 30s; Spleef: the snow floor loses an outer ring. Both end rounds before the timeout. */
+    private void shrink(Arena a, int step) {
+        for (Player p : online(a.alive)) {
+            p.sendTitle("", ChatColor.RED + "The floor is shrinking!", 0, 25, 5);
+            p.playSound(p.getLocation(), Sound.BLOCK_STONE_BREAK, 1f, 0.6f);
+        }
+        if (a.id.equals("sumo")) shrinkSumo(Math.max(2, 6.5 - 0.6 * step));
+        else spleefFloor(10 - step);
+    }
+
+    /** Full floor for a fresh round / idle arena (sumo disc r7, spleef snow disc r10; matches tools/build/arena_modes.py). */
+    void rebuildFloor(Arena a) { if (a.id.equals("sumo")) shrinkSumo(7); else if (a.id.equals("spleef")) spleefFloor(10); }
+    void rebuildFloors() { rebuildFloor(arenas.get("sumo")); rebuildFloor(arenas.get("spleef")); }
+
+    /** Spleef (centre 0,100, y70): snow disc r10; cells outside the square ring `half` become air, inside are refilled where empty. */
+    private void spleefFloor(int half) {
+        World w = Bukkit.getWorld(PvP.WORLD);
+        if (w == null) return;
+        for (int x = -10; x <= 10; x++) for (int z = -10; z <= 10; z++) {
+            if (x * x + z * z > 100) continue;
+            Block b = w.getBlockAt(x, 70, 100 + z);
+            if (Math.max(Math.abs(x), Math.abs(z)) > half) { if (b.getType() == Material.SNOW_BLOCK) b.setType(Material.AIR); }
+            else if (b.getType() == Material.AIR) b.setType(Material.SNOW_BLOCK);
+        }
+    }
+
+    /** Sumo platform (centre 100,0): stone base r7 at y63, concrete top r6 at y64 (red core, sea lanterns); everything beyond r is cut. */
+    private void shrinkSumo(double r) {
+        World w = Bukkit.getWorld(PvP.WORLD);
+        if (w == null) return;
+        for (int x = -8; x <= 8; x++) for (int z = -8; z <= 8; z++) {
+            int d2 = x * x + z * z; boolean in = d2 <= r * r;
+            if (d2 <= 49) w.getBlockAt(100 + x, 63, z).setType(in ? Material.STONE : Material.AIR);
+            if (d2 <= 36) w.getBlockAt(100 + x, 64, z).setType(!in ? Material.AIR : d2 <= 2 ? Material.RED_CONCRETE
+                    : (Math.abs(x) == 6 && z == 0 || x == 0 && Math.abs(z) == 6 || Math.abs(x) == 4 && Math.abs(z) == 4) ? Material.SEA_LANTERN : Material.WHITE_CONCRETE);
+        }
+    }
+
     private void afterRound(Arena a) {
         // winner gets a moment to celebrate, then everyone votes
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for (Player p : online(a.players)) { resetPlayer(p); p.teleport(a.wait); giveWaitingItems(p, a); } // everyone back to the stands
-            a.alive.clear();
+            a.alive.clear(); rebuildFloor(a);
             for (Player p : online(a.players)) openVote(p, a);
         }, 50L);
     }
@@ -632,7 +705,12 @@ final class Match implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) { leave(e.getPlayer(), false); }
+    public void onQuit(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        Arena a = arenaOf(p);
+        leave(p, false);
+        if (a != null) { resetPlayer(p); p.teleport(a.wait); }
+    }
 
     @EventHandler
     public void onWorld(PlayerChangedWorldEvent e) {

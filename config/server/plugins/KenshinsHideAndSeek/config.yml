@@ -59,9 +59,9 @@ debug: false
 #───┘ Timing └───────────────────────────────────────────────────────────────────────────────────────────
 
 # How long in seconds will the game last, set to 0 to make game length infinite
-gameLength: 1200
+gameLength: 600
 # How long in seconds will the initial hiding period last, minimum is 10 seconds
-hidingLength: 30
+hidingLength: 45
 # The amount of seconds the game will wait until the players are teleported to the lobby after a game over
 endGameDelay: 5
 # When enabled, seekers will have to wait [delay] seconds until they respawn in after death.
@@ -135,9 +135,9 @@ leaveOnEnd: false
 # Configure the "waiting for players" per map lobby
 lobby:
   # Time in seconds the lobby waits until the game starts. Set to 0 to disable
-  countdown: 30
+  countdown: 15
   # Player threshold to speed up the countdown to 10 seconds. Set to 0 to disable
-  changeCountdown: 5
+  changeCountdown: 4
   # Minimum amount of players required to start the countdown
   min: 2
   # Maximum amount of players allowed in a lobby
