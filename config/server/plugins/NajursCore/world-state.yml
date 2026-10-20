@@ -1,0 +1,71 @@
+# Gamerules that differ from vanilla, and the time of worlds with a frozen clock.
+# Written by NajursCore on shutdown; re-applied when a world loads. Safe to edit while the server is off.
+arena:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    block_drops: false
+    command_block_output: false
+    keep_inventory: true
+    spawn_mobs: false
+  clear-weather: true
+  time: 6000
+bedwars:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    immediate_respawn: true
+    locator_bar: false
+    spawn_mobs: false
+  clear-weather: true
+  time: 6000
+creative:
+  gamerules:
+    advance_weather: false
+    pvp: false
+    spawn_mobs: false
+  clear-weather: true
+hideseek:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    spawn_mobs: false
+  clear-weather: true
+  time: 658
+hs_horror:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    spawn_mobs: false
+  clear-weather: true
+  time: 18000
+nightfall:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    block_drops: false
+    fall_damage: false
+    immediate_respawn: true
+    keep_inventory: true
+    mob_griefing: false
+    show_death_messages: false
+    spawn_mobs: false
+  clear-weather: true
+  time: 18000
+lobby:
+  gamerules:
+    advance_time: false
+    advance_weather: false
+    command_block_output: false
+    fall_damage: false
+    pvp: false
+    show_death_messages: false
+    spawn_mobs: false
+  clear-weather: true
+  time: 18000
+sw_coop_oneblock:
+  gamerules:
+    keep_inventory: true
+sw_coop_skyblock:
+  gamerules:
+    keep_inventory: true

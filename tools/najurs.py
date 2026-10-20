@@ -25,7 +25,7 @@ JAVA_MAJOR = 25
 
 # ---------- which server files are configuration (tracked) ----------
 
-CONFIG_EXT = (".yml", ".yaml", ".json", ".txt", ".properties", ".conf", ".toml", ".html", ".sh")
+CONFIG_EXT = (".yml", ".yaml", ".json", ".txt", ".properties", ".conf", ".toml", ".html", ".sh", ".blu")  # .blu: BentoBox island blueprints
 ROOT_FILES = {"bukkit.yml", "spigot.yml", "commands.yml", "help.yml", "permissions.yml", "wepif.yml", "start.sh",
               "config/paper-global.yml", "config/paper-world-defaults.yml"}
 EXCLUDE_DIRS = ("database", "database_backup", "userdata", "userdata-npc-backup", "players", "playerdata", "cache", "logs",
@@ -396,7 +396,14 @@ def provision():
             if line.strip() and not line.startswith("#"): r.run(line)
         builds[name] = h
         save_state(st)
-    # 4. Hide & Seek map copies need an in-game op (the first op to join runs them)
+    # 4. co-op Skyblock / OneBlock worlds regrown by Multiverse still need their starting island
+    voids = st.setdefault("voids", [])
+    for wid, t in najurs_world_types().items():
+        if t in ("skyblock", "oneblock") and wid not in voids and world_loaded(r, wid):
+            say(f"building the starting island of {wid}")
+            r.run(f"worlds setupvoid {wid}"); voids.append(wid)
+    save_state(st)
+    # 5. Hide & Seek map copies need an in-game op (the first op to join runs them)
     missing = [m for m, w in HS_MAPS.items() if not os.path.isdir(os.path.join(DIMS, w))]
     pending = os.path.join(SERVER, "plugins", "NajursCore", "pending-op-commands.txt")
     if missing and not os.path.exists(pending):
@@ -483,6 +490,7 @@ def adopt():
     st["plugin"] = tree_hash("plugin-src/NajursCore/src", "plugin-src/NajursCore/build.sh", "tools/plugins.lock")
     st["lp"] = sha256(os.path.join(TOOLS, "provision", "luckperms-groups.json.gz"))
     st["owner_lp"] = True
+    st["voids"] = [w for w, t in najurs_world_types().items() if t in ("skyblock", "oneblock")]
     st.setdefault("pending_worlds", {})
     ops = json.load(open(os.path.join(SERVER, "ops.json"))) if os.path.exists(os.path.join(SERVER, "ops.json")) else []
     if ops: st["owner"] = ops[0]["name"]

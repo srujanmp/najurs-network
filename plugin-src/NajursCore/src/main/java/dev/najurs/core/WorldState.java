@@ -46,7 +46,7 @@ final class WorldState implements Listener {
             String k = r.getKey().getKey();
             if (!rules.contains(k)) continue;
             Object v = r.getType() == Boolean.class ? (Object) rules.getBoolean(k) : r.getType() == Integer.class ? (Object) rules.getInt(k) : null;
-            if (v != null) w.setGameRule((GameRule) r, v);
+            if (v != null) try { w.setGameRule((GameRule) r, v); } catch (IllegalArgumentException experimental) { }
         }
         if (s.contains("time")) w.setTime(s.getLong("time"));
         if (s.getBoolean("clear-weather")) { w.setStorm(false); w.setThundering(false); }
@@ -61,8 +61,10 @@ final class WorldState implements Listener {
         for (World w : Bukkit.getWorlds()) {
             String base = w.getName();
             for (GameRule<?> r : Registry.GAME_RULE) {
-                Object v = w.getGameRuleValue(r), d = w.getGameRuleDefault(r);
-                if (v != null && !v.equals(d)) out.set(base + ".gamerules." + r.getKey().getKey(), v);
+                try {
+                    Object v = w.getGameRuleValue(r), d = w.getGameRuleDefault(r);
+                    if (v != null && !v.equals(d)) out.set(base + ".gamerules." + r.getKey().getKey(), v);
+                } catch (IllegalArgumentException experimental) { /* rule not enabled in this world (e.g. minecart_improvements) */ }
             }
             Boolean cycle = (Boolean) w.getGameRuleValue(rule("advance_time"));
             if (Boolean.FALSE.equals(cycle)) out.set(base + ".time", w.getTime());

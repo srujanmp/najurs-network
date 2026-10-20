@@ -319,6 +319,11 @@ public final class NajursCore extends JavaPlugin implements Listener {
         switch (sub) {
             case "create" -> create(s, a);
             case "reload" -> { reloadConfig(); s.sendMessage(ChatColor.GREEN + "NajursCore config reloaded."); }
+            case "setupvoid" -> {  // used by tools/najurs.py on a fresh clone: build the co-op island of a regenerated world
+                if (a.length < 2 || !worlds().isConfigurationSection(a[1]) || !voids.isVoid(a[1]) || Bukkit.getWorld(a[1]) == null) { s.sendMessage(ChatColor.RED + "/worlds setupvoid <co-op world id>"); return true; }
+                voids.setup(a[1]);
+                s.sendMessage(ChatColor.GREEN + "Built the starting island of " + a[1]);
+            }
             case "wavetime" -> {
                 if (a.length < 2 || !a[1].matches("\\d+")) { s.sendMessage(ChatColor.RED + "/worlds wavetime <seconds>"); return true; }
                 getConfig().set("chaos-wave-seconds", Math.max(10, Integer.parseInt(a[1]))); saveConfig();
