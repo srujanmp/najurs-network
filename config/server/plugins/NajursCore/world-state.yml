@@ -62,7 +62,7 @@ lobby:
     show_death_messages: false
     spawn_mobs: false
   clear-weather: true
-  time: 18000
+  time: 6000
 sw_coop_oneblock:
   gamerules:
     keep_inventory: true
